@@ -6,12 +6,6 @@
 
 ## 要件の網羅性（Completeness）
 
-- [ ] CHK001 - すべての機能要件（Redoc CLI による HTML 生成、CI 自動化、README 参照手順）が spec.md に明記されているか [Completeness, Spec §Functional Requirements]
-- [ ] CHK002 - 主要な非機能要件（主要ブラウザ表示、CI 自動化、エラー通知）が spec.md に明記されているか [Completeness, Spec §Non-Functional Requirements]
-- [ ] CHK003 - 参照手順（README 等）が日本語かつ具体的なパスで記載されているか [Completeness, Spec §Functional Requirements]
-
-## 要件の網羅性（Completeness）
-
 - [x] CHK001 - すべての機能要件（Redoc CLI による HTML 生成、CI 自動化、README 参照手順）が spec.md に明記されているか [Completeness, Spec §Functional Requirements]
 - [x] CHK002 - 主要な非機能要件（主要ブラウザ表示、CI 自動化、エラー通知）が spec.md に明記されているか [Completeness, Spec §Non-Functional Requirements]
 - [x] CHK003 - 参照手順（README 等）が日本語かつ具体的なパスで記載されているか [Completeness, Spec §Functional Requirements]
