@@ -27,6 +27,7 @@ tests/
 - 指摘・要約・提案も日本語で統一
 
 ## Recent Changes
+- 002-upgrade-go-version: Added [if applicable, e.g., PostgreSQL, CoreData, files or N/A]
 
 - 001-parallel-rss-parse-api: Added
 
