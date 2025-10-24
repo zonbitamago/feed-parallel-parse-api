@@ -54,15 +54,8 @@ description: "並列RSSパースAPIの実装タスクリスト"
 **Goal**: 統一フォーマット（JSON 配列）で返却
 **Independent Test**: 返却データが仕様通りの JSON 形式
 
-- [x] T018 [P] [US3] レスポンステスト（tests/unit/response_format_test.go）
-- [x] T017 [P] [US3] レスポンス整形ロジック実装（src/api/parse.go）
-
----
-
 ## Phase 6: Polish & Cross-Cutting Concerns
 
-- [x] T019 README/quickstart 更新（specs/001-parallel-rss-parse-api/quickstart.md）
-- [x] T020 [P] Vercel デプロイ設定（vercel.json, api/）
 - [x] T021 [P] CI/CD 設定（.github/workflows/ci.yml）
 - [x] T022 [P] コードリファクタ・最終レビュー
 
