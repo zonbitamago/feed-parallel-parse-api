@@ -1,31 +1,29 @@
 name: OpenAPI Doc Generation
 
+jobs:
 on:
   push:
     paths:
       - "contracts/openapi.yaml"
       - ".github/workflows/openapi-doc-gen.yml"
 
-jobs:
   generate-doc:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      - name: Set up Java
-        uses: actions/setup-java@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
         with:
-          distribution: "temurin"
-          java-version: "17"
-      - name: Install OpenAPI Generator
-        run: |
-          wget https://repo1.maven.org/maven2/org/openapitools/openapi-generator-cli/7.4.0/openapi-generator-cli-7.4.0.jar -O openapi-generator-cli.jar
+          node-version: "20"
+      - name: Install Redoc CLI
+        run: npm install -g redoc-cli
       - name: Validate OpenAPI Spec
         run: |
-          java -jar openapi-generator-cli.jar validate -i contracts/openapi.yaml || { echo "OpenAPIファイルの妥当性検証に失敗しました"; exit 1; }
+          npx @redocly/openapi-cli lint contracts/openapi.yaml || { echo "OpenAPIファイルの妥当性検証に失敗しました"; exit 1; }
       - name: Generate API HTML documentation
         run: |
-          java -jar openapi-generator-cli.jar generate -i contracts/openapi.yaml -g html -o contracts/api-docs
+          npx redoc-cli bundle contracts/openapi.yaml -o contracts/api-docs/index.html
       - name: Upload generated docs as artifact
         uses: actions/upload-artifact@v4
         with:
@@ -34,4 +32,5 @@ jobs:
       - name: Notify on Failure
         if: failure()
         run: |
+          echo "CIエラー通知: OpenAPI定義またはAPI定義書生成に失敗しました。詳細は上記ログを参照してください。"
           echo "CIエラー通知: OpenAPI定義またはAPI定義書生成に失敗しました。詳細は上記ログを参照してください。"
