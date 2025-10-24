@@ -27,6 +27,7 @@ tests/
 - 指摘・要約・提案も日本語で統一
 
 ## Recent Changes
+- 002-upgrade-go-version: Go version upgrade to 1.2x
 
 - 001-parallel-rss-parse-api: Added
 
