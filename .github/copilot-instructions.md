@@ -15,11 +15,16 @@ tests/
 
 ## Commands
 
-# Add commands for 
+# Add commands for
 
 ## Code Style
 
 : Follow standard conventions
+
+## Review/コメント運用指針
+
+- Copilot によるプルリクエストのレビューコメントは必ず日本語で記載すること
+- 指摘・要約・提案も日本語で統一
 
 ## Recent Changes
 
