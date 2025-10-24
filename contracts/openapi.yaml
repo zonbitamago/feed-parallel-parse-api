@@ -1,0 +1,56 @@
+openapi: 3.0.3
+info:
+  title: Feed Parallel Parse API
+  description: RSSフィードを並列で解析するAPI
+  version: 1.0.0
+servers:
+  - url: /api
+paths:
+  /parse:
+    post:
+      summary: RSSフィードを並列解析
+      description: 複数のRSSフィードURLを受け取り、並列で解析結果を返す
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                urls:
+                  type: array
+                  items:
+                    type: string
+                  description: 解析対象のRSSフィードURLリスト
+      responses:
+        "200":
+          description: 正常に解析された場合のレスポンス
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        url:
+                          type: string
+                        items:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              title:
+                                type: string
+                              link:
+                                type: string
+                              pubDate:
+                                type: string
+                              description:
+                                type: string
+        "400":
+          description: リクエスト不正
+        "500":
+          description: サーバーエラー

@@ -14,6 +14,7 @@ Go + Vercel で動作する、複数 RSS を並列取得・パースし、統一
 - 仕様を日本語テストケース名で担保
 - Vercel サーバーレス対応・CI/CD 自動化
 - **speckit（仕様駆動・タスク自動生成ツール）で設計・実装・テスト・ドキュメントを一元管理**
+- OpenAPI 定義・API 定義書自動生成・参照手順を CI/CD で管理
 
 ## Go バージョンアップ手順（1.25 対応）
 
@@ -38,6 +39,7 @@ go test ./...
 ```
 
 - 仕様・エラー・パフォーマンス・コントラクトテストを日本語ケース名で網羅
+- API 定義書生成・参照テストは `tests/contract/` のシェルスクリプトで自動化
 
 ## デプロイ（Vercel）
 
@@ -54,9 +56,14 @@ vercel --prod
   - body: `{ "urls": ["https://example.com/rss", ...] }`
   - response: `{ "feeds": [...], "errors": [...] }`
 
+## API 定義書参照方法
+
+- 最新の API 定義書は `contracts/api-docs/index.html` をブラウザで開いて参照可能
+- 仕様変更時は `contracts/openapi.yaml` を修正し、CI/CD で自動更新
+- 参照手順は `contracts/api-docs/README.md` に記載
+
 ## 開発方針
 
 - TDD 原則（テスト → 実装 → 検証）
 - speckit で仕様・タスク・テスト・ドキュメントを一元管理・自動生成
-- 仕様・設計・タスクは `specs/001-parallel-rss-parse-api/` 配下に全て記載
-- CI/CD（GitHub Actions）で自動テスト
+- OpenAPI/CI/CD による API 定義書自動生成・参照性担保

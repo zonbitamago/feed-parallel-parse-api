@@ -1,0 +1,19 @@
+openapi: 3.0.0
+info:
+  title: サンプルAPI
+  version: 1.0.0
+paths:
+  /example:
+    get:
+      summary: サンプルエンドポイント
+      responses:
+        "200":
+          description: 正常応答
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Hello, world!"
