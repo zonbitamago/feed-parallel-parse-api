@@ -33,4 +33,3 @@ jobs:
         if: failure()
         run: |
           echo "CIエラー通知: OpenAPI定義またはAPI定義書生成に失敗しました。詳細は上記ログを参照してください。"
-          echo "CIエラー通知: OpenAPI定義またはAPI定義書生成に失敗しました。詳細は上記ログを参照してください。"
