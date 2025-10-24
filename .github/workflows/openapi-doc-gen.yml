@@ -1,0 +1,37 @@
+name: OpenAPI Doc Generation
+
+on:
+  push:
+    paths:
+      - "contracts/openapi.yaml"
+      - ".github/workflows/openapi-doc-gen.yml"
+
+jobs:
+  generate-doc:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: "temurin"
+          java-version: "17"
+      - name: Install OpenAPI Generator
+        run: |
+          wget https://repo1.maven.org/maven2/org/openapitools/openapi-generator-cli/6.6.0/openapi-generator-cli-6.6.0.jar -O openapi-generator-cli.jar
+      - name: Validate OpenAPI Spec
+        run: |
+          java -jar openapi-generator-cli.jar validate -i contracts/openapi.yaml || { echo "OpenAPIファイルの妥当性検証に失敗しました"; exit 1; }
+      - name: Generate API HTML documentation
+        run: |
+          java -jar openapi-generator-cli.jar generate -i contracts/openapi.yaml -g html -o contracts/api-docs
+      - name: Upload generated docs as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: api-docs
+          path: contracts/api-docs
+      - name: Notify on Failure
+        if: failure()
+        run: |
+          echo "CIエラー通知: OpenAPI定義またはAPI定義書生成に失敗しました。詳細は上記ログを参照してください。"
