@@ -6,7 +6,6 @@ import (
 )
 
 // RSSService provides methods to fetch and parse RSS feeds
-
 type RSSService struct{}
 
 func NewRSSService() *RSSService {
