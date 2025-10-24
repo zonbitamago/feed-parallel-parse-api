@@ -1,12 +1,12 @@
 name: OpenAPI Doc Generation
 
-jobs:
 on:
   push:
     paths:
       - "contracts/openapi.yaml"
       - ".github/workflows/openapi-doc-gen.yml"
 
+jobs:
   generate-doc:
     runs-on: ubuntu-latest
     steps:
