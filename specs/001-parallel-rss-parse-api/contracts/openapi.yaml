@@ -1,0 +1,59 @@
+openapi: 3.0.3
+info:
+  title: 並列RSSパースAPI
+  version: 1.0.0
+paths:
+  /parse:
+    post:
+      summary: 複数RSS URLを受け取り並列でパースし返却
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                urls:
+                  type: array
+                  items:
+                    type: string
+                  description: RSSフィードのURLリスト
+      responses:
+        "200":
+          description: パース結果
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  feeds:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        title:
+                          type: string
+                        link:
+                          type: string
+                        articles:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              title:
+                                type: string
+                              link:
+                                type: string
+                              published:
+                                type: string
+                              summary:
+                                type: string
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        url:
+                          type: string
+                        message:
+                          type: string

@@ -1,0 +1,19 @@
+name: CI
+on:
+  push:
+    branches: [main, 001-parallel-rss-parse-api]
+  pull_request:
+    branches: [main, 001-parallel-rss-parse-api]
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.21"
+      - name: Install dependencies
+        run: go mod tidy
+      - name: Run tests
+        run: go test ./... -v
