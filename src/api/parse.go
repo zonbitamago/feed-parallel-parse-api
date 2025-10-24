@@ -20,8 +20,5 @@ func ParseHandler(w http.ResponseWriter, r *http.Request) {
 	feeds, errors := svc.ParseFeeds(r.Context(), req.URLs)
 	resp := models.ParseResponse{Feeds: feeds, Errors: errors}
 	w.Header().Set("Content-Type", "application/json")
-	if err := json.NewEncoder(w).Encode(resp); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(models.ParseResponse{Feeds: nil, Errors: []models.ErrorInfo{{URL: "", Message: "internal error"}}})
-	}
+	json.NewEncoder(w).Encode(resp)
 }
