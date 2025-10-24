@@ -19,8 +19,11 @@ if [ ! -f "$README" ]; then
 fi
 
 # index.htmlの内容チェック（最低限のOpenAPI HTMLタグ確認）
-grep -q "<html" "$API_DOC_HTML" && grep -q "OpenAPI" "$API_DOC_HTML"
-if [ $? -eq 0 ]; then
+grep -q "<html" "$API_DOC_HTML"
+HTML_TAG_STATUS=$?
+grep -q "OpenAPI" "$API_DOC_HTML"
+OPENAPI_STATUS=$?
+if [ $HTML_TAG_STATUS -eq 0 ] && [ $OPENAPI_STATUS -eq 0 ]; then
   echo "API定義書参照テスト: 成功"
   exit 0
 else
