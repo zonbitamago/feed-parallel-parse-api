@@ -7,19 +7,8 @@ import (
 	"github.com/mmcdole/gofeed"
 )
 
-// AtomParserはAtom用のFeedParser実装
-type AtomParser struct{}
-
-func (p *AtomParser) Parse(ctx context.Context, data []byte) (*models.RSSFeed, error) {
-	parser := gofeed.NewParser()
-	feed, err := parser.ParseString(string(data))
-	if err != nil {
-		return nil, err
-	}
-	// Atomのみを対象
-	if feed.FeedType != "atom" {
-		return nil, nil // 対象外
-	}
+// feedToRSSFeedはgofeed.Feedをmodels.RSSFeedに変換する共通処理
+func feedToRSSFeed(feed *gofeed.Feed) *models.RSSFeed {
 	articles := make([]models.Article, 0, len(feed.Items))
 	for _, item := range feed.Items {
 		articles = append(articles, models.Article{
@@ -33,7 +22,23 @@ func (p *AtomParser) Parse(ctx context.Context, data []byte) (*models.RSSFeed, e
 		Title:    feed.Title,
 		Link:     feed.Link,
 		Articles: articles,
-	}, nil
+	}
+}
+
+// AtomParserはAtom用のFeedParser実装
+type AtomParser struct{}
+
+func (p *AtomParser) Parse(ctx context.Context, data []byte) (*models.RSSFeed, error) {
+	parser := gofeed.NewParser()
+	feed, err := parser.ParseString(string(data))
+	if err != nil {
+		return nil, err
+	}
+	// Atomのみを対象
+	if feed.FeedType != "atom" {
+		return nil, nil // 対象外
+	}
+	return feedToRSSFeed(feed), nil
 }
 
 // RSS2ParserはRSS2.0用のFeedParser実装
@@ -49,20 +54,7 @@ func (p *RSS2Parser) Parse(ctx context.Context, data []byte) (*models.RSSFeed, e
 	if feed.FeedType != "rss" || feed.FeedVersion != "2.0" {
 		return nil, nil // 対象外
 	}
-	articles := make([]models.Article, 0, len(feed.Items))
-	for _, item := range feed.Items {
-		articles = append(articles, models.Article{
-			Title:   item.Title,
-			Link:    item.Link,
-			PubDate: item.Published,
-			Summary: item.Description,
-		})
-	}
-	return &models.RSSFeed{
-		Title:    feed.Title,
-		Link:     feed.Link,
-		Articles: articles,
-	}, nil
+	return feedToRSSFeed(feed), nil
 }
 
 // RDFParserはRSS1.0(RDF)用のFeedParser実装
@@ -78,20 +70,7 @@ func (p *RDFParser) Parse(ctx context.Context, data []byte) (*models.RSSFeed, er
 	if feed.FeedType != "rss" || feed.FeedVersion != "1.0" {
 		return nil, nil // 対象外
 	}
-	articles := make([]models.Article, 0, len(feed.Items))
-	for _, item := range feed.Items {
-		articles = append(articles, models.Article{
-			Title:   item.Title,
-			Link:    item.Link,
-			PubDate: item.Published,
-			Summary: item.Description,
-		})
-	}
-	return &models.RSSFeed{
-		Title:    feed.Title,
-		Link:     feed.Link,
-		Articles: articles,
-	}, nil
+	return feedToRSSFeed(feed), nil
 }
 
 // FeedParser は各RSS/Atom形式のパース共通インターフェース
