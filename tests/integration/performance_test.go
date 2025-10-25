@@ -2,10 +2,9 @@ package integration
 
 import (
 	"context"
+	"feed-parallel-parse-api/src/services"
 	"testing"
 	"time"
-
-	"feed-parallel-parse-api/src/services"
 
 	"github.com/stretchr/testify/assert"
 )

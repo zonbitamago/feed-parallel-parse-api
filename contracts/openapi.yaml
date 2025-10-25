@@ -9,48 +9,89 @@ paths:
   /parse:
     post:
       summary: RSSフィードを並列解析
-      description: 複数のRSSフィードURLを受け取り、並列で解析結果を返す
+      description: 複数のRSS/AtomフィードURLを受け取り、並列で解析結果を返す
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                urls:
-                  type: array
-                  items:
-                    type: string
-                  description: 解析対象のRSSフィードURLリスト
+              $ref: "#/components/schemas/ParseRequest"
       responses:
         "200":
           description: 正常に解析された場合のレスポンス
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  results:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        url:
-                          type: string
-                        items:
-                          type: array
-                          items:
-                            type: object
-                            properties:
-                              title:
-                                type: string
-                              link:
-                                type: string
-                              pubDate:
-                                type: string
-                              description:
-                                type: string
+                $ref: "#/components/schemas/ParseResponse"
         "400":
           description: リクエスト不正
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "500":
           description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+components:
+  schemas:
+    ParseRequest:
+      type: object
+      properties:
+        urls:
+          type: array
+          items:
+            type: string
+          description: 解析対象のRSS/AtomフィードURLリスト
+    ParseResponse:
+      type: object
+      properties:
+        feeds:
+          type: array
+          items:
+            $ref: "#/components/schemas/RSSFeed"
+        errors:
+          type: array
+          items:
+            $ref: "#/components/schemas/ErrorInfo"
+    RSSFeed:
+      type: object
+      properties:
+        title:
+          type: string
+        link:
+          type: string
+        articles:
+          type: array
+          items:
+            $ref: "#/components/schemas/Article"
+    Article:
+      type: object
+      properties:
+        title:
+          type: string
+        link:
+          type: string
+        pubDate:
+          type: string
+        summary:
+          type: string
+    ErrorInfo:
+      type: object
+      properties:
+        url:
+          type: string
+        message:
+          type: string
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: "#/components/schemas/ErrorInfo"
