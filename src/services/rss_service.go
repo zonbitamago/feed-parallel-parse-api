@@ -92,7 +92,7 @@ func (p *RDFParser) Parse(ctx context.Context, data []byte) (*models.RSSFeed, er
 		Link:     feed.Link,
 		Articles: articles,
 	}, nil
-	}
+}
 
 // FeedParser は各RSS/Atom形式のパース共通インターフェース
 type FeedParser interface {
@@ -113,8 +113,8 @@ func (s *RSSService) ParseFeeds(ctx context.Context, urls []string) ([]models.RS
 	feeds := make([]models.RSSFeed, 0, len(urls))
 	errors := make([]models.ErrorInfo, 0)
 	ch := make(chan struct {
-		feed  *models.RSSFeed
-		err   *models.ErrorInfo
+		feed *models.RSSFeed
+		err  *models.ErrorInfo
 	}, len(urls))
 
 	for _, url := range urls {
