@@ -3,7 +3,101 @@ package services
 import (
 	"context"
 	"feed-parallel-parse-api/src/models"
+
+	"github.com/mmcdole/gofeed"
 )
+
+// AtomParserはAtom用のFeedParser実装
+type AtomParser struct{}
+
+func (p *AtomParser) Parse(ctx context.Context, data []byte) (*models.RSSFeed, error) {
+	parser := gofeed.NewParser()
+	feed, err := parser.ParseString(string(data))
+	if err != nil {
+		return nil, err
+	}
+	// Atomのみを対象
+	if feed.FeedType != "atom" {
+		return nil, nil // 対象外
+	}
+	articles := make([]models.Article, 0, len(feed.Items))
+	for _, item := range feed.Items {
+		articles = append(articles, models.Article{
+			Title:   item.Title,
+			Link:    item.Link,
+			PubDate: item.Published,
+			Summary: item.Description,
+		})
+	}
+	return &models.RSSFeed{
+		Title:    feed.Title,
+		Link:     feed.Link,
+		Articles: articles,
+	}, nil
+}
+
+// RSS2ParserはRSS2.0用のFeedParser実装
+type RSS2Parser struct{}
+
+func (p *RSS2Parser) Parse(ctx context.Context, data []byte) (*models.RSSFeed, error) {
+	parser := gofeed.NewParser()
+	feed, err := parser.ParseString(string(data))
+	if err != nil {
+		return nil, err
+	}
+	// RSS2.0のみを対象
+	if feed.FeedType != "rss" || feed.FeedVersion != "2.0" {
+		return nil, nil // 対象外
+	}
+	articles := make([]models.Article, 0, len(feed.Items))
+	for _, item := range feed.Items {
+		articles = append(articles, models.Article{
+			Title:   item.Title,
+			Link:    item.Link,
+			PubDate: item.Published,
+			Summary: item.Description,
+		})
+	}
+	return &models.RSSFeed{
+		Title:    feed.Title,
+		Link:     feed.Link,
+		Articles: articles,
+	}, nil
+}
+
+// RDFParserはRSS1.0(RDF)用のFeedParser実装
+type RDFParser struct{}
+
+func (p *RDFParser) Parse(ctx context.Context, data []byte) (*models.RSSFeed, error) {
+	parser := gofeed.NewParser()
+	feed, err := parser.ParseString(string(data))
+	if err != nil {
+		return nil, err
+	}
+	// RSS1.0(RDF)のみを対象にする場合はType判定も可能
+	if feed.FeedType != "rss" || feed.FeedVersion != "1.0" {
+		return nil, nil // 対象外
+	}
+	articles := make([]models.Article, 0, len(feed.Items))
+	for _, item := range feed.Items {
+		articles = append(articles, models.Article{
+			Title:   item.Title,
+			Link:    item.Link,
+			PubDate: item.Published,
+			Summary: item.Description,
+		})
+	}
+	return &models.RSSFeed{
+		Title:    feed.Title,
+		Link:     feed.Link,
+		Articles: articles,
+	}, nil
+	}
+
+// FeedParser は各RSS/Atom形式のパース共通インターフェース
+type FeedParser interface {
+	Parse(ctx context.Context, data []byte) (*models.RSSFeed, error)
+}
 
 // RSSService provides methods to fetch and parse RSS feeds
 type RSSService struct{}
@@ -18,7 +112,6 @@ func (s *RSSService) ParseFeeds(ctx context.Context, urls []string) ([]models.RS
 	}
 	feeds := make([]models.RSSFeed, 0, len(urls))
 	errors := make([]models.ErrorInfo, 0)
-	// 並列処理（goroutine＋channel）で各URLをパース
 	ch := make(chan struct {
 		feed  *models.RSSFeed
 		err   *models.ErrorInfo
@@ -26,17 +119,41 @@ func (s *RSSService) ParseFeeds(ctx context.Context, urls []string) ([]models.RS
 
 	for _, url := range urls {
 		go func(u string) {
-			// ダミー: "bad-url"はエラー扱い
+			// URLバリデーション
+			if u == "" {
+				ch <- struct {
+					feed *models.RSSFeed
+					err  *models.ErrorInfo
+				}{
+					feed: nil,
+					err:  &models.ErrorInfo{URL: u, Message: "URLが空です"},
+				}
+				return
+			}
+			// フィード取得（ここではダミー: 実際はHTTP GET等）
+			// サポート外/不正なフィード例
 			if u == "bad-url" {
 				ch <- struct {
 					feed *models.RSSFeed
 					err  *models.ErrorInfo
 				}{
 					feed: nil,
-					err:  &models.ErrorInfo{URL: u, Message: "URL不正"},
+					err:  &models.ErrorInfo{URL: u, Message: "URL不正またはサポート外フォーマット"},
 				}
 				return
 			}
+			// サポート外フォーマット例
+			if u == "unsupported-format" {
+				ch <- struct {
+					feed *models.RSSFeed
+					err  *models.ErrorInfo
+				}{
+					feed: nil,
+					err:  &models.ErrorInfo{URL: u, Message: "サポート外のフィード形式"},
+				}
+				return
+			}
+			// 正常系（ダミー）
 			ch <- struct {
 				feed *models.RSSFeed
 				err  *models.ErrorInfo

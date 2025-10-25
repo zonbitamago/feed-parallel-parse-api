@@ -1,0 +1,45 @@
+openapi: 3.0.0
+info:
+  title: RSS Parse API
+  version: 1.0.0
+paths:
+  /parse:
+    post:
+      summary: RSS/Atomフィードをパース
+      requestBody:
+        required: true
+        content:
+          application/xml:
+            schema:
+              type: string
+      responses:
+        "200":
+          description: パース成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  entries:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ParsedEntry"
+        "400":
+          description: サポート外/不正なフィード
+components:
+  schemas:
+    ParsedEntry:
+      type: object
+      properties:
+        title:
+          type: string
+        link:
+          type: string
+        published_at:
+          type: string
+        summary:
+          type: string
+      required:
+        - title
+        - link
+        - published_at

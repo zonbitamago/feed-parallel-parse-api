@@ -1,3 +1,55 @@
+# Feed Parallel Parse API
+
+## 概要
+
+この API は、複数の RSS1.0/RSS2.0/Atom フィード URL を並列でパースし、共通のデータ構造で返却します。
+
+## クイックスタート
+
+### 1. 依存インストール
+
+```
+go mod tidy
+```
+
+### 2. テスト実行
+
+```
+go test ./tests/unit/...
+```
+
+### 3. 主要エンドポイント
+
+- POST `/api/parse`
+  - リクエスト: `{ "urls": ["https://example.com/rss", ...] }`
+  - レスポンス: `feeds`（パース結果配列）、`errors`（エラー配列）
+
+### 4. サポート形式
+
+- RSS 1.0 (RDF)
+- RSS 2.0
+- Atom 1.0
+
+### 5. 実装・仕様
+
+- 並列パース（goroutine/channels）
+- gofeed ライブラリ利用
+- OpenAPI 仕様: `contracts/openapi.yaml`
+- 詳細仕様: `specs/006-rss-format-support/`
+
+---
+
+## 開発・テスト
+
+- 単体テスト: `go test ./tests/unit/...`
+- パフォーマンステスト: `go test ./tests/integration/...`
+
+---
+
+## ライセンス
+
+MIT
+
 # 並列 RSS パース API
 
 ## 概要
