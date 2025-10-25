@@ -55,14 +55,13 @@ func TestParseFeeds_仕様テスト(t *testing.T) {
 
 
 func TestFeedParser_Parse(t *testing.T) {
-       type testCase struct {
+       cases := []struct{
 	       name      string
 	       parser    services.FeedParser
 	       data      string
 	       wantTitle string
 	       wantLen   int
-       }
-       cases := []testCase{
+	   }{
 	       {
 		       name:      "RSS1.0",
 		       parser:    &services.RDFParser{},
