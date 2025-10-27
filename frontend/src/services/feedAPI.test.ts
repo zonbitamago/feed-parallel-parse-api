@@ -11,7 +11,7 @@ afterAll(() => server.close())
 
 describe('feedAPI', () => {
   describe('parseFeeds', () => {
-    it('should parse feeds successfully', async () => {
+    it('フィードを正常に解析する', async () => {
       server.use(
         http.post('*/api/parse', () => {
           return HttpResponse.json({
@@ -40,7 +40,7 @@ describe('feedAPI', () => {
       expect(result.feeds[0].articles).toHaveLength(1)
     })
 
-    it('should handle API errors', async () => {
+    it('APIエラーを処理する', async () => {
       server.use(
         http.post('*/api/parse', () => {
           return HttpResponse.json({
@@ -60,7 +60,7 @@ describe('feedAPI', () => {
       expect(result.errors[0].message).toBe('Failed to fetch')
     })
 
-    it('should timeout after 10 seconds', async () => {
+    it('10秒後にタイムアウトする', async () => {
       server.use(
         http.post('*/api/parse', async () => {
           await new Promise((resolve) => setTimeout(resolve, 15000))
@@ -71,7 +71,7 @@ describe('feedAPI', () => {
       await expect(parseFeeds(['https://example.com/rss'])).rejects.toThrow(FeedAPIError)
     }, 12000)
 
-    it('should handle network errors', async () => {
+    it('ネットワークエラーを処理する', async () => {
       server.use(
         http.post('*/api/parse', () => {
           return HttpResponse.error()

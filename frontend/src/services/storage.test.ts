@@ -9,12 +9,12 @@ describe('storage', () => {
   })
 
   describe('loadSubscriptions', () => {
-    it('should return empty array if no data exists', () => {
+    it('データが存在しない場合は空配列を返す', () => {
       const result = loadSubscriptions()
       expect(result).toEqual([])
     })
 
-    it('should load subscriptions from localStorage', () => {
+    it('localStorageから購読情報を読み込む', () => {
       const subscriptions: Subscription[] = [
         {
           id: '1',
@@ -25,14 +25,14 @@ describe('storage', () => {
           status: 'active',
         },
       ]
-      
+
       localStorage.setItem('rss_reader_subscriptions', JSON.stringify({ subscriptions }))
-      
+
       const result = loadSubscriptions()
       expect(result).toEqual(subscriptions)
     })
 
-    it('should handle invalid JSON gracefully', () => {
+    it('無効なJSONを適切に処理する', () => {
       localStorage.setItem('rss_reader_subscriptions', 'invalid-json')
       const result = loadSubscriptions()
       expect(result).toEqual([])
@@ -40,7 +40,7 @@ describe('storage', () => {
   })
 
   describe('saveSubscriptions', () => {
-    it('should save subscriptions to localStorage', () => {
+    it('localStorageに購読情報を保存する', () => {
       const subscriptions: Subscription[] = [
         {
           id: '1',
@@ -51,16 +51,16 @@ describe('storage', () => {
           status: 'active',
         },
       ]
-      
+
       saveSubscriptions(subscriptions)
-      
+
       const saved = localStorage.getItem('rss_reader_subscriptions')
       expect(saved).toBeTruthy()
       const parsed = JSON.parse(saved!)
       expect(parsed.subscriptions).toEqual(subscriptions)
     })
 
-    it('should save empty array', () => {
+    it('空配列を保存する', () => {
       saveSubscriptions([])
       const saved = localStorage.getItem('rss_reader_subscriptions')
       const parsed = JSON.parse(saved!)

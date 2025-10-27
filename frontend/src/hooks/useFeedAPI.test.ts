@@ -11,14 +11,14 @@ afterEach(() => server.resetHandlers())
 afterAll(() => server.close())
 
 describe('useFeedAPI', () => {
-  it('should initialize with empty state', () => {
+  it('空の状態で初期化する', () => {
     const { result } = renderHook(() => useFeedAPI())
     expect(result.current.articles).toEqual([])
     expect(result.current.errors).toEqual([])
     expect(result.current.isLoading).toBe(false)
   })
 
-  it('should fetch feeds successfully', async () => {
+  it('フィードを正常に取得する', async () => {
     server.use(
       http.post('*/api/parse', () => {
         return HttpResponse.json({
@@ -54,7 +54,7 @@ describe('useFeedAPI', () => {
     expect(result.current.errors).toHaveLength(0)
   })
 
-  it('should handle API errors', async () => {
+  it('APIエラーを処理する', async () => {
     server.use(
       http.post('*/api/parse', () => {
         return HttpResponse.json({

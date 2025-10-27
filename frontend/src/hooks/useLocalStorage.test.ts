@@ -7,49 +7,49 @@ describe('useLocalStorage', () => {
     localStorage.clear()
   })
 
-  it('should initialize with default value', () => {
+  it('デフォルト値で初期化する', () => {
     const { result } = renderHook(() => useLocalStorage('test-key', 'default'))
     expect(result.current[0]).toBe('default')
   })
 
-  it('should update value', () => {
+  it('値を更新する', () => {
     const { result } = renderHook(() => useLocalStorage('test-key', 'initial'))
-    
+
     act(() => {
       result.current[1]('updated')
     })
-    
+
     expect(result.current[0]).toBe('updated')
   })
 
-  it('should persist value to localStorage', () => {
+  it('localStorageに値を永続化する', () => {
     const { result } = renderHook(() => useLocalStorage('test-key', 'initial'))
-    
+
     act(() => {
       result.current[1]('persisted')
     })
-    
+
     const stored = localStorage.getItem('test-key')
     expect(stored).toBe(JSON.stringify('persisted'))
   })
 
-  it('should load existing value from localStorage', () => {
+  it('localStorageから既存の値を読み込む', () => {
     localStorage.setItem('test-key', JSON.stringify('existing'))
-    
+
     const { result } = renderHook(() => useLocalStorage('test-key', 'default'))
     expect(result.current[0]).toBe('existing')
   })
 
-  it('should handle complex objects', () => {
+  it('複雑なオブジェクトを処理する', () => {
     const obj = { name: 'test', count: 42 }
     const { result } = renderHook(() => useLocalStorage('test-key', obj))
-    
+
     expect(result.current[0]).toEqual(obj)
-    
+
     act(() => {
       result.current[1]({ name: 'updated', count: 100 })
     })
-    
+
     expect(result.current[0]).toEqual({ name: 'updated', count: 100 })
   })
 })
