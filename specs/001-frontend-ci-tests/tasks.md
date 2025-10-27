@@ -120,13 +120,13 @@ description: "FrontendテストのCI統合 - 実装タスクリスト"
 
 **Purpose**: 複数のUser Storyに影響する改善
 
-- [ ] T034 [P] README.mdにFrontend CI統合の説明を追加（セットアップ方法へのリンク、成功基準など）
-- [ ] T035 [P] quickstart.mdの動作確認セクションを実際に実行し、手順が正確であることを検証
-- [ ] T036 トラブルシューティングセクション（quickstart.md）の各項目が実際に発生しうる問題をカバーしていることを確認
-- [ ] T037 [P] CLAUDE.mdとCopilot instructions（`.github/copilot-instructions.md`）がCI設定の変更を反映していることを確認（既にupdate-agent-context.shで更新済み）
-- [ ] T038 成功基準（SC-001〜SC-005）がすべて満たされていることを最終検証
-- [ ] T039 Edge Cases（spec.md記載）への対応状況を確認し、必要に応じて文書化（CI環境エラー時の挙動など）
-- [ ] T040 quickstart.mdのセットアップ手順を最初から実行し、15分以内に完了することを確認
+- [x] T034 [P] README.mdにFrontend CI統合の説明を追加（セットアップ方法へのリンク、成功基準など）
+- [x] T035 [P] quickstart.mdの動作確認セクションを実際に実行し、手順が正確であることを検証
+- [x] T036 トラブルシューティングセクション（quickstart.md）の各項目が実際に発生しうる問題をカバーしていることを確認
+- [x] T037 [P] CLAUDE.mdとCopilot instructions（`.github/copilot-instructions.md`）がCI設定の変更を反映していることを確認（既にupdate-agent-context.shで更新済み）
+- [x] T038 成功基準（SC-001〜SC-005）がすべて満たされていることを最終検証
+- [x] T039 Edge Cases（spec.md記載）への対応状況を確認し、必要に応じて文書化（CI環境エラー時の挙動など）
+- [x] T040 quickstart.mdのセットアップ手順を最初から実行し、15分以内に完了することを確認
 
 ---
 

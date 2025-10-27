@@ -145,6 +145,31 @@ go mod tidy
 go test ./...
 ```
 
+## CI/CD
+
+### 自動テスト統合
+
+このプロジェクトでは、GitHub Actionsを使用してBackendとFrontendの両方のテストを自動実行しています。
+
+**実行タイミング**:
+
+- `main` または `001-parallel-rss-parse-api` ブランチへのプッシュ時
+- プルリクエスト作成・更新時
+
+**テストジョブ**:
+
+- ✅ **Backend Tests (Go)**: Go 1.25でのユニット・統合テスト（約49秒）
+- ✅ **Frontend Tests (Vitest)**: React + TypeScript のユニットテスト（約35秒、96テスト合格）
+
+**Branch Protection**:
+
+- すべてのテストが成功しない限り、メインブランチへのマージはブロックされます
+- 各PRでテスト結果がリアルタイムで表示されます
+
+**セットアップ方法**:
+
+詳細なCI統合のセットアップ手順は [specs/001-frontend-ci-tests/quickstart.md](specs/001-frontend-ci-tests/quickstart.md) を参照してください。
+
 ## 開発方針
 
 - TDD 原則（テスト → 実装 → 検証）
