@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"feed-parallel-parse-api/api/services"
+	"feed-parallel-parse-api/pkg/services"
 
 	"github.com/stretchr/testify/assert"
 )

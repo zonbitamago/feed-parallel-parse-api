@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	"feed-parallel-parse-api/api/models"
+	"feed-parallel-parse-api/pkg/models"
 
 	"github.com/stretchr/testify/assert"
 )

@@ -5,8 +5,8 @@
   "framework": null,
   "rewrites": [
     {
-      "source": "/api/(.*)",
-      "destination": "/api/$1"
+      "source": "/api/parse",
+      "destination": "/api/parse"
     },
     {
       "source": "/(.*)",

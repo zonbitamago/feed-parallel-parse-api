@@ -2,8 +2,8 @@ package handler
 
 import (
 	"encoding/json"
-	"feed-parallel-parse-api/api/models"
-	"feed-parallel-parse-api/api/services"
+	"feed-parallel-parse-api/pkg/models"
+	"feed-parallel-parse-api/pkg/services"
 	"net/http"
 )
 
