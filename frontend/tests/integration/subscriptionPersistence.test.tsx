@@ -10,29 +10,26 @@ describe('Subscription Persistence Integration', () => {
   })
 
   it('購読をlocalStorageに永続化する', async () => {
+    // 準備
     const user = userEvent.setup()
-    
-    // アプリをレンダリング
     const { rerender } = render(<App />)
-    
-    // フィードを追加
+
+    // 実行: フィードを追加
     const input = screen.getByPlaceholderText(/URL/i)
     await user.type(input, 'https://example.com/rss')
-    
     const addButton = screen.getByRole('button', { name: /追加/i })
     await user.click(addButton)
-    
-    // localStorageに保存されていることを確認
+
+    // 検証: localStorageに保存されていることを確認
     const stored = localStorage.getItem('rss_reader_subscriptions')
     expect(stored).toBeTruthy()
-    
     const parsed = JSON.parse(stored!)
     expect(parsed.subscriptions).toHaveLength(1)
     expect(parsed.subscriptions[0].url).toBe('https://example.com/rss')
   })
 
   it('マウント時にlocalStorageから購読を読み込む', () => {
-    // localStorageに購読データを事前設定
+    // 準備: localStorageに購読データを事前設定
     const mockSubscription = {
       id: 'test-id',
       url: 'https://example.com/rss',
@@ -41,25 +38,21 @@ describe('Subscription Persistence Integration', () => {
       lastFetchedAt: null,
       status: 'active',
     }
-    
     localStorage.setItem('rss_reader_subscriptions', JSON.stringify({
       subscriptions: [mockSubscription]
     }))
-    
-    // アプリをレンダリング
+
+    // 実行: アプリをレンダリング
     render(<App />)
-    
-    // ウェルカム画面が表示されないことを確認（購読があるため）
+
+    // 検証: ウェルカム画面が表示されず、購読数が表示される
     expect(screen.queryByText(/ウェルカム/i)).not.toBeInTheDocument()
-    
-    // 購読数が表示されることを確認
     expect(screen.getByText(/購読中.*1.*1/)).toBeInTheDocument()
   })
 
   it('購読の削除と永続化を処理する', async () => {
+    // 準備
     const user = userEvent.setup()
-    
-    // localStorageに複数の購読を設定
     const subscriptions = [
       {
         id: '1',
@@ -78,25 +71,20 @@ describe('Subscription Persistence Integration', () => {
         status: 'active',
       },
     ]
-    
     localStorage.setItem('rss_reader_subscriptions', JSON.stringify({
       subscriptions
     }))
-    
-    // アプリをレンダリング
     render(<App />)
-    
-    // 購読リストが表示されることを確認
     await waitFor(() => {
       expect(screen.getByText('Feed 1')).toBeInTheDocument()
       expect(screen.getByText('Feed 2')).toBeInTheDocument()
     })
-    
-    // 1つ目のフィードを削除
+
+    // 実行: 1つ目のフィードを削除
     const deleteButtons = screen.getAllByRole('button', { name: /削除/i })
     await user.click(deleteButtons[0])
-    
-    // localStorageが更新されていることを確認
+
+    // 検証: localStorageが更新されていることを確認
     await waitFor(() => {
       const stored = localStorage.getItem('rss_reader_subscriptions')
       const parsed = JSON.parse(stored!)

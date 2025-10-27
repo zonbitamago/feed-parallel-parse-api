@@ -49,9 +49,8 @@ afterAll(() => server.close())
 
 describe('Search Flow Integration', () => {
   it('検索クエリで記事をフィルタリングする', async () => {
+    // 準備
     const user = userEvent.setup()
-
-    // 事前に購読を設定
     localStorage.setItem('rss_reader_subscriptions', JSON.stringify({
       subscriptions: [{
         id: '1',
@@ -62,21 +61,18 @@ describe('Search Flow Integration', () => {
         status: 'active',
       }]
     }))
-
     render(<App />)
-
-    // 初回読み込み待機 - 3つの記事が表示される
     await waitFor(() => {
       expect(screen.getByText('React Tutorial')).toBeInTheDocument()
       expect(screen.getByText('Vue Guide')).toBeInTheDocument()
       expect(screen.getByText('TypeScript Tips')).toBeInTheDocument()
     }, { timeout: 3000 })
 
-    // 検索入力
+    // 実行: 検索入力
     const searchInput = screen.getByPlaceholderText(/検索/i)
     await user.type(searchInput, 'react')
 
-    // デバウンス後にフィルタリングされる
+    // 検証: フィルタリング結果を確認
     await waitFor(() => {
       expect(screen.getByText('React Tutorial')).toBeInTheDocument()
       expect(screen.queryByText('Vue Guide')).not.toBeInTheDocument()
@@ -85,8 +81,8 @@ describe('Search Flow Integration', () => {
   })
 
   it('検索をクリアして全記事を表示する', async () => {
+    // 準備
     const user = userEvent.setup()
-
     localStorage.setItem('rss_reader_subscriptions', JSON.stringify({
       subscriptions: [{
         id: '1',
@@ -97,29 +93,22 @@ describe('Search Flow Integration', () => {
         status: 'active',
       }]
     }))
-
     render(<App />)
-
-    // 初回読み込み待機
     await waitFor(() => {
       expect(screen.getByText('React Tutorial')).toBeInTheDocument()
     }, { timeout: 3000 })
-
-    // 検索入力
     const searchInput = screen.getByPlaceholderText(/検索/i)
     await user.type(searchInput, 'typescript')
-
-    // フィルタリング確認
     await waitFor(() => {
       expect(screen.getByText('TypeScript Tips')).toBeInTheDocument()
       expect(screen.queryByText('React Tutorial')).not.toBeInTheDocument()
     }, { timeout: 500 })
 
-    // クリアボタンをクリック
+    // 実行: クリアボタンをクリック
     const clearButton = await screen.findByRole('button', { name: /クリア/i })
     await user.click(clearButton)
 
-    // 全記事が再表示される
+    // 検証: 全記事が再表示される
     await waitFor(() => {
       expect(screen.getByText('React Tutorial')).toBeInTheDocument()
       expect(screen.getByText('Vue Guide')).toBeInTheDocument()
@@ -128,8 +117,8 @@ describe('Search Flow Integration', () => {
   })
 
   it('タイトルと要約の両方を検索する', async () => {
+    // 準備
     const user = userEvent.setup()
-
     localStorage.setItem('rss_reader_subscriptions', JSON.stringify({
       subscriptions: [{
         id: '1',
@@ -140,19 +129,16 @@ describe('Search Flow Integration', () => {
         status: 'active',
       }]
     }))
-
     render(<App />)
-
-    // 初回読み込み待機
     await waitFor(() => {
       expect(screen.getByText('React Tutorial')).toBeInTheDocument()
     }, { timeout: 3000 })
 
-    // summaryに含まれるキーワードで検索
+    // 実行: summaryに含まれるキーワードで検索
     const searchInput = screen.getByPlaceholderText(/検索/i)
     await user.type(searchInput, 'framework')
 
-    // Vue Guideのみ表示される（summaryに"framework"を含む）
+    // 検証: Vue Guideのみ表示される
     await waitFor(() => {
       expect(screen.getByText('Vue Guide')).toBeInTheDocument()
       expect(screen.queryByText('React Tutorial')).not.toBeInTheDocument()

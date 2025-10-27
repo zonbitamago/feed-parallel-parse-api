@@ -23,11 +23,15 @@ describe('ErrorMessage', () => {
     });
 
     it('閉じるボタンをクリックするとonDismissが呼ばれる', async () => {
+      // 準備
       const user = userEvent.setup();
       const onDismiss = vi.fn();
       render(<ErrorMessage message="エラー" onDismiss={onDismiss} />);
 
+      // 実行: 閉じるボタンをクリック
       await user.click(screen.getByRole('button', { name: '閉じる' }));
+
+      // 検証: onDismissが呼ばれる
       expect(onDismiss).toHaveBeenCalledTimes(1);
     });
   });

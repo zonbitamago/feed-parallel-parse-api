@@ -15,8 +15,8 @@ describe('SubscriptionContext', () => {
   })
 
   it('購読を追加する', () => {
+    // 準備
     const { result } = renderHook(() => useSubscription(), { wrapper })
-
     const newSub: Subscription = {
       id: '1',
       url: 'https://example.com/rss',
@@ -26,17 +26,19 @@ describe('SubscriptionContext', () => {
       status: 'active',
     }
 
+    // 実行
     act(() => {
       result.current.dispatch({ type: 'ADD_SUBSCRIPTION', payload: newSub })
     })
 
+    // 検証
     expect(result.current.state.subscriptions).toHaveLength(1)
     expect(result.current.state.subscriptions[0]).toEqual(newSub)
   })
 
   it('購読を削除する', () => {
+    // 準備
     const { result } = renderHook(() => useSubscription(), { wrapper })
-
     const sub: Subscription = {
       id: '1',
       url: 'https://example.com/rss',
@@ -45,21 +47,22 @@ describe('SubscriptionContext', () => {
       lastFetchedAt: null,
       status: 'active',
     }
-
     act(() => {
       result.current.dispatch({ type: 'ADD_SUBSCRIPTION', payload: sub })
     })
 
+    // 実行
     act(() => {
       result.current.dispatch({ type: 'REMOVE_SUBSCRIPTION', payload: '1' })
     })
 
+    // 検証
     expect(result.current.state.subscriptions).toHaveLength(0)
   })
 
   it('購読を更新する', () => {
+    // 準備
     const { result } = renderHook(() => useSubscription(), { wrapper })
-
     const sub: Subscription = {
       id: '1',
       url: 'https://example.com/rss',
@@ -68,24 +71,24 @@ describe('SubscriptionContext', () => {
       lastFetchedAt: null,
       status: 'active',
     }
-
     act(() => {
       result.current.dispatch({ type: 'ADD_SUBSCRIPTION', payload: sub })
     })
-
     const updated = { ...sub, title: 'Updated Title', status: 'error' as const }
 
+    // 実行
     act(() => {
       result.current.dispatch({ type: 'UPDATE_SUBSCRIPTION', payload: updated })
     })
 
+    // 検証
     expect(result.current.state.subscriptions[0].title).toBe('Updated Title')
     expect(result.current.state.subscriptions[0].status).toBe('error')
   })
 
   it('購読リストを読み込む', () => {
+    // 準備
     const { result } = renderHook(() => useSubscription(), { wrapper })
-
     const subs: Subscription[] = [
       {
         id: '1',
@@ -105,10 +108,12 @@ describe('SubscriptionContext', () => {
       },
     ]
 
+    // 実行
     act(() => {
       result.current.dispatch({ type: 'LOAD_SUBSCRIPTIONS', payload: subs })
     })
 
+    // 検証
     expect(result.current.state.subscriptions).toHaveLength(2)
     expect(result.current.state.subscriptions).toEqual(subs)
   })

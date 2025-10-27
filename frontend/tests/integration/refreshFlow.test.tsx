@@ -38,9 +38,8 @@ afterAll(() => server.close())
 
 describe('Refresh Flow Integration', () => {
   it('更新ボタンをクリックしてフィードを更新する', async () => {
+    // 準備
     const user = userEvent.setup()
-    
-    // 事前に購読を設定
     localStorage.setItem('rss_reader_subscriptions', JSON.stringify({
       subscriptions: [{
         id: '1',
@@ -51,26 +50,19 @@ describe('Refresh Flow Integration', () => {
         status: 'active',
       }]
     }))
-    
     render(<App />)
-    
-    // 初回読み込み待機
     await waitFor(() => {
       expect(screen.getByText('Test Article')).toBeInTheDocument()
     }, { timeout: 3000 })
-    
-    // 更新ボタンを探す
+
+    // 実行: 更新ボタンをクリック
     const refreshButton = screen.getByRole('button', { name: /更新/i })
-    
-    // 更新ボタンをクリック
     await user.click(refreshButton)
-    
-    // ローディング表示を確認
+
+    // 検証: ローディング表示と記事の再表示を確認
     await waitFor(() => {
       expect(screen.getByText(/読み込み中/i)).toBeInTheDocument()
     })
-    
-    // 再度記事が表示されることを確認
     await waitFor(() => {
       expect(screen.getByText('Test Article')).toBeInTheDocument()
     }, { timeout: 3000 })

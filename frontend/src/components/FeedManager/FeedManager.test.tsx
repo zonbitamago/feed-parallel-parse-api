@@ -12,27 +12,32 @@ describe('FeedManager', () => {
   })
 
   it('URL入力を検証する', async () => {
+    // 準備
     const user = userEvent.setup()
     const onAdd = vi.fn()
     render(<FeedManager onAddFeed={onAdd} subscriptions={[]} />)
-    
+
+    // 実行: 無効なURLを入力
     const input = screen.getByPlaceholderText(/URL/i)
     await user.type(input, 'invalid-url')
-    
+
+    // 検証: エラーメッセージが表示される
     expect(screen.getByText(/無効なURL/i)).toBeInTheDocument()
   })
 
   it('有効なURLでonAddFeedを呼び出す', async () => {
+    // 準備
     const user = userEvent.setup()
     const onAdd = vi.fn()
     render(<FeedManager onAddFeed={onAdd} subscriptions={[]} />)
-    
+
+    // 実行: 有効なURLを入力して追加ボタンをクリック
     const input = screen.getByPlaceholderText(/URL/i)
     await user.type(input, 'https://example.com/rss')
-    
     const button = screen.getByRole('button', { name: /追加/i })
     await user.click(button)
-    
+
+    // 検証: onAddFeedが呼ばれる
     expect(onAdd).toHaveBeenCalledWith('https://example.com/rss')
   })
 
@@ -82,6 +87,7 @@ describe('FeedManager', () => {
   })
 
   it('削除ボタンクリック時にonRemoveFeedを呼び出す', async () => {
+    // 準備
     const user = userEvent.setup()
     const onAdd = vi.fn()
     const onRemove = vi.fn()
@@ -95,12 +101,13 @@ describe('FeedManager', () => {
         status: 'active' as const,
       },
     ]
-
     render(<FeedManager onAddFeed={onAdd} onRemoveFeed={onRemove} subscriptions={subscriptions} />)
 
+    // 実行: 削除ボタンをクリック
     const deleteButton = screen.getByRole('button', { name: /削除/i })
     await user.click(deleteButton)
 
+    // 検証: onRemoveFeedが呼ばれる
     expect(onRemove).toHaveBeenCalledWith('1')
   })
 

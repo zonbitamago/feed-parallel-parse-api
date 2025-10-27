@@ -16,8 +16,8 @@ describe('ArticleContext', () => {
   })
 
   it('記事を設定する', () => {
+    // 準備
     const { result } = renderHook(() => useArticle(), { wrapper })
-
     const articles: Article[] = [
       {
         id: '1',
@@ -31,44 +31,51 @@ describe('ArticleContext', () => {
       },
     ]
 
+    // 実行
     act(() => {
       result.current.dispatch({ type: 'SET_ARTICLES', payload: articles })
     })
 
+    // 検証
     expect(result.current.state.articles).toEqual(articles)
     expect(result.current.state.displayedArticles).toEqual(articles)
   })
 
   it('ローディング状態を設定する', () => {
+    // 準備
     const { result } = renderHook(() => useArticle(), { wrapper })
 
+    // 実行
     act(() => {
       result.current.dispatch({ type: 'SET_LOADING', payload: true })
     })
 
+    // 検証
     expect(result.current.state.isLoading).toBe(true)
   })
 
   it('エラーを追加する', () => {
+    // 準備
     const { result } = renderHook(() => useArticle(), { wrapper })
-
     const error: FeedError = {
       url: 'https://example.com/rss',
       message: 'Failed to fetch',
       timestamp: new Date().toISOString(),
     }
 
+    // 実行
     act(() => {
       result.current.dispatch({ type: 'ADD_ERROR', payload: error })
     })
 
+    // 検証
     expect(result.current.state.errors).toHaveLength(1)
     expect(result.current.state.errors[0]).toEqual(error)
   })
 
   it('検索クエリで記事をフィルタリングする', () => {
+    // 準備
     const { result } = renderHook(() => useArticle(), { wrapper })
-
     const articles: Article[] = [
       {
         id: '1',
@@ -91,22 +98,23 @@ describe('ArticleContext', () => {
         feedOrder: 1,
       },
     ]
-
     act(() => {
       result.current.dispatch({ type: 'SET_ARTICLES', payload: articles })
     })
 
+    // 実行
     act(() => {
       result.current.dispatch({ type: 'SET_SEARCH_QUERY', payload: 'react' })
     })
 
+    // 検証
     expect(result.current.state.displayedArticles).toHaveLength(1)
     expect(result.current.state.displayedArticles[0].title).toBe('React Tutorial')
   })
 
   it('フィードで記事をフィルタリングする', () => {
+    // 準備
     const { result } = renderHook(() => useArticle(), { wrapper })
-
     const articles: Article[] = [
       {
         id: '1',
@@ -129,15 +137,16 @@ describe('ArticleContext', () => {
         feedOrder: 0,
       },
     ]
-
     act(() => {
       result.current.dispatch({ type: 'SET_ARTICLES', payload: articles })
     })
 
+    // 実行
     act(() => {
       result.current.dispatch({ type: 'SET_SELECTED_FEED', payload: 'feed-1' })
     })
 
+    // 検証
     expect(result.current.state.displayedArticles).toHaveLength(1)
     expect(result.current.state.displayedArticles[0].feedId).toBe('feed-1')
   })

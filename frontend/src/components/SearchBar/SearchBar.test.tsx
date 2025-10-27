@@ -12,37 +12,35 @@ describe('SearchBar', () => {
   })
 
   it('入力時にonSearchを呼び出す', async () => {
+    // 準備
     const onSearch = vi.fn()
     const user = userEvent.setup()
-
     render(<SearchBar onSearch={onSearch} />)
 
+    // 実行: 検索テキストを入力
     const input = screen.getByPlaceholderText(/検索/i)
     await user.type(input, 'react')
 
-    // デバウンス（300ms）後に呼ばれる
+    // 検証: デバウンス後にonSearchが呼ばれる
     await vi.waitFor(() => {
       expect(onSearch).toHaveBeenCalledWith('react')
     }, { timeout: 500 })
   })
 
   it('検索入力を300msでデバウンスする', async () => {
+    // 準備
     const onSearch = vi.fn()
     const user = userEvent.setup()
-
     render(<SearchBar onSearch={onSearch} />)
-
     const input = screen.getByPlaceholderText(/検索/i)
 
-    // 連続入力
+    // 実行: 連続入力
     await user.type(input, 'r')
     await user.type(input, 'e')
     await user.type(input, 'a')
 
-    // デバウンス中は呼ばれない
+    // 検証: デバウンス中は呼ばれず、300ms後に1回だけ呼ばれる
     expect(onSearch).not.toHaveBeenCalled()
-
-    // 300ms待機
     await vi.waitFor(() => {
       expect(onSearch).toHaveBeenCalledTimes(1)
       expect(onSearch).toHaveBeenCalledWith('rea')
@@ -50,27 +48,23 @@ describe('SearchBar', () => {
   })
 
   it('クリアボタンをクリックすると検索をクリアする', async () => {
+    // 準備
     const onSearch = vi.fn()
     const user = userEvent.setup()
-
     render(<SearchBar onSearch={onSearch} />)
-
     const input = screen.getByPlaceholderText(/検索/i) as HTMLInputElement
     await user.type(input, 'react')
-
-    // クリアボタンが表示される
     await vi.waitFor(() => {
       const clearButton = screen.getByRole('button', { name: /クリア/i })
       expect(clearButton).toBeInTheDocument()
     }, { timeout: 500 })
 
+    // 実行: クリアボタンをクリック
     const clearButton = screen.getByRole('button', { name: /クリア/i })
     await user.click(clearButton)
 
-    // 入力がクリアされる
+    // 検証: 入力がクリアされ、onSearchが空文字で呼ばれる
     expect(input.value).toBe('')
-
-    // onSearchが空文字で呼ばれる
     await vi.waitFor(() => {
       expect(onSearch).toHaveBeenCalledWith('')
     }, { timeout: 500 })
