@@ -4,7 +4,15 @@
       "Bash(./.specify/scripts/bash/update-agent-context.sh:*)",
       "Bash(SPECIFY_FEATURE=006-rss-format-support ./.specify/scripts/bash/update-agent-context.sh:*)",
       "Bash(./.specify/scripts/bash/setup-plan.sh:*)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(git fetch:*)",
+      "Bash(.specify/scripts/bash/create-new-feature.sh:*)",
+      "Bash(.specify/scripts/bash/check-prerequisites.sh:*)",
+      "Bash(.specify/scripts/bash/setup-plan.sh:*)",
+      "Bash(SPECIFY_FEATURE=001-rss-reader ./.specify/scripts/bash/update-agent-context.sh:*)",
+      "Bash(git mv:*)",
+      "Bash(go test:*)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []

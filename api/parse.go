@@ -1,7 +1,9 @@
 package handler
 
 import (
-	"feed-parallel-parse-api/src/api"
+	"encoding/json"
+	"feed-parallel-parse-api/api/models"
+	"feed-parallel-parse-api/api/services"
 	"net/http"
 )
 
@@ -13,6 +15,20 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Delegate to the main parse handler
-	api.ParseHandler(w, r)
+	// Parse request
+	var req models.ParseRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(models.ParseResponse{Feeds: nil, Errors: []models.ErrorInfo{{URL: "", Message: "invalid request"}}})
+		return
+	}
+
+	// Process feeds
+	svc := services.NewRSSService()
+	feeds, errors := svc.ParseFeeds(r.Context(), req.URLs)
+	resp := models.ParseResponse{Feeds: feeds, Errors: errors}
+
+	// Send response
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(resp)
 }

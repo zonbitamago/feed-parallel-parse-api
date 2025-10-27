@@ -2,7 +2,7 @@ package unit
 
 import (
 	"context"
-	"feed-parallel-parse-api/src/services"
+	"feed-parallel-parse-api/api/services"
 	"testing"
 
 	"github.com/stretchr/testify/assert"

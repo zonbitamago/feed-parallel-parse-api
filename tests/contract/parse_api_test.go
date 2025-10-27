@@ -6,7 +6,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"feed-parallel-parse-api/src/api"
+	handler "feed-parallel-parse-api/api"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -24,7 +24,7 @@ func TestParseHandler_仕様テスト(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			req := httptest.NewRequest("POST", "/parse", bytes.NewBuffer(tc.body))
 			w := httptest.NewRecorder()
-			api.ParseHandler(w, req)
+			handler.Handler(w, req)
 			assert.Equal(t, tc.wantCode, w.Code)
 		})
 	}

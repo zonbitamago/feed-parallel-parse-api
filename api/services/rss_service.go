@@ -2,7 +2,7 @@ package services
 
 import (
 	"context"
-	"feed-parallel-parse-api/src/models"
+	"feed-parallel-parse-api/api/models"
 
 	"github.com/mmcdole/gofeed"
 )
