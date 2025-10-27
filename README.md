@@ -36,10 +36,11 @@ feed-parallel-parse-api/
 
 ### 技術スタック
 
-- React 18.x + TypeScript 5.x
-- Vite 5.x（ビルドツール）
-- TailwindCSS 4.x（スタイリング）
-- Vitest + React Testing Library（テスト）
+- React 19.1 + TypeScript 5.9
+- Vite 7.1（ビルドツール）
+- TailwindCSS 4.1（スタイリング）
+- Vitest 4.0 + React Testing Library 16.3（テスト）
+- react-window 2.2（仮想スクロール）
 - **テストカバレッジ**: 99% (96/97 テスト合格)
 
 ### セットアップ・開発
@@ -135,12 +136,17 @@ npm i -g vercel
 vercel --prod
 ```
 
-- `vercel.json`で Go 1.21 サーバーレス関数指定済み
+- フロントエンドは`frontend/dist`からビルド・デプロイ
+- バックエンドAPIは`api/`ディレクトリのサーバーレス関数として自動デプロイ
 
-## Go バージョンアップ手順（1.25 対応）
+## Go バージョン
+
+現在のバージョン: **Go 1.25.1**
+
+バージョンアップ手順:
 
 ```sh
-go mod edit -go=1.25
+go mod edit -go=1.25.1
 go mod tidy
 go test ./...
 ```
