@@ -1,53 +1,50 @@
-<!--
-Sync Impact Report（同期影響レポート）
-- バージョン変更: 1.0.0 → 1.0.1
-- 変更された原則: なし（初回具体化）
-- 追加セクション: なし
-- 削除セクション: なし
-- 更新が必要なテンプレート:
-  - .specify/templates/plan-template.md ✅
-  - .specify/templates/spec-template.md ✅
-  - .specify/templates/tasks-template.md ✅
-  - .specify/templates/agent-file-template.md ✅
-  - .specify/templates/checklist-template.md ✅
-- フォローアップTODO:
-  - TODO(RATIFICATION_DATE): 初回制定日不明
--->
+# [PROJECT_NAME] Constitution
+<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
 
-# feed-parallel-parse-api 規約
+## Core Principles
 
-## コア原則
+### [PRINCIPLE_1_NAME]
+<!-- Example: I. Library-First -->
+[PRINCIPLE_1_DESCRIPTION]
+<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
 
-### I. ライブラリ優先
+### [PRINCIPLE_2_NAME]
+<!-- Example: II. CLI Interface -->
+[PRINCIPLE_2_DESCRIPTION]
+<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
 
-すべての機能は独立したライブラリとして開始しなければならない。ライブラリは自己完結型で、独立してテスト可能かつドキュメント化されていなければならない。各ライブラリは明確な目的を持つこと。組織専用ライブラリは禁止。
+### [PRINCIPLE_3_NAME]
+<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
+[PRINCIPLE_3_DESCRIPTION]
+<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
 
-### II. CLI インターフェース
+### [PRINCIPLE_4_NAME]
+<!-- Example: IV. Integration Testing -->
+[PRINCIPLE_4_DESCRIPTION]
+<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
 
-すべてのライブラリは CLI 経由で機能を公開しなければならない。テキスト入出力プロトコル（stdin/args → stdout、エラーは stderr）を採用し、JSON と人間可読形式の両方をサポートすること。
+### [PRINCIPLE_5_NAME]
+<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
+[PRINCIPLE_5_DESCRIPTION]
+<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
 
-### III. テストファースト（絶対遵守）
+## [SECTION_2_NAME]
+<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
 
-TDD（テスト駆動開発）は必須。実装前にテストを作成し、ユーザー承認を得ること。Red-Green-Refactor サイクルを厳格に守ること。
+[SECTION_2_CONTENT]
+<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
 
-### IV. 統合テスト
+## [SECTION_3_NAME]
+<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
 
-新規ライブラリの契約、契約変更、サービス間通信、共有スキーマには統合テストが必須。
+[SECTION_3_CONTENT]
+<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
 
-### V. 可観測性とバージョニング
+## Governance
+<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-テキスト I/O はデバッグ可能性を保証すること。構造化ログは必須。バージョン管理は MAJOR.MINOR.PATCH 形式を厳守。シンプルさ（YAGNI 原則）を優先。
+[GOVERNANCE_RULES]
+<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
 
-## 追加制約
-
-技術スタックは必ずドキュメント化すること。コンプライアンス基準やデプロイ方針はプロジェクトドキュメントに従うこと。
-
-## 開発ワークフロー
-
-すべての変更にはコードレビューが必須。テストゲートを通過しなければデプロイ不可。デプロイ承認プロセスはドキュメント化し、遵守すること。
-
-## ガバナンス
-
-本規約は他のすべての慣習より優先される。改訂にはドキュメント化・承認・移行計画が必須。すべての PR/レビューは遵守状況を確認すること。複雑性は必ず正当化すること。ランタイム開発ガイダンスはプロジェクトドキュメントを参照。
-
-**バージョン**: 1.0.1 | **制定日**: 2025-10-22 | **最終改訂日**: 2025-10-22
+**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
+<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->

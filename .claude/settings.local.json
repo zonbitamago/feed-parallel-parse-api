@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(./.specify/scripts/bash/update-agent-context.sh:*)",
-      "Bash(SPECIFY_FEATURE=006-rss-format-support ./.specify/scripts/bash/update-agent-context.sh:*)"
+      "Bash(SPECIFY_FEATURE=006-rss-format-support ./.specify/scripts/bash/update-agent-context.sh:*)",
+      "Bash(./.specify/scripts/bash/setup-plan.sh:*)",
+      "Bash(mkdir:*)"
     ],
     "deny": [],
     "ask": []
