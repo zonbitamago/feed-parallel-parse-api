@@ -1,7 +1,7 @@
 package unit
 
 import (
-	"feed-parallel-parse-api/src/models"
+	"feed-parallel-parse-api/api/models"
 	"testing"
 
 	"github.com/stretchr/testify/assert"

@@ -2,7 +2,7 @@ package integration
 
 import (
 	"context"
-	"feed-parallel-parse-api/src/services"
+	"feed-parallel-parse-api/api/services"
 	"testing"
 	"time"
 
