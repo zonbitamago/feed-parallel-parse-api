@@ -39,6 +39,3 @@ build/
 frontend/dist/
 frontend/build/
 frontend/coverage/
-
-# Claude Code settings
-.claude/settings.local.json
