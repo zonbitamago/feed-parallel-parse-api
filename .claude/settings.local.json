@@ -23,7 +23,8 @@
       "Bash(curl:*)",
       "Bash(cat:*)",
       "Bash(git log:*)",
-      "Bash(npm test:*)"
+      "Bash(npm test:*)",
+      "Bash(.specify/scripts/bash/update-agent-context.sh:*)"
     ],
     "deny": [],
     "ask": []

@@ -2,7 +2,12 @@ package services
 
 import (
 	"context"
+	"errors"
 	"feed-parallel-parse-api/pkg/models"
+	"fmt"
+	"io"
+	"net/http"
+	"time"
 
 	"github.com/mmcdole/gofeed"
 )
@@ -79,10 +84,22 @@ type FeedParser interface {
 }
 
 // RSSService provides methods to fetch and parse RSS feeds
-type RSSService struct{}
+type RSSService struct {
+	httpClient *http.Client
+}
 
 func NewRSSService() *RSSService {
-	return &RSSService{}
+	return &RSSService{
+		httpClient: &http.Client{
+			Timeout: 10 * time.Second,
+			CheckRedirect: func(req *http.Request, via []*http.Request) error {
+				if len(via) >= 10 {
+					return errors.New("リダイレクトが10回を超えました")
+				}
+				return nil
+			},
+		},
+	}
 }
 
 func (s *RSSService) ParseFeeds(ctx context.Context, urls []string) ([]models.RSSFeed, []models.ErrorInfo) {
@@ -109,35 +126,83 @@ func (s *RSSService) ParseFeeds(ctx context.Context, urls []string) ([]models.RS
 				}
 				return
 			}
-			// フィード取得（ここではダミー: 実際はHTTP GET等）
-			// サポート外/不正なフィード例
-			if u == "bad-url" {
+
+			// HTTP GETリクエスト作成
+			req, err := http.NewRequestWithContext(ctx, "GET", u, nil)
+			if err != nil {
 				ch <- struct {
 					feed *models.RSSFeed
 					err  *models.ErrorInfo
 				}{
 					feed: nil,
-					err:  &models.ErrorInfo{URL: u, Message: "URL不正またはサポート外フォーマット"},
+					err:  &models.ErrorInfo{URL: u, Message: fmt.Sprintf("リクエスト作成失敗: %v", err)},
 				}
 				return
 			}
-			// サポート外フォーマット例
-			if u == "unsupported-format" {
+
+			// User-Agentヘッダー設定
+			req.Header.Set("User-Agent", "feed-parallel-parse-api/1.0 (RSS Reader)")
+
+			// HTTP GETリクエスト実行
+			resp, err := s.httpClient.Do(req)
+			if err != nil {
 				ch <- struct {
 					feed *models.RSSFeed
 					err  *models.ErrorInfo
 				}{
 					feed: nil,
-					err:  &models.ErrorInfo{URL: u, Message: "サポート外のフィード形式"},
+					err:  &models.ErrorInfo{URL: u, Message: fmt.Sprintf("HTTP取得失敗: %v", err)},
 				}
 				return
 			}
-			// 正常系（ダミー）
+			defer resp.Body.Close()
+
+			// HTTPステータスコードチェック
+			if resp.StatusCode != http.StatusOK {
+				ch <- struct {
+					feed *models.RSSFeed
+					err  *models.ErrorInfo
+				}{
+					feed: nil,
+					err:  &models.ErrorInfo{URL: u, Message: fmt.Sprintf("HTTPエラー: %d %s", resp.StatusCode, resp.Status)},
+				}
+				return
+			}
+
+			// レスポンスボディ読み取り
+			body, err := io.ReadAll(resp.Body)
+			if err != nil {
+				ch <- struct {
+					feed *models.RSSFeed
+					err  *models.ErrorInfo
+				}{
+					feed: nil,
+					err:  &models.ErrorInfo{URL: u, Message: fmt.Sprintf("ボディ読み取り失敗: %v", err)},
+				}
+				return
+			}
+
+			// RSSパース（既存のパーサーを使用）
+			parser := gofeed.NewParser()
+			feed, err := parser.ParseString(string(body))
+			if err != nil {
+				ch <- struct {
+					feed *models.RSSFeed
+					err  *models.ErrorInfo
+				}{
+					feed: nil,
+					err:  &models.ErrorInfo{URL: u, Message: fmt.Sprintf("パース失敗: %v", err)},
+				}
+				return
+			}
+
+			// RSSFeed変換（既存のロジック）
+			rssFeed := feedToRSSFeed(feed)
 			ch <- struct {
 				feed *models.RSSFeed
 				err  *models.ErrorInfo
 			}{
-				feed: &models.RSSFeed{Title: "Dummy", Link: u, Articles: []models.Article{}},
+				feed: rssFeed,
 				err:  nil,
 			}
 		}(url)
