@@ -17,17 +17,17 @@ describe('ArticleList', () => {
     },
   ]
 
-  it('should render articles', () => {
+  it('記事をレンダリングする', () => {
     render(<ArticleList articles={mockArticles} />)
     expect(screen.getByText('Test Article')).toBeInTheDocument()
   })
 
-  it('should show empty state when no articles', () => {
+  it('記事がない場合は空の状態を表示する', () => {
     render(<ArticleList articles={[]} />)
     expect(screen.getByText(/記事がありません/i)).toBeInTheDocument()
   })
 
-  it('should render article links', () => {
+  it('記事のリンクをレンダリングする', () => {
     render(<ArticleList articles={mockArticles} />)
     const link = screen.getByRole('link', { name: /Test Article/i })
     expect(link).toHaveAttribute('href', 'https://example.com/1')

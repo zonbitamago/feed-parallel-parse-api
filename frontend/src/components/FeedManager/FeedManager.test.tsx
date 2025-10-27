@@ -4,14 +4,14 @@ import userEvent from '@testing-library/user-event'
 import { FeedManager } from './FeedManager'
 
 describe('FeedManager', () => {
-  it('should render URL input', () => {
+  it('URL入力欄をレンダリングする', () => {
     const onAdd = vi.fn()
     render(<FeedManager onAddFeed={onAdd} subscriptions={[]} />)
     
     expect(screen.getByPlaceholderText(/URL/i)).toBeInTheDocument()
   })
 
-  it('should validate URL input', async () => {
+  it('URL入力を検証する', async () => {
     const user = userEvent.setup()
     const onAdd = vi.fn()
     render(<FeedManager onAddFeed={onAdd} subscriptions={[]} />)
@@ -22,7 +22,7 @@ describe('FeedManager', () => {
     expect(screen.getByText(/無効なURL/i)).toBeInTheDocument()
   })
 
-  it('should call onAddFeed with valid URL', async () => {
+  it('有効なURLでonAddFeedを呼び出す', async () => {
     const user = userEvent.setup()
     const onAdd = vi.fn()
     render(<FeedManager onAddFeed={onAdd} subscriptions={[]} />)
@@ -36,7 +36,7 @@ describe('FeedManager', () => {
     expect(onAdd).toHaveBeenCalledWith('https://example.com/rss')
   })
 
-  it('should show subscription count limit warning', () => {
+  it('購読数制限の警告を表示する', () => {
     const onAdd = vi.fn()
     const subscriptions = Array.from({ length: 100 }, (_, i) => ({
       id: `${i}`,
@@ -53,7 +53,7 @@ describe('FeedManager', () => {
   })
 
   // US2: 購読管理機能のテスト
-  it('should display subscription list', () => {
+  it('購読リストを表示する', () => {
     const onAdd = vi.fn()
     const onRemove = vi.fn()
     const subscriptions = [
@@ -81,7 +81,7 @@ describe('FeedManager', () => {
     expect(screen.getByText('Test Feed 2')).toBeInTheDocument()
   })
 
-  it('should call onRemoveFeed when delete button clicked', async () => {
+  it('削除ボタンクリック時にonRemoveFeedを呼び出す', async () => {
     const user = userEvent.setup()
     const onAdd = vi.fn()
     const onRemove = vi.fn()
@@ -104,7 +104,7 @@ describe('FeedManager', () => {
     expect(onRemove).toHaveBeenCalledWith('1')
   })
 
-  it('should display feed status', () => {
+  it('フィードのステータスを表示する', () => {
     const onAdd = vi.fn()
     const onRemove = vi.fn()
     const subscriptions = [

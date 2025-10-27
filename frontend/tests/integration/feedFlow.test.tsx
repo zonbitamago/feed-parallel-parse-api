@@ -35,26 +35,26 @@ afterEach(() => {
 afterAll(() => server.close())
 
 describe('Feed Flow Integration', () => {
-  it('should complete full feed flow: add feed -> fetch -> display articles', async () => {
+  it('フィードフロー全体を完了する: フィード追加 → 取得 → 記事表示', async () => {
     const user = userEvent.setup()
     render(<App />)
-    
-    // Should show welcome screen initially
+
+    // 初期表示でウェルカム画面が表示される
     expect(screen.getByText(/ウェルカム/i)).toBeInTheDocument()
-    
-    // Add feed URL
+
+    // フィードURLを追加
     const input = screen.getByPlaceholderText(/URL/i)
     await user.type(input, 'https://example.com/rss')
-    
+
     const addButton = screen.getByRole('button', { name: /追加/i })
     await user.click(addButton)
-    
-    // Wait for articles to load
+
+    // 記事の読み込みを待つ
     await waitFor(() => {
       expect(screen.getByText('Test Article')).toBeInTheDocument()
     }, { timeout: 3000 })
-    
-    // Verify article is clickable
+
+    // 記事がクリック可能であることを確認
     const articleLink = screen.getByRole('link', { name: /Test Article/i })
     expect(articleLink).toHaveAttribute('href', 'https://example.com/article')
   })

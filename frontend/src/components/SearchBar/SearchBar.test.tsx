@@ -4,14 +4,14 @@ import userEvent from '@testing-library/user-event'
 import { SearchBar } from './SearchBar'
 
 describe('SearchBar', () => {
-  it('should render search input', () => {
+  it('検索入力欄をレンダリングする', () => {
     render(<SearchBar onSearch={() => {}} />)
 
     const input = screen.getByPlaceholderText(/検索/i)
     expect(input).toBeInTheDocument()
   })
 
-  it('should call onSearch when typing', async () => {
+  it('入力時にonSearchを呼び出す', async () => {
     const onSearch = vi.fn()
     const user = userEvent.setup()
 
@@ -26,7 +26,7 @@ describe('SearchBar', () => {
     }, { timeout: 500 })
   })
 
-  it('should debounce search input (300ms)', async () => {
+  it('検索入力を300msでデバウンスする', async () => {
     const onSearch = vi.fn()
     const user = userEvent.setup()
 
@@ -49,7 +49,7 @@ describe('SearchBar', () => {
     }, { timeout: 500 })
   })
 
-  it('should clear search when clicking clear button', async () => {
+  it('クリアボタンをクリックすると検索をクリアする', async () => {
     const onSearch = vi.fn()
     const user = userEvent.setup()
 
@@ -76,14 +76,14 @@ describe('SearchBar', () => {
     }, { timeout: 500 })
   })
 
-  it('should not show clear button when input is empty', () => {
+  it('入力が空の場合はクリアボタンを表示しない', () => {
     render(<SearchBar onSearch={() => {}} />)
 
     const clearButton = screen.queryByRole('button', { name: /クリア/i })
     expect(clearButton).not.toBeInTheDocument()
   })
 
-  it('should show clear button when input has value', async () => {
+  it('入力に値がある場合はクリアボタンを表示する', async () => {
     const user = userEvent.setup()
 
     render(<SearchBar onSearch={() => {}} />)

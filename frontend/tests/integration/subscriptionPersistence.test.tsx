@@ -9,7 +9,7 @@ describe('Subscription Persistence Integration', () => {
     localStorage.clear()
   })
 
-  it('should persist subscriptions to localStorage', async () => {
+  it('購読をlocalStorageに永続化する', async () => {
     const user = userEvent.setup()
     
     // アプリをレンダリング
@@ -31,7 +31,7 @@ describe('Subscription Persistence Integration', () => {
     expect(parsed.subscriptions[0].url).toBe('https://example.com/rss')
   })
 
-  it('should load subscriptions from localStorage on mount', () => {
+  it('マウント時にlocalStorageから購読を読み込む', () => {
     // localStorageに購読データを事前設定
     const mockSubscription = {
       id: 'test-id',
@@ -56,7 +56,7 @@ describe('Subscription Persistence Integration', () => {
     expect(screen.getByText(/購読中.*1.*1/)).toBeInTheDocument()
   })
 
-  it('should handle subscription deletion and persistence', async () => {
+  it('購読の削除と永続化を処理する', async () => {
     const user = userEvent.setup()
     
     // localStorageに複数の購読を設定

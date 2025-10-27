@@ -37,7 +37,7 @@ afterEach(() => {
 afterAll(() => server.close())
 
 describe('Refresh Flow Integration', () => {
-  it('should refresh feeds when clicking refresh button', async () => {
+  it('更新ボタンをクリックしてフィードを更新する', async () => {
     const user = userEvent.setup()
     
     // 事前に購読を設定

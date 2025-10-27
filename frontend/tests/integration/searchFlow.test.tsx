@@ -48,7 +48,7 @@ afterEach(() => {
 afterAll(() => server.close())
 
 describe('Search Flow Integration', () => {
-  it('should filter articles by search query', async () => {
+  it('検索クエリで記事をフィルタリングする', async () => {
     const user = userEvent.setup()
 
     // 事前に購読を設定
@@ -84,7 +84,7 @@ describe('Search Flow Integration', () => {
     }, { timeout: 500 })
   })
 
-  it('should clear search and show all articles', async () => {
+  it('検索をクリアして全記事を表示する', async () => {
     const user = userEvent.setup()
 
     localStorage.setItem('rss_reader_subscriptions', JSON.stringify({
@@ -127,7 +127,7 @@ describe('Search Flow Integration', () => {
     }, { timeout: 500 })
   })
 
-  it('should search in both title and summary', async () => {
+  it('タイトルと要約の両方を検索する', async () => {
     const user = userEvent.setup()
 
     localStorage.setItem('rss_reader_subscriptions', JSON.stringify({
