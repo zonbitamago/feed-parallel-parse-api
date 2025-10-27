@@ -57,17 +57,17 @@ description: "FrontendテストのCI統合 - 実装タスクリスト"
 
 ### Implementation for User Story 1
 
-- [ ] T006 [US1] `.github/workflows/ci.yml`を編集: 既存の`build-test`ジョブ名を`backend-test`に変更し、`name: Backend Tests (Go)`を追加
-- [ ] T007 [US1] `.github/workflows/ci.yml`を編集: `backend-test`ジョブに`timeout-minutes: 10`を追加（FR-007: タイムアウト設定）
-- [ ] T008 [US1] `.github/workflows/ci.yml`に新規ジョブ`frontend-test`を追加: `name: Frontend Tests (Vitest)`, `runs-on: ubuntu-latest`, `timeout-minutes: 10`を設定
-- [ ] T009 [US1] `frontend-test`ジョブに`actions/checkout@v3`ステップを追加
-- [ ] T010 [US1] `frontend-test`ジョブに`actions/setup-node@v4`ステップを追加: `node-version: '20'`, `cache: 'npm'`, `cache-dependency-path: frontend/package-lock.json`を設定
-- [ ] T011 [US1] `frontend-test`ジョブに`npm ci`実行ステップを追加: `working-directory: frontend`を設定
-- [ ] T012 [US1] `frontend-test`ジョブに`npm test`実行ステップを追加: `working-directory: frontend`を設定
-- [ ] T013 [US1] 変更をコミットし、feature branchにpush（`git add .github/workflows/ci.yml && git commit -m "feat: add frontend tests to CI" && git push`）
-- [ ] T014 [US1] GitHubでプルリクエストを作成し、CIが自動実行されることを確認（FR-001, FR-002, SC-001）
-- [ ] T015 [US1] プルリクエストページでFrontendテストの実行ログを確認し、テスト結果（成功/失敗）が表示されることを検証（FR-003, FR-004, SC-004）
-- [ ] T016 [US1] CIの実行時間が5分以内であることを確認（SC-002）
+- [x] T006 [US1] `.github/workflows/ci.yml`を編集: 既存の`build-test`ジョブ名を`backend-test`に変更し、`name: Backend Tests (Go)`を追加
+- [x] T007 [US1] `.github/workflows/ci.yml`を編集: `backend-test`ジョブに`timeout-minutes: 10`を追加（FR-007: タイムアウト設定）
+- [x] T008 [US1] `.github/workflows/ci.yml`に新規ジョブ`frontend-test`を追加: `name: Frontend Tests (Vitest)`, `runs-on: ubuntu-latest`, `timeout-minutes: 10`を設定
+- [x] T009 [US1] `frontend-test`ジョブに`actions/checkout@v3`ステップを追加
+- [x] T010 [US1] `frontend-test`ジョブに`actions/setup-node@v4`ステップを追加: `node-version: '20'`, `cache: 'npm'`, `cache-dependency-path: frontend/package-lock.json`を設定
+- [x] T011 [US1] `frontend-test`ジョブに`npm ci`実行ステップを追加: `working-directory: frontend`を設定
+- [x] T012 [US1] `frontend-test`ジョブに`npm test`実行ステップを追加: `working-directory: frontend`を設定
+- [x] T013 [US1] 変更をコミットし、feature branchにpush（`git add .github/workflows/ci.yml && git commit -m "feat: add frontend tests to CI" && git push`）
+- [x] T014 [US1] GitHubでプルリクエストを作成し、CIが自動実行されることを確認（FR-001, FR-002, SC-001）
+- [x] T015 [US1] プルリクエストページでFrontendテストの実行ログを確認し、テスト結果（成功/失敗）が表示されることを検証（FR-003, FR-004, SC-004）
+- [x] T016 [US1] CIの実行時間が5分以内であることを確認（SC-002）
 
 **Checkpoint**: この時点で、User Story 1は完全に機能し、独立してテスト可能です
 
