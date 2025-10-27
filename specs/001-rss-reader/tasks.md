@@ -196,23 +196,23 @@
 
 ### US3 のテスト（先に書く） 🔴 RED
 
-- [ ] T080 [P] [US3] 単体テスト frontend/src/contexts/ArticleContext.test.tsx を更新（SET_SEARCH_QUERY, SET_SELECTED_FEED, フィルタリングロジックのテスト追加）
-- [ ] T081 [P] [US3] コンポーネントテスト frontend/src/components/SearchBar/SearchBar.test.tsx を作成（リアルタイム検索、デバウンス300ms、クリア機能）
-- [ ] T082 [P] [US3] 統合テスト frontend/tests/integration/searchFlow.test.tsx を作成（検索入力→フィルタリング→クリア→全記事表示）
-- [ ] T083 [US3] すべてのUS3テストを実行し、**失敗することを確認**（`npm run test`）
+- [x] T080 [P] [US3] 単体テスト frontend/src/contexts/ArticleContext.test.tsx を更新（SET_SEARCH_QUERY, SET_SELECTED_FEED, フィルタリングロジックのテスト追加）（注：既に実装済みであることを確認）
+- [x] T081 [P] [US3] コンポーネントテスト frontend/src/components/SearchBar/SearchBar.test.tsx を作成（リアルタイム検索、デバウンス300ms、クリア機能）
+- [x] T082 [P] [US3] 統合テスト frontend/tests/integration/searchFlow.test.tsx を作成（検索入力→フィルタリング→クリア→全記事表示）
+- [x] T083 [US3] すべてのUS3テストを実行し、**失敗することを確認**（`npm run test`）
 
 ### US3 の実装（テストを通す） 🟢 GREEN
 
-- [ ] T084 [P] [US3] ArticleContext に SET_SEARCH_QUERY アクションを追加してT080のテストを通す
-- [ ] T085 [P] [US3] ArticleContext に SET_SELECTED_FEED アクションを追加してT080のテストを通す
-- [ ] T086 [P] [US3] ArticleContext に useMemo でフィルタリングロジックを実装してT080のテストを通す
-- [ ] T087 [P] [US3] SearchBarコンポーネント frontend/src/components/SearchBar/SearchBar.tsx を作成してT081のテストを通す
-- [ ] T088 [P] [US3] SearchBarスタイル frontend/src/components/SearchBar/SearchBar.module.css を作成
-- [ ] T089 [US3] ArticleContainerコンポーネントを更新（SearchBarコンポーネント統合）
-- [ ] T090 [US3] ArticleListコンポーネントを更新（displayedArticlesを使用、フィルタリング後の記事を表示）
-- [ ] T091 [US3] 統合テスト frontend/tests/integration/searchFlow.test.tsx を実行し、**成功することを確認**
-- [ ] T092 [US3] ローカルで手動確認：検索入力→リアルタイムフィルタリング→クリアして全記事表示
-- [ ] T093 [US3] すべてのテストを実行し、**すべて成功することを確認**（`npm run test`）
+- [x] T084 [P] [US3] ArticleContext に SET_SEARCH_QUERY アクションを追加してT080のテストを通す（注：既に実装済み）
+- [x] T085 [P] [US3] ArticleContext に SET_SELECTED_FEED アクションを追加してT080のテストを通す（注：既に実装済み）
+- [x] T086 [P] [US3] ArticleContext に useMemo でフィルタリングロジックを実装してT080のテストを通す（注：既に実装済み）
+- [x] T087 [P] [US3] SearchBarコンポーネント frontend/src/components/SearchBar/SearchBar.tsx を作成してT081のテストを通す
+- [x] T088 [P] [US3] SearchBarスタイル frontend/src/components/SearchBar/SearchBar.module.css を作成（注：TailwindCSSを使用したため不要）
+- [x] T089 [US3] ArticleContainerコンポーネントを更新（SearchBarコンポーネント統合）
+- [x] T090 [US3] ArticleListコンポーネントを更新（displayedArticlesを使用、フィルタリング後の記事を表示）（注：既に実装済み）
+- [x] T091 [US3] 統合テスト frontend/tests/integration/searchFlow.test.tsx を実行し、**成功することを確認**
+- [x] T092 [US3] ローカルで手動確認：検索入力→リアルタイムフィルタリング→クリアして全記事表示
+- [x] T093 [US3] すべてのテストを実行し、**すべて成功することを確認**（`npm run test` - 76テスト合格）
 
 **チェックポイント**: すべてのユーザーストーリーが完全実装、すべてのテストがパス
 
