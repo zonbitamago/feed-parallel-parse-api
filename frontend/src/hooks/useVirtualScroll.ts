@@ -7,7 +7,7 @@ const LOAD_MORE_COUNT = 50
 export function useVirtualScroll(articles: Article[]) {
   const [visibleCount, setVisibleCount] = useState(INITIAL_COUNT)
 
-  // Reset when articles change
+  // 記事が変更されたらリセット
   useEffect(() => {
     setVisibleCount(INITIAL_COUNT)
   }, [articles])

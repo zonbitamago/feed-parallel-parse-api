@@ -1,5 +1,5 @@
 /**
- * UI state context for loading, welcome screen, and toast notifications
+ * ローディング、ウェルカム画面、トースト通知のためのUI状態Context
  */
 
 import React, { createContext, useContext, useReducer, type ReactNode } from 'react';

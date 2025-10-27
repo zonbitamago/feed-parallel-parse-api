@@ -1,5 +1,5 @@
 /**
- * Error message component
+ * エラーメッセージコンポーネント
  */
 import type { HTMLAttributes } from 'react';
 

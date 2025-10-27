@@ -1,5 +1,5 @@
 /**
- * API types for feed-parallel-parse-api backend
+ * feed-parallel-parse-api バックエンドのAPI型定義
  */
 
 export interface ParseRequest {

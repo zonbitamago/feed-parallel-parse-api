@@ -1,11 +1,11 @@
 /**
- * API service for feed-parallel-parse-api
+ * feed-parallel-parse-api用のAPIサービス
  */
 
 import type { ParseRequest, ParseResponse } from '../types/api';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://feed-parallel-parse-api.vercel.app';
-const API_TIMEOUT = 10000; // 10 seconds
+const API_TIMEOUT = 10000; // 10秒
 
 export class FeedAPIError extends Error {
   public readonly cause?: unknown;

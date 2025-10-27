@@ -17,7 +17,7 @@ export function FeedContainer({ onRefreshReady }: FeedContainerProps) {
   const { dispatch: uiDispatch } = useUI()
   const { articles, errors, isLoading, fetchFeeds } = useFeedAPI()
 
-  // Load subscriptions from localStorage on mount
+  // マウント時にlocalStorageから購読情報を読み込む
   useEffect(() => {
     const stored = loadSubscriptions()
     if (stored.length > 0) {
@@ -26,14 +26,14 @@ export function FeedContainer({ onRefreshReady }: FeedContainerProps) {
     }
   }, [subDispatch, uiDispatch])
 
-  // Fetch feeds when subscriptions change
+  // 購読が変更されたらフィードを取得
   useEffect(() => {
     if (subState.subscriptions.length > 0) {
       fetchFeeds(subState.subscriptions)
     }
   }, [subState.subscriptions, fetchFeeds])
 
-  // Update article context when API results change
+  // API結果が変更されたら記事Contextを更新
   useEffect(() => {
     articleDispatch({ type: 'SET_LOADING', payload: isLoading })
   }, [isLoading, articleDispatch])
@@ -59,7 +59,7 @@ export function FeedContainer({ onRefreshReady }: FeedContainerProps) {
     }
   }, [subState.subscriptions, uiDispatch, fetchFeeds])
 
-  // Provide refresh function to parent
+  // 更新関数を親コンポーネントに提供
   useEffect(() => {
     if (onRefreshReady) {
       onRefreshReady(handleRefresh)

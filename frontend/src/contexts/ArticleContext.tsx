@@ -30,12 +30,12 @@ const initialState: ArticleState = {
 function filterArticles(articles: Article[], searchQuery: string, selectedFeedId: string | null): Article[] {
   let filtered = articles
 
-  // Filter by feed
+  // フィードでフィルター
   if (selectedFeedId) {
     filtered = filtered.filter(article => article.feedId === selectedFeedId)
   }
 
-  // Filter by search query
+  // 検索クエリでフィルター
   if (searchQuery) {
     const query = searchQuery.toLowerCase()
     filtered = filtered.filter(article =>

@@ -1,5 +1,5 @@
 /**
- * URL validation utilities for RSS feeds
+ * RSSフィードのURL検証ユーティリティ
  */
 
 export function isValidFeedURL(url: string): boolean {

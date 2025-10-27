@@ -1,5 +1,5 @@
 /**
- * Loading indicator component
+ * ローディングインジケーターコンポーネント
  */
 
 export function LoadingIndicator() {

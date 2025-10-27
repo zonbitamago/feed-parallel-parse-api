@@ -1,5 +1,5 @@
 /**
- * Text truncation utility
+ * テキスト切り詰めユーティリティ
  */
 
 export function truncate(text: string, maxLength: number = 300): string {

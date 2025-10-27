@@ -24,11 +24,11 @@ export function useFeedAPI() {
       const urls = subscriptions.map(sub => sub.url)
       const response = await parseFeeds(urls)
 
-      // Transform API response to frontend articles
+      // APIレスポンスをフロントエンドの記事形式に変換
       const allArticles: Article[] = []
 
       subscriptions.forEach((subscription, subIndex) => {
-        // Find matching feed by URL or by index
+        // URLまたはインデックスで一致するフィードを検索
         const feed = response.feeds.find(f => f.link === subscription.url) || response.feeds[subIndex]
 
         if (feed) {
@@ -47,11 +47,11 @@ export function useFeedAPI() {
         }
       })
 
-      // Sort by date
+      // 日付でソート
       const sorted = sortArticlesByDate(allArticles)
       setArticles(sorted)
 
-      // Handle errors
+      // エラー処理
       if (response.errors.length > 0) {
         const feedErrors: FeedError[] = response.errors.map(err => ({
           url: err.url,

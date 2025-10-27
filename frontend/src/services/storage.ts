@@ -1,5 +1,5 @@
 /**
- * localStorage service for subscription persistence
+ * 購読情報の永続化のためのlocalStorageサービス
  */
 
 import type { Subscription } from '../types/models';

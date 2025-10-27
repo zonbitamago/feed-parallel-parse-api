@@ -1,11 +1,11 @@
 /**
- * Custom hook for localStorage state management
+ * localStorageの状態管理カスタムフック
  */
 
 import { useState } from 'react';
 
 export function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T) => void] {
-  // Initialize state with value from localStorage or initial value
+  // localStorageの値または初期値で状態を初期化
   const [storedValue, setStoredValue] = useState<T>(() => {
     try {
       const item = window.localStorage.getItem(key);
@@ -16,7 +16,7 @@ export function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T)
     }
   });
 
-  // Update localStorage when state changes
+  // 状態が変更されたらlocalStorageを更新
   const setValue = (value: T) => {
     try {
       setStoredValue(value);

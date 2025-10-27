@@ -15,7 +15,7 @@ export function FeedManager({ onAddFeed, onRemoveFeed, subscriptions }: FeedMana
   const maxSubscriptions = 100
   const isAtLimit = subscriptions.length >= maxSubscriptions
 
-  // Real-time URL validation
+  // リアルタイムURL検証
   useEffect(() => {
     if (url && !isValidFeedURL(url)) {
       setError('無効なURLです。http://またはhttps://で始まるURLを入力してください')

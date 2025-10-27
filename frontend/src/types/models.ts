@@ -1,5 +1,5 @@
 /**
- * Frontend data models
+ * フロントエンドデータモデル
  */
 
 export interface Subscription {
