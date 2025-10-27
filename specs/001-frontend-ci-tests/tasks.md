@@ -81,17 +81,17 @@ description: "FrontendテストのCI統合 - 実装タスクリスト"
 
 ### Implementation for User Story 2
 
-- [ ] T017 [US2] GitHub WebUIでリポジトリのSettings → Branchesに移動
-- [ ] T018 [US2] 保護対象ブランチ（`main`または`001-parallel-rss-parse-api`）のBranch protection rulesを編集
-- [ ] T019 [US2] "Require status checks to pass before merging"を有効化
-- [ ] T020 [US2] "Require branches to be up to date before merging"を有効化（推奨）
-- [ ] T021 [US2] ステータスチェック検索ボックスで`backend-test`と`frontend-test`を必須チェックに追加
-- [ ] T022 [US2] Branch protection rulesを保存
-- [ ] T023 [US2] テスト成功時: 既存のプルリクエストで"Merge pull request"ボタンが有効になることを確認（FR-006の正常系）
-- [ ] T024 [US2] テスト失敗時シミュレーション: わざと失敗するテストを追加（例: `frontend/tests/ci-test-failure.test.ts`）し、プルリクエストを更新
-- [ ] T025 [US2] プルリクエストで"Merge pull request"ボタンがブロックされ、"Required status check has failed"メッセージが表示されることを確認（FR-006, SC-003）
-- [ ] T026 [US2] 失敗テストを削除し、CIが再実行されてマージが再び可能になることを確認
-- [ ] T027 [US2] Branch protection設定により、テスト失敗時のマージが確実にブロックされることを文書化（quickstart.mdまたはREADME.md）
+- [x] T017 [US2] GitHub WebUIでリポジトリのSettings → Branchesに移動
+- [x] T018 [US2] 保護対象ブランチ（`main`または`001-parallel-rss-parse-api`）のBranch protection rulesを編集
+- [x] T019 [US2] "Require status checks to pass before merging"を有効化
+- [x] T020 [US2] "Require branches to be up to date before merging"を有効化（推奨）
+- [x] T021 [US2] ステータスチェック検索ボックスで`Backend Tests (Go)`と`Frontend Tests (Vitest)`を必須チェックに追加
+- [x] T022 [US2] Branch protection rulesを保存
+- [x] T023 [US2] テスト成功時: 既存のプルリクエストで"Merge pull request"ボタンが有効になることを確認（FR-006の正常系）
+- [x] T024 [US2] テスト失敗時シミュレーション: わざと失敗するテストを追加（例: `frontend/tests/ci-test-failure.test.ts`）し、プルリクエストを更新
+- [x] T025 [US2] プルリクエストで"Merge pull request"ボタンがブロックされ、"Required status check has failed"メッセージが表示されることを確認（FR-006, SC-003）
+- [x] T026 [US2] 失敗テストを削除し、CIが再実行されてマージが再び可能になることを確認
+- [x] T027 [US2] Branch protection設定により、テスト失敗時のマージが確実にブロックされることを文書化（quickstart.mdまたはREADME.md）
 
 **Checkpoint**: この時点で、User Story 1とUser Story 2の両方が独立して動作します
 
