@@ -94,6 +94,7 @@ jobs:
 ```
 
 **変更点の説明**:
+
 1. ジョブ名を`build-test` → `backend-test`に変更（明確化）
 2. 新規ジョブ`frontend-test`を追加（Backendと並列実行）
 3. 両ジョブに`timeout-minutes: 10`を設定（FR-007: タイムアウト設定）
@@ -118,7 +119,8 @@ GitHub WebUIで、テストが失敗したプルリクエストのマージを�
 **重要**: ステータスチェック名は、CI設定ファイル（`.github/workflows/ci.yml`）の各ジョブの`name`フィールドと完全に一致する必要があります。
 
 **スクリーンショット参考**:
-```
+
+```text
 □ Require a pull request before merging
 ☑ Require status checks to pass before merging
   ☑ Require branches to be up to date before merging
@@ -128,6 +130,7 @@ GitHub WebUIで、テストが失敗したプルリクエストのマージを�
 ```
 
 **Branch Protectionの動作**:
+
 - ✅ **テスト成功時**: すべてのステータスチェックが緑になり、"Merge pull request"ボタンが有効になります
 - ❌ **テスト失敗時**: 失敗したステータスチェックが赤になり、マージがブロックされます（`mergeStateStatus: BLOCKED`）
 - ⏳ **テスト実行中**: ステータスチェックが黄色（実行中）の間は、マージがブロックされます
@@ -241,6 +244,7 @@ git push
 **原因**: Node.jsのセットアップステップが正しく設定されていない
 
 **解決策**:
+
 - `.github/workflows/ci.yml`の`frontend-test`ジョブに`actions/setup-node@v4`ステップがあることを確認
 - `node-version`が正しく指定されていることを確認（例: `'20'`）
 
@@ -251,6 +255,7 @@ git push
 **原因**: npm キャッシュが有効化されていない
 
 **解決策**:
+
 - `actions/setup-node@v4`に`cache: 'npm'`と`cache-dependency-path: frontend/package-lock.json`が設定されていることを確認
 - 2回目以降の実行では、キャッシュが効いて~10秒に短縮されるはず
 
@@ -261,9 +266,11 @@ git push
 **原因**: 環境依存の問題（タイムゾーン、ファイルパス、環境変数など）
 
 **解決策**:
+
 1. GitHub Actionsのログで詳細なエラーメッセージを確認
 2. ローカルで`npm test`を実行し、環境変数を確認（`process.env`）
 3. Vitestの設定（`vitest.config.ts`）で環境をCI用に調整
+
    ```typescript
    export default defineConfig({
      test: {
@@ -280,6 +287,7 @@ git push
 **原因**: CI ワークフローがまだ一度も実行されていない、またはJob名が間違っている
 
 **解決策**:
+
 1. プルリクエストまたはブランチへのpushでCIを一度実行
 2. CI実行後、GitHub Settings → Branches → Branch protection rulesに戻る
 3. ステータスチェック検索ボックスで`Backend Tests (Go)`と`Frontend Tests (Vitest)`が表示されるはず
@@ -303,9 +311,38 @@ git push
 ## 次のステップ
 
 1. ✅ 基本的なCI統合が完了
-2. 💡 **将来の拡張案**:
+
+2. 📊 **テスト実行履歴の追跡**:
+
+   GitHub Actionsは自動的にすべてのテスト実行履歴を追跡します（90日間保持）。以下の方法で確認できます：
+
+   ### プルリクエスト単位での確認
+
+   - プルリクエストページの **Checks** タブをクリック
+   - 各コミットごとのCI実行結果が表示される
+   - `Backend Tests (Go)` と `Frontend Tests (Vitest)` の両方の履歴を確認可能
+   - 各実行をクリックすると、詳細なログとテスト結果が表示される
+
+   ### 全体の実行履歴の確認
+
+   - リポジトリの **Actions** タブをクリック
+   - **CI** ワークフローを選択
+   - すべてのCI実行の完全な履歴が表示される（成功/失敗/実行時間など）
+   - フィルタ機能: ブランチ、イベント（push/pull_request）、ステータスで絞り込み可能
+
+   ### プルリクエスト一覧での確認
+
+   - **Pull requests** タブで、各PRのテストステータスが一目で分かる:
+     - ✅ 緑のチェックマーク: テスト成功
+     - ❌ 赤のXマーク: テスト失敗
+     - 🟡 黄色の円: テスト実行中
+
+   これらの機能により、FR-004（各コミットのテスト実行記録）とFR-005（PRごとのステータス表示）が自動的に満たされます。
+
+3. 💡 **将来の拡張案**:
    - カバレッジレポートの生成とPRへのコメント投稿
    - E2Eテスト（Playwright/Cypress）のCI統合
    - パフォーマンステスト（Lighthouse CI）の追加
+   - テスト実行時間の傾向分析とアラート設定
 
-3. ⏭️ `/speckit.tasks`コマンドで実装タスクリストを生成
+4. ⏭️ `/speckit.tasks`コマンドで実装タスクリストを生成

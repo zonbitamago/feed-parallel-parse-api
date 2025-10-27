@@ -105,12 +105,12 @@ description: "FrontendテストのCI統合 - 実装タスクリスト"
 
 ### Implementation for User Story 3
 
-- [ ] T028 [US3] GitHub WebUIで過去のプルリクエストを開き、"Checks"タブで`frontend-test`ジョブの実行履歴が表示されることを確認
-- [ ] T029 [US3] 同じプルリクエストで複数回コミットを行い、各コミットごとにCI実行結果が記録されることを確認（FR-004, FR-005）
-- [ ] T030 [US3] GitHub ActionsのWorkflow runs履歴（Actions → CI → All workflows）で、Frontendテスト実行の全履歴が確認できることを検証
-- [ ] T031 [US3] 各実行の詳細ログが保持され、後から参照可能であることを確認（GitHub Actionsは90日間ログを保持）
-- [ ] T032 [US3] プルリクエスト一覧ページで、各PRのテストステータス（✓成功、✗失敗、⏳実行中）が一目で分かることを確認（FR-005）
-- [ ] T033 [US3] テスト実行履歴の追跡機能が正常に動作することを文書化（quickstart.mdの「次のステップ」セクション）
+- [x] T028 [US3] GitHub WebUIで過去のプルリクエストを開き、"Checks"タブで`frontend-test`ジョブの実行履歴が表示されることを確認
+- [x] T029 [US3] 同じプルリクエストで複数回コミットを行い、各コミットごとにCI実行結果が記録されることを確認（FR-004, FR-005）
+- [x] T030 [US3] GitHub ActionsのWorkflow runs履歴（Actions → CI → All workflows）で、Frontendテスト実行の全履歴が確認できることを検証
+- [x] T031 [US3] 各実行の詳細ログが保持され、後から参照可能であることを確認（GitHub Actionsは90日間ログを保持）
+- [x] T032 [US3] プルリクエスト一覧ページで、各PRのテストステータス（✓成功、✗失敗、⏳実行中）が一目で分かることを確認（FR-005）
+- [x] T033 [US3] テスト実行履歴の追跡機能が正常に動作することを文書化（quickstart.mdの「次のステップ」セクション）
 
 **Checkpoint**: すべてのUser Storyが独立して機能します
 
