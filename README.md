@@ -5,6 +5,8 @@
 Go + Vercel で動作する、複数 RSS を並列取得・パースし、統一 JSON 形式で返却する Web API です。
 仕様・テスト・実装は TDD 原則に準拠し、すべて日本語で明示されています。
 
+**本番環境**: https://feed-parallel-parse-api.vercel.app/
+
 ## 特徴
 
 - 複数 RSS URL を並列で高速取得・パース（goroutine/channels）
@@ -45,9 +47,17 @@ go test ./tests/integration/...
 
 ### エンドポイント
 
-- **POST** `/api/parse`
+- **POST** `https://feed-parallel-parse-api.vercel.app/api/parse`
   - リクエスト: `{ "urls": ["https://example.com/rss", ...] }`
   - レスポンス: `{ "feeds": [...], "errors": [...] }`
+
+### 使用例
+
+```sh
+curl -X POST https://feed-parallel-parse-api.vercel.app/api/parse \
+  -H "Content-Type: application/json" \
+  -d '{"urls": ["https://example.com/rss"]}'
+```
 
 ### 詳細仕様
 
