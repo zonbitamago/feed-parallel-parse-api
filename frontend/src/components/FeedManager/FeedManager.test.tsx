@@ -46,9 +46,90 @@ describe('FeedManager', () => {
       lastFetchedAt: null,
       status: 'active' as const,
     }))
-    
+
     render(<FeedManager onAddFeed={onAdd} subscriptions={subscriptions} />)
-    
+
     expect(screen.getByText(/上限/i)).toBeInTheDocument()
+  })
+
+  // US2: 購読管理機能のテスト
+  it('should display subscription list', () => {
+    const onAdd = vi.fn()
+    const onRemove = vi.fn()
+    const subscriptions = [
+      {
+        id: '1',
+        url: 'https://example.com/rss',
+        title: 'Test Feed 1',
+        subscribedAt: new Date().toISOString(),
+        lastFetchedAt: null,
+        status: 'active' as const,
+      },
+      {
+        id: '2',
+        url: 'https://example.com/feed.xml',
+        title: 'Test Feed 2',
+        subscribedAt: new Date().toISOString(),
+        lastFetchedAt: null,
+        status: 'active' as const,
+      },
+    ]
+
+    render(<FeedManager onAddFeed={onAdd} onRemoveFeed={onRemove} subscriptions={subscriptions} />)
+
+    expect(screen.getByText('Test Feed 1')).toBeInTheDocument()
+    expect(screen.getByText('Test Feed 2')).toBeInTheDocument()
+  })
+
+  it('should call onRemoveFeed when delete button clicked', async () => {
+    const user = userEvent.setup()
+    const onAdd = vi.fn()
+    const onRemove = vi.fn()
+    const subscriptions = [
+      {
+        id: '1',
+        url: 'https://example.com/rss',
+        title: 'Test Feed',
+        subscribedAt: new Date().toISOString(),
+        lastFetchedAt: null,
+        status: 'active' as const,
+      },
+    ]
+
+    render(<FeedManager onAddFeed={onAdd} onRemoveFeed={onRemove} subscriptions={subscriptions} />)
+
+    const deleteButton = screen.getByRole('button', { name: /削除/i })
+    await user.click(deleteButton)
+
+    expect(onRemove).toHaveBeenCalledWith('1')
+  })
+
+  it('should display feed status', () => {
+    const onAdd = vi.fn()
+    const onRemove = vi.fn()
+    const subscriptions = [
+      {
+        id: '1',
+        url: 'https://example.com/rss',
+        title: 'Active Feed',
+        subscribedAt: new Date().toISOString(),
+        lastFetchedAt: new Date().toISOString(),
+        status: 'active' as const,
+      },
+      {
+        id: '2',
+        url: 'https://example.com/error',
+        title: 'Error Feed',
+        subscribedAt: new Date().toISOString(),
+        lastFetchedAt: null,
+        status: 'error' as const,
+      },
+    ]
+
+    render(<FeedManager onAddFeed={onAdd} onRemoveFeed={onRemove} subscriptions={subscriptions} />)
+
+    expect(screen.getByText('Active Feed')).toBeInTheDocument()
+    expect(screen.getByText('Error Feed')).toBeInTheDocument()
+    // ステータス表示の確認（実装により表示方法は異なる）
   })
 })

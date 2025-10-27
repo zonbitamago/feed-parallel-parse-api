@@ -62,9 +62,22 @@ export function FeedContainer() {
     uiDispatch({ type: 'SET_WELCOME_SCREEN', payload: false })
   }
 
+  const handleRemoveFeed = (id: string) => {
+    const updated = subState.subscriptions.filter(sub => sub.id !== id)
+    subDispatch({ type: 'REMOVE_SUBSCRIPTION', payload: id })
+    saveSubscriptions(updated)
+
+    // 全て削除した場合、ウェルカム画面を表示
+    if (updated.length === 0) {
+      uiDispatch({ type: 'SET_WELCOME_SCREEN', payload: true })
+      articleDispatch({ type: 'SET_ARTICLES', payload: [] })
+    }
+  }
+
   return (
     <FeedManager
       onAddFeed={handleAddFeed}
+      onRemoveFeed={handleRemoveFeed}
       subscriptions={subState.subscriptions}
     />
   )

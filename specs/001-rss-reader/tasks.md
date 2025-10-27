@@ -137,21 +137,21 @@
 
 ### US2 のテスト（先に書く） 🔴 RED
 
-- [ ] T057 [P] [US2] 単体テスト frontend/src/contexts/SubscriptionContext.test.tsx を更新（DELETE_SUBSCRIPTION, localStorage同期のテスト追加）
-- [ ] T058 [P] [US2] コンポーネントテスト frontend/src/components/FeedManager/FeedManager.test.tsx を更新（購読リスト表示、削除ボタン、フィードステータスFR-014のテスト追加）
-- [ ] T059 [P] [US2] 統合テスト frontend/tests/integration/subscriptionPersistence.test.tsx を作成（追加→削除→リロード→永続化確認）
-- [ ] T060 [US2] すべてのUS2テストを実行し、**失敗することを確認**（`npm run test`）
+- [x] T057 [P] [US2] 単体テスト frontend/src/contexts/SubscriptionContext.test.tsx を更新（DELETE_SUBSCRIPTION, localStorage同期のテスト追加）
+- [x] T058 [P] [US2] コンポーネントテスト frontend/src/components/FeedManager/FeedManager.test.tsx を更新（購読リスト表示、削除ボタン、フィードステータスFR-014のテスト追加）
+- [x] T059 [P] [US2] 統合テスト frontend/tests/integration/subscriptionPersistence.test.tsx を作成（追加→削除→リロード→永続化確認）
+- [x] T060 [US2] すべてのUS2テストを実行し、**失敗することを確認**（`npm run test`）
 
 ### US2 の実装（テストを通す） 🟢 GREEN
 
-- [ ] T061 [P] [US2] SubscriptionContext に DELETE_SUBSCRIPTION アクションを追加してT057のテストを通す
-- [ ] T062 [P] [US2] SubscriptionContext に localStorage同期を追加してT057のテストを通す（loadSubscriptions, saveSubscriptions統合）
-- [ ] T063 [US2] FeedManagerコンポーネントを更新してT058のテストを通す（購読リスト表示、削除ボタン、フィードステータス）
-- [ ] T064 [US2] FeedContainerコンポーネントを更新（削除ハンドラー、永続化トリガー）
-- [ ] T065 [US2] Appコンポーネントを更新（初回ロード時にlocalStorageから購読を読み込む）
-- [ ] T066 [US2] 統合テスト frontend/tests/integration/subscriptionPersistence.test.tsx を実行し、**成功することを確認**
-- [ ] T067 [US2] ローカルで手動確認：フィード追加→削除→ページリロード→永続化確認
-- [ ] T068 [US2] すべてのテストを実行し、**すべて成功することを確認**（`npm run test`）
+- [x] T061 [P] [US2] SubscriptionContext に DELETE_SUBSCRIPTION アクションを追加してT057のテストを通す
+- [x] T062 [P] [US2] SubscriptionContext に localStorage同期を追加してT057のテストを通す（loadSubscriptions, saveSubscriptions統合）
+- [x] T063 [US2] FeedManagerコンポーネントを更新してT058のテストを通す（購読リスト表示、削除ボタン、フィードステータス）
+- [x] T064 [US2] FeedContainerコンポーネントを更新（削除ハンドラー、永続化トリガー）
+- [x] T065 [US2] Appコンポーネントを更新（初回ロード時にlocalStorageから購読を読み込む）
+- [x] T066 [US2] 統合テスト frontend/tests/integration/subscriptionPersistence.test.tsx を実行し、**成功することを確認**
+- [x] T067 [US2] ローカルで手動確認：フィード追加→削除→ページリロード→永続化確認
+- [x] T068 [US2] すべてのテストを実行し、**すべて成功することを確認**（`npm run test`）
 
 **チェックポイント**: US1とUS2が両方とも完全実装、すべてのテストがパス
 
@@ -167,7 +167,7 @@
 
 ### US4 のテスト（先に書く） 🔴 RED
 
-- [ ] T069 [P] [US4] 単体テスト frontend/src/contexts/ArticleContext.test.tsx を更新（REFRESH_ARTICLES アクションのテスト追加）
+- [x] T069 [P] [US4] 単体テスト frontend/src/contexts/ArticleContext.test.tsx を更新（REFRESH_ARTICLES アクションのテスト追加）
 - [ ] T070 [P] [US4] 単体テスト frontend/src/contexts/UIContext.test.tsx を更新（SET_REFRESHING アクションのテスト追加）
 - [ ] T071 [P] [US4] 統合テスト frontend/tests/integration/refreshFlow.test.tsx を作成（更新ボタン→ローディング→記事更新のフロー）
 - [ ] T072 [US4] すべてのUS4テストを実行し、**失敗することを確認**（`npm run test`）
