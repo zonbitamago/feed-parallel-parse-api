@@ -8,9 +8,12 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://feed-parallel
 const API_TIMEOUT = 10000; // 10 seconds
 
 export class FeedAPIError extends Error {
-  constructor(message: string, public readonly cause?: unknown) {
+  public readonly cause?: unknown;
+
+  constructor(message: string, cause?: unknown) {
     super(message);
     this.name = 'FeedAPIError';
+    this.cause = cause;
   }
 }
 

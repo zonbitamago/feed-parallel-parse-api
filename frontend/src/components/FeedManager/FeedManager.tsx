@@ -52,21 +52,32 @@ export function FeedManager({ onAddFeed, onRemoveFeed, subscriptions }: FeedMana
       <form onSubmit={handleSubmit} className="flex gap-2">
         <div className="flex-1">
           <input
-            type="text"
+            type="url"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleSubmit(e)
+              }
+            }}
             placeholder="RSSフィードのURLを入力..."
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             disabled={isAtLimit}
+            aria-label="フィードURL"
+            aria-invalid={!!error}
+            aria-describedby={error ? "url-error" : undefined}
           />
           {error && (
-            <p className="text-red-600 text-sm mt-1">{error}</p>
+            <p id="url-error" className="text-red-600 text-sm mt-1" role="alert">
+              {error}
+            </p>
           )}
         </div>
         <button
           type="submit"
           disabled={isAtLimit || !url || !!error}
           className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+          aria-label="フィードを追加"
         >
           追加
         </button>

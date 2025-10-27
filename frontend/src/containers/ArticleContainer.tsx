@@ -46,6 +46,8 @@ export function ArticleContainer({ onRefresh }: ArticleContainerProps) {
             onClick={onRefresh}
             disabled={uiState.isRefreshing}
             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
+            aria-label="フィードを更新"
+            aria-busy={uiState.isRefreshing}
           >
             {uiState.isRefreshing ? '読み込み中...' : '更新'}
           </button>
@@ -53,20 +55,23 @@ export function ArticleContainer({ onRefresh }: ArticleContainerProps) {
       </div>
 
       {state.errors.length > 0 && (
-        <div className="mb-4">
+        <div className="mb-4" role="region" aria-label="エラー通知">
           {state.errors.map((error, index) => (
             <ErrorMessage key={index} message={`${error.url}: ${error.message}`} />
           ))}
         </div>
       )}
 
-      <ArticleList articles={visibleArticles} />
+      <div data-testid="article-list-container">
+        <ArticleList articles={visibleArticles} />
+      </div>
 
       {hasMore && (
         <div className="text-center py-4">
           <button
             onClick={loadMore}
             className="px-4 py-2 text-sm text-blue-600 hover:text-blue-800"
+            aria-label="さらに記事を読み込む"
           >
             さらに読み込む
           </button>

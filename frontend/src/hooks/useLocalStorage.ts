@@ -2,7 +2,7 @@
  * Custom hook for localStorage state management
  */
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 export function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T) => void] {
   // Initialize state with value from localStorage or initial value

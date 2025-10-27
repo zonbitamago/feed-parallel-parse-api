@@ -1,15 +1,20 @@
 /**
  * Error message component
  */
+import type { HTMLAttributes } from 'react';
 
-interface ErrorMessageProps {
+interface ErrorMessageProps extends HTMLAttributes<HTMLDivElement> {
   message: string;
   onDismiss?: () => void;
 }
 
-export function ErrorMessage({ message, onDismiss }: ErrorMessageProps) {
+export function ErrorMessage({ message, onDismiss, ...rest }: ErrorMessageProps) {
   return (
-    <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+    <div
+      role="alert"
+      className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4"
+      {...rest}
+    >
       <div className="flex items-start">
         <div className="flex-1">
           <p className="text-red-800 text-sm">{message}</p>

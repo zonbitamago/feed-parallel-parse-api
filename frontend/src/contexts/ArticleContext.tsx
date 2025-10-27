@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer, useEffect, type ReactNode } from 'react'
+import React, { createContext, useContext, useReducer, type ReactNode } from 'react'
 import type { Article, FeedError } from '../types/models'
 
 interface ArticleState {

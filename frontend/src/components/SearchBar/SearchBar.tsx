@@ -21,14 +21,23 @@ export function SearchBar({ onSearch, placeholder = '記事を検索...' }: Sear
     setQuery('')
   }, [])
 
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      handleClear()
+    }
+  }, [handleClear])
+
   return (
     <div className="relative">
       <input
-        type="text"
+        type="search"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
+        onKeyDown={handleKeyDown}
         placeholder={placeholder}
         className="w-full px-4 py-2 pr-24 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        aria-label="検索"
+        role="searchbox"
       />
       {query && (
         <button
