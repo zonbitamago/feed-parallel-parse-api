@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { SubscriptionProvider } from './contexts/SubscriptionContext'
 import { ArticleProvider } from './contexts/ArticleContext'
 import { UIProvider, useUI } from './contexts/UIContext'
@@ -6,6 +7,11 @@ import { ArticleContainer } from './containers/ArticleContainer'
 
 function AppContent() {
   const { state: uiState } = useUI()
+  const [refreshFn, setRefreshFn] = useState<(() => void) | null>(null)
+
+  const handleRefreshReady = (refresh: () => void) => {
+    setRefreshFn(() => refresh)
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -16,7 +22,7 @@ function AppContent() {
       </header>
 
       <main className="max-w-5xl mx-auto px-4 py-6">
-        <FeedContainer />
+        <FeedContainer onRefreshReady={handleRefreshReady} />
 
         {uiState.showWelcomeScreen ? (
           <div className="bg-white rounded-lg shadow p-8 text-center">
@@ -28,7 +34,7 @@ function AppContent() {
             </p>
           </div>
         ) : (
-          <ArticleContainer />
+          <ArticleContainer onRefresh={refreshFn} />
         )}
       </main>
     </div>

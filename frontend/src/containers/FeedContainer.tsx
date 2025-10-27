@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useCallback } from 'react'
 import { useSubscription } from '../contexts/SubscriptionContext'
 import { useArticle } from '../contexts/ArticleContext'
 import { useUI } from '../contexts/UIContext'
@@ -7,7 +7,11 @@ import { loadSubscriptions, saveSubscriptions } from '../services/storage'
 import { FeedManager } from '../components/FeedManager/FeedManager'
 import type { Subscription } from '../types/models'
 
-export function FeedContainer() {
+interface FeedContainerProps {
+  onRefreshReady?: (refresh: () => void) => void
+}
+
+export function FeedContainer({ onRefreshReady }: FeedContainerProps) {
   const { state: subState, dispatch: subDispatch } = useSubscription()
   const { dispatch: articleDispatch } = useArticle()
   const { dispatch: uiDispatch } = useUI()
@@ -45,6 +49,22 @@ export function FeedContainer() {
       articleDispatch({ type: 'ADD_ERROR', payload: error })
     })
   }, [errors, articleDispatch])
+
+  const handleRefresh = useCallback(() => {
+    if (subState.subscriptions.length > 0) {
+      uiDispatch({ type: 'SET_REFRESHING', payload: true })
+      fetchFeeds(subState.subscriptions).finally(() => {
+        uiDispatch({ type: 'SET_REFRESHING', payload: false })
+      })
+    }
+  }, [subState.subscriptions, uiDispatch, fetchFeeds])
+
+  // Provide refresh function to parent
+  useEffect(() => {
+    if (onRefreshReady) {
+      onRefreshReady(handleRefresh)
+    }
+  }, [onRefreshReady, handleRefresh])
 
   const handleAddFeed = (url: string) => {
     const newSubscription: Subscription = {
