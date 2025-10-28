@@ -5,16 +5,12 @@ import { truncate } from '../utils/truncate'
 import type { Subscription } from '../types/models'
 import type { Article, FeedError } from '../types/models'
 import type { RSSFeed, APIArticle, ErrorInfo } from '../types/api'
+import { FEED_ERROR_MESSAGES } from '../constants/errorMessages'
 
 /**
  * 記事サマリーの最大文字数
  */
 const ARTICLE_SUMMARY_MAX_LENGTH = 300
-
-/**
- * デフォルトのエラーメッセージ
- */
-const DEFAULT_ERROR_MESSAGE = 'フィードの取得に失敗しました'
 
 /**
  * フィードと購読情報を紐付ける
@@ -75,7 +71,7 @@ function transformErrors(errors: ErrorInfo[]): FeedError[] {
 function createErrorFromException(error: unknown): FeedError {
   return {
     url: '',
-    message: error instanceof Error ? error.message : DEFAULT_ERROR_MESSAGE,
+    message: error instanceof Error ? error.message : FEED_ERROR_MESSAGES.FETCH_FAILED,
     timestamp: new Date().toISOString(),
   }
 }

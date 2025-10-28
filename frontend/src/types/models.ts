@@ -2,6 +2,8 @@
  * フロントエンドデータモデル
  */
 
+import { TITLE_ERROR_MESSAGES } from '../constants/errorMessages';
+
 export interface Subscription {
   id: string;
   url: string;
@@ -57,11 +59,11 @@ export function validateCustomTitle(title: string): { valid: boolean; error?: st
   const trimmed = title.trim();
 
   if (trimmed.length === 0) {
-    return { valid: false, error: 'フィード名を入力してください' };
+    return { valid: false, error: TITLE_ERROR_MESSAGES.EMPTY_TITLE };
   }
 
   if (trimmed.length > 200) {
-    return { valid: false, error: 'フィード名は200文字以内にしてください' };
+    return { valid: false, error: TITLE_ERROR_MESSAGES.TITLE_TOO_LONG };
   }
 
   return { valid: true };

@@ -135,7 +135,7 @@ describe('models', () => {
       const longTitle = 'A'.repeat(201);
       const result = validateCustomTitle(longTitle);
       expect(result.valid).toBe(false);
-      expect(result.error).toBe('フィード名は200文字以内にしてください');
+      expect(result.error).toBe('フィード名は200文字以内で入力してください');
     });
 
     test('200文字ちょうどの場合はvalid: trueを返す', () => {
