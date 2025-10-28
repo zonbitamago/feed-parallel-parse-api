@@ -9,6 +9,7 @@ export function useFeedAPI() {
   const [articles, setArticles] = useState<Article[]>([])
   const [errors, setErrors] = useState<FeedError[]>([])
   const [isLoading, setIsLoading] = useState(false)
+  const [updatedSubscriptions, setUpdatedSubscriptions] = useState<Subscription[]>([])
 
   const fetchFeeds = useCallback(async (subscriptions: Subscription[]) => {
     if (subscriptions.length === 0) {
@@ -26,12 +27,20 @@ export function useFeedAPI() {
 
       // APIレスポンスをフロントエンドの記事形式に変換
       const allArticles: Article[] = []
+      const updatedSubs: Subscription[] = []
 
       subscriptions.forEach((subscription, subIndex) => {
         // URLまたはインデックスで一致するフィードを検索
         const feed = response.feeds.find(f => f.link === subscription.url) || response.feeds[subIndex]
 
         if (feed) {
+          // フィードタイトルを更新したSubscriptionを作成
+          const updatedSubscription: Subscription = {
+            ...subscription,
+            title: feed.title,
+          }
+          updatedSubs.push(updatedSubscription)
+
           feed.articles.forEach((apiArticle, articleIndex) => {
             allArticles.push({
               id: `${subscription.id}-${apiArticle.link}`,
@@ -44,8 +53,14 @@ export function useFeedAPI() {
               feedOrder: articleIndex,
             })
           })
+        } else {
+          // フィードが見つからない場合はそのまま追加
+          updatedSubs.push(subscription)
         }
       })
+
+      // 更新されたSubscriptionを保存
+      setUpdatedSubscriptions(updatedSubs)
 
       // 日付でソート
       const sorted = sortArticlesByDate(allArticles)
@@ -77,5 +92,6 @@ export function useFeedAPI() {
     errors,
     isLoading,
     fetchFeeds,
+    updatedSubscriptions,
   }
 }

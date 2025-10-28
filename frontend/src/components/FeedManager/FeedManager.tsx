@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { isValidFeedURL, validateSubscriptionCount } from '../../utils/urlValidation'
 import type { Subscription } from '../../types/models'
+import { getDisplayTitle } from '../../types/models'
 
 interface FeedManagerProps {
   onAddFeed: (url: string) => void
@@ -103,7 +104,7 @@ export function FeedManager({ onAddFeed, onRemoveFeed, subscriptions }: FeedMana
               >
                 <div className="flex-1 min-w-0">
                   <p className="font-medium text-gray-900 truncate">
-                    {subscription.title || subscription.url}
+                    {getDisplayTitle(subscription)}
                   </p>
                   <p className="text-sm text-gray-500 truncate">
                     {subscription.url}
