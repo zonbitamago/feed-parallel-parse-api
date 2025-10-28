@@ -8,6 +8,9 @@ export default defineConfig({
     globals: true,
     environment: 'happy-dom',
     setupFiles: './src/test/setup.ts',
+    // テスト完了後にプロセスを確実に終了させる設定
+    // Vitest v4では、run モードがデフォルトでプロセスを終了するため、
+    // 追加の設定は不要。package.jsonの "vitest run" で対応済み。
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
