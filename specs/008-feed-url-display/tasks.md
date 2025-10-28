@@ -16,6 +16,7 @@
 ## Path Conventions
 
 このプロジェクトはWeb applicationで、以下の構造を使用：
+
 - フロントエンド: `frontend/src/`
 - テスト: `frontend/tests/`、`frontend/src/**/*.test.ts(x)`
 
@@ -25,10 +26,10 @@
 
 **目的**: プロジェクト初期化と基本構造の確認
 
-- [ ] T001 開発環境の確認（Node.js 18以上、依存関係インストール済み）
-- [ ] T002 開発サーバーの起動確認（npm run dev）
-- [ ] T003 [P] テスト実行環境の確認（npm test）
-- [ ] T004 [P] 既存のSubscriptionモデルとContextの理解（frontend/src/types/models.ts、frontend/src/contexts/SubscriptionContext.tsx）
+- [x] T001 開発環境の確認（Node.js 18以上、依存関係インストール済み）
+- [x] T002 開発サーバーの起動確認（npm run dev）
+- [x] T003 [P] テスト実行環境の確認（npm test）
+- [x] T004 [P] 既存のSubscriptionモデルとContextの理解（frontend/src/types/models.ts、frontend/src/contexts/SubscriptionContext.tsx）
 
 ---
 
@@ -38,13 +39,13 @@
 
 **⚠️ 重要**: このフェーズが完了するまで、User Storyの作業は開始できません
 
-- [ ] T005 Subscription型にcustomTitleフィールドを追加（frontend/src/types/models.ts）
-- [ ] T006 [P] getDisplayTitle()ヘルパー関数を追加（frontend/src/types/models.ts）
-- [ ] T007 [P] hasCustomTitle()ヘルパー関数を追加（frontend/src/types/models.ts）
-- [ ] T008 [P] validateCustomTitle()ヘルパー関数を追加（frontend/src/types/models.ts）
-- [ ] T009 localStorage読み込み時のマイグレーション処理を追加（frontend/src/services/storage.ts）
-- [ ] T010 [P] タイトルユーティリティファイルを作成（frontend/src/utils/titleUtils.ts）
-- [ ] T011 [P] タイトルユーティリティのテストを作成（frontend/src/utils/titleUtils.test.ts）
+- [x] T005 Subscription型にcustomTitleフィールドを追加（frontend/src/types/models.ts）
+- [x] T006 [P] getDisplayTitle()ヘルパー関数を追加（frontend/src/types/models.ts）
+- [x] T007 [P] hasCustomTitle()ヘルパー関数を追加（frontend/src/types/models.ts）
+- [x] T008 [P] validateCustomTitle()ヘルパー関数を追加（frontend/src/types/models.ts）
+- [x] T009 localStorage読み込み時のマイグレーション処理を追加（frontend/src/services/storage.ts）
+- [x] T010 [P] タイトルユーティリティファイルを作成（frontend/src/utils/titleUtils.ts）
+- [x] T011 [P] タイトルユーティリティのテストを作成（frontend/src/utils/titleUtils.test.ts）
 
 **Checkpoint**: 基盤準備完了 - User Storyの実装を並列で開始可能
 

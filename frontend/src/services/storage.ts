@@ -17,7 +17,12 @@ export function loadSubscriptions(): Subscription[] {
       return [];
     }
     const parsed: StorageData = JSON.parse(data);
-    return parsed.subscriptions || [];
+
+    // 既存データのマイグレーション: customTitleフィールドの正規化
+    return (parsed.subscriptions || []).map(sub => ({
+      ...sub,
+      customTitle: sub.customTitle ?? null  // undefinedをnullに正規化
+    }));
   } catch (error) {
     console.error('Failed to load subscriptions from localStorage:', error);
     return [];

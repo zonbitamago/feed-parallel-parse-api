@@ -24,7 +24,11 @@
       "Bash(cat:*)",
       "Bash(git log:*)",
       "Bash(npm test:*)",
-      "Bash(.specify/scripts/bash/update-agent-context.sh:*)"
+      "Bash(.specify/scripts/bash/update-agent-context.sh:*)",
+      "Bash(gh pr view:*)",
+      "Bash({ git ls-remote --heads origin)",
+      "Bash(})",
+      "Bash(/Users/k-takiuchi/Documents/feed-parallel-parse-api/.specify/scripts/bash/check-prerequisites.sh:*)"
     ],
     "deny": [],
     "ask": []
