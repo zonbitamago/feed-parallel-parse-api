@@ -72,26 +72,26 @@
 ### Implementation for User Story 1（t-wadaスタイルTDD: Green）
 
 - [ ] T019 [P] [US1] decodeHTMLEntities()を実装（frontend/src/utils/titleUtils.ts）
-- [ ] T020 [P] [US1] stripHTMLTags()を実装（frontend/src/utils/titleUtils.ts）
-- [ ] T021 [US1] sanitizeFeedTitle()を実装（frontend/src/utils/titleUtils.ts）- T019とT020に依存
-- [ ] T022 [P] [US1] truncateTitle()を実装（frontend/src/utils/titleUtils.ts）
-- [ ] T023 [US1] useFeedAPI.tsでフィード取得時にtitleを更新（frontend/src/hooks/useFeedAPI.ts）
-- [ ] T024 [US1] FeedContainerでフィード取得後にSubscriptionのtitleを永続化（frontend/src/containers/FeedContainer.tsx）
-- [ ] T025 [US1] FeedManagerでgetDisplayTitle()を使用してタイトルを表示（frontend/src/components/FeedManager/FeedManager.tsx）
-- [ ] T026 [US1] テストを実行してすべて成功することを確認（Green）
+- [x] T020 [P] [US1] stripHTMLTags()を実装（frontend/src/utils/titleUtils.ts）
+- [x] T021 [US1] sanitizeFeedTitle()を実装（frontend/src/utils/titleUtils.ts）- T019とT020に依存
+- [x] T022 [P] [US1] truncateTitle()を実装（frontend/src/utils/titleUtils.ts）
+- [x] T023 [US1] useFeedAPI.tsでフィード取得時にtitleを更新（frontend/src/hooks/useFeedAPI.ts）
+- [x] T024 [US1] FeedContainerでフィード取得後にSubscriptionのtitleを永続化（frontend/src/containers/FeedContainer.tsx）
+- [x] T025 [US1] FeedManagerでgetDisplayTitle()を使用してタイトルを表示（frontend/src/components/FeedManager/FeedManager.tsx）
+- [x] T026 [US1] テストを実行してすべて成功することを確認（Green）
 
 ### Refactor for User Story 1（t-wadaスタイルTDD: Refactor）
 
-- [ ] T027 [US1] titleUtilsのコード品質を向上（重複排除、意図の明確化）
-- [ ] T028 [US1] useFeedAPI.tsのタイトル更新ロジックをリファクタリング
-- [ ] T029 [US1] FeedContainerのuseEffectを最適化（不要な再レンダリング防止）
-- [ ] T030 [US1] テストを実行してすべて成功することを確認（Refactorでテストが壊れていないことを確認）
+- [x] T027 [US1] titleUtilsのコード品質を向上（重複排除、意図の明確化）
+- [x] T028 [US1] useFeedAPI.tsのタイトル更新ロジックをリファクタリング
+- [x] T029 [US1] FeedContainerのuseEffectを最適化（不要な再レンダリング防止）
+- [x] T030 [US1] テストを実行してすべて成功することを確認（Refactorでテストが壊れていないことを確認）
 
 ### Integration Test for User Story 1
 
-- [ ] T031 [US1] 統合テストを作成（frontend/tests/integration/feedTitleFlow.test.tsx）- フィード追加→タイトル表示確認
-- [ ] T032 [US1] リロード後の永続化を確認する統合テストを追加
-- [ ] T033 [US1] HTMLエンティティを含むタイトルの統合テストを追加
+- [x] T031 [US1] 統合テストを作成（frontend/tests/integration/feedTitleFlow.test.tsx）- フィード追加→タイトル表示確認
+- [x] T032 [US1] リロード後の永続化を確認する統合テストを追加
+- [x] T033 [US1] HTMLエンティティを含むタイトルの統合テストを追加
 
 **Checkpoint**: この時点で、User Story 1は完全に機能し、独立してテスト可能です。URLではなくタイトルでフィードを識別できます。
 

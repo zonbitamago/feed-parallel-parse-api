@@ -52,27 +52,31 @@ export function FeedContainer({ onRefreshReady }: FeedContainerProps) {
   }, [errors, articleDispatch])
 
   // フィード取得後にtitleを更新したSubscriptionを永続化
+  // 重要: titleのみが変更された場合は再フェッチを避けるため、subscriptionsオブジェクトへの依存を避ける
   useEffect(() => {
-    if (updatedSubscriptions.length > 0) {
-      // titleが実際に変更されたかチェック
-      let hasChanges = false
-      updatedSubscriptions.forEach(updatedSub => {
-        const current = subState.subscriptions.find(s => s.id === updatedSub.id)
-        if (current && current.title !== updatedSub.title) {
-          hasChanges = true
-          subDispatch({ type: 'UPDATE_SUBSCRIPTION', payload: updatedSub })
-        }
-      })
+    if (updatedSubscriptions.length === 0) return
 
-      // 変更があった場合のみlocalStorageを更新
-      if (hasChanges) {
-        const merged = subState.subscriptions.map(sub => {
-          const updated = updatedSubscriptions.find(u => u.id === sub.id)
-          return updated && updated.title !== sub.title ? updated : sub
-        })
-        saveSubscriptions(merged)
-      }
-    }
+    // タイトルが実際に変更されたSubscriptionのみを抽出
+    const changedSubscriptions = updatedSubscriptions.filter(updatedSub => {
+      const current = subState.subscriptions.find(s => s.id === updatedSub.id)
+      return current && current.title !== updatedSub.title
+    })
+
+    // 変更がない場合は何もしない（無限ループ防止）
+    if (changedSubscriptions.length === 0) return
+
+    // Contextを更新
+    changedSubscriptions.forEach(updatedSub => {
+      subDispatch({ type: 'UPDATE_SUBSCRIPTION', payload: updatedSub })
+    })
+
+    // localStorageを更新（マージ処理）
+    const mergedSubscriptions = subState.subscriptions.map(sub => {
+      const updated = updatedSubscriptions.find(u => u.id === sub.id)
+      return updated && updated.title !== sub.title ? updated : sub
+    })
+    saveSubscriptions(mergedSubscriptions)
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [updatedSubscriptions])
 
