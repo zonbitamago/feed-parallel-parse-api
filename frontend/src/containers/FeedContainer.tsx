@@ -125,10 +125,29 @@ export function FeedContainer({ onRefreshReady }: FeedContainerProps) {
     }
   }
 
+  // T041: カスタムタイトル更新ハンドラー
+  const handleUpdateCustomTitle = (id: string, customTitle: string) => {
+    const subscription = subState.subscriptions.find(sub => sub.id === id)
+    if (!subscription) return
+
+    const updatedSubscription: Subscription = {
+      ...subscription,
+      customTitle,
+    }
+
+    subDispatch({ type: 'UPDATE_SUBSCRIPTION', payload: updatedSubscription })
+
+    const updated = subState.subscriptions.map(sub =>
+      sub.id === id ? updatedSubscription : sub
+    )
+    saveSubscriptions(updated)
+  }
+
   return (
     <FeedManager
       onAddFeed={handleAddFeed}
       onRemoveFeed={handleRemoveFeed}
+      onUpdateCustomTitle={handleUpdateCustomTitle}
       subscriptions={subState.subscriptions}
     />
   )

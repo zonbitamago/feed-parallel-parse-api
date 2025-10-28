@@ -47,6 +47,7 @@ describe('FeedManager', () => {
       id: `${i}`,
       url: `https://example.com/${i}`,
       title: `Feed ${i}`,
+      customTitle: null,
       subscribedAt: new Date().toISOString(),
       lastFetchedAt: null,
       status: 'active' as const,
@@ -66,6 +67,7 @@ describe('FeedManager', () => {
         id: '1',
         url: 'https://example.com/rss',
         title: 'Test Feed 1',
+        customTitle: null,
         subscribedAt: new Date().toISOString(),
         lastFetchedAt: null,
         status: 'active' as const,
@@ -74,6 +76,7 @@ describe('FeedManager', () => {
         id: '2',
         url: 'https://example.com/feed.xml',
         title: 'Test Feed 2',
+        customTitle: null,
         subscribedAt: new Date().toISOString(),
         lastFetchedAt: null,
         status: 'active' as const,
@@ -96,6 +99,7 @@ describe('FeedManager', () => {
         id: '1',
         url: 'https://example.com/rss',
         title: 'Test Feed',
+        customTitle: null,
         subscribedAt: new Date().toISOString(),
         lastFetchedAt: null,
         status: 'active' as const,
@@ -119,6 +123,7 @@ describe('FeedManager', () => {
         id: '1',
         url: 'https://example.com/rss',
         title: 'Active Feed',
+        customTitle: null,
         subscribedAt: new Date().toISOString(),
         lastFetchedAt: new Date().toISOString(),
         status: 'active' as const,
@@ -127,6 +132,7 @@ describe('FeedManager', () => {
         id: '2',
         url: 'https://example.com/error',
         title: 'Error Feed',
+        customTitle: null,
         subscribedAt: new Date().toISOString(),
         lastFetchedAt: null,
         status: 'error' as const,
@@ -138,5 +144,277 @@ describe('FeedManager', () => {
     expect(screen.getByText('Active Feed')).toBeInTheDocument()
     expect(screen.getByText('Error Feed')).toBeInTheDocument()
     // ステータス表示の確認（実装により表示方法は異なる）
+  })
+
+  // User Story 2: カスタムタイトル編集機能のテスト (T037-T039)
+  describe('カスタムタイトル編集', () => {
+    it('T037: 編集ボタンをクリックすると編集モードに切り替わる', async () => {
+      // 準備
+      const user = userEvent.setup()
+      const onAdd = vi.fn()
+      const onRemove = vi.fn()
+      const onUpdateCustomTitle = vi.fn()
+      const subscriptions = [
+        {
+          id: '1',
+          url: 'https://example.com/rss',
+          title: 'Original Title',
+          customTitle: null,
+          subscribedAt: new Date().toISOString(),
+          lastFetchedAt: null,
+          status: 'active' as const,
+        },
+      ]
+
+      render(
+        <FeedManager
+          onAddFeed={onAdd}
+          onRemoveFeed={onRemove}
+          onUpdateCustomTitle={onUpdateCustomTitle}
+          subscriptions={subscriptions}
+        />
+      )
+
+      // 実行: 編集ボタンをクリック
+      const editButton = screen.getByRole('button', { name: /編集/i })
+      await user.click(editButton)
+
+      // 検証: 編集用のinputが表示される
+      const editInput = screen.getByDisplayValue('Original Title')
+      expect(editInput).toBeInTheDocument()
+      expect(editInput).toHaveFocus() // フォーカスが当たっている
+
+      // 検証: 保存・キャンセルボタンが表示される
+      expect(screen.getByRole('button', { name: /保存/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /キャンセル/i })).toBeInTheDocument()
+
+      // 検証: 編集ボタンは非表示になる
+      expect(screen.queryByRole('button', { name: /編集/i })).not.toBeInTheDocument()
+    })
+
+    it('T038: 編集してタイトルを保存できる', async () => {
+      // 準備
+      const user = userEvent.setup()
+      const onAdd = vi.fn()
+      const onRemove = vi.fn()
+      const onUpdateCustomTitle = vi.fn()
+      const subscriptions = [
+        {
+          id: '1',
+          url: 'https://example.com/rss',
+          title: 'Original Title',
+          customTitle: null,
+          subscribedAt: new Date().toISOString(),
+          lastFetchedAt: null,
+          status: 'active' as const,
+        },
+      ]
+
+      render(
+        <FeedManager
+          onAddFeed={onAdd}
+          onRemoveFeed={onRemove}
+          onUpdateCustomTitle={onUpdateCustomTitle}
+          subscriptions={subscriptions}
+        />
+      )
+
+      // 実行: 編集ボタンをクリック
+      const editButton = screen.getByRole('button', { name: /編集/i })
+      await user.click(editButton)
+
+      // 実行: タイトルを変更
+      const editInput = screen.getByDisplayValue('Original Title')
+      await user.clear(editInput)
+      await user.type(editInput, 'Custom Title')
+
+      // 実行: 保存ボタンをクリック
+      const saveButton = screen.getByRole('button', { name: /保存/i })
+      await user.click(saveButton)
+
+      // 検証: onUpdateCustomTitleが呼ばれる
+      expect(onUpdateCustomTitle).toHaveBeenCalledWith('1', 'Custom Title')
+
+      // 検証: 編集モードが終了する（編集ボタンが再表示される）
+      expect(screen.getByRole('button', { name: /編集/i })).toBeInTheDocument()
+    })
+
+    it('T038-validation: 空文字での保存はエラーメッセージを表示', async () => {
+      // 準備
+      const user = userEvent.setup()
+      const onAdd = vi.fn()
+      const onRemove = vi.fn()
+      const onUpdateCustomTitle = vi.fn()
+      const subscriptions = [
+        {
+          id: '1',
+          url: 'https://example.com/rss',
+          title: 'Original Title',
+          customTitle: null,
+          subscribedAt: new Date().toISOString(),
+          lastFetchedAt: null,
+          status: 'active' as const,
+        },
+      ]
+
+      render(
+        <FeedManager
+          onAddFeed={onAdd}
+          onRemoveFeed={onRemove}
+          onUpdateCustomTitle={onUpdateCustomTitle}
+          subscriptions={subscriptions}
+        />
+      )
+
+      // 実行: 編集モードに入る
+      const editButton = screen.getByRole('button', { name: /編集/i })
+      await user.click(editButton)
+
+      // 実行: タイトルを空にする
+      const editInput = screen.getByDisplayValue('Original Title')
+      await user.clear(editInput)
+
+      // 実行: 保存ボタンをクリック
+      const saveButton = screen.getByRole('button', { name: /保存/i })
+      await user.click(saveButton)
+
+      // 検証: エラーメッセージが表示される
+      expect(screen.getByText(/フィード名を入力してください/i)).toBeInTheDocument()
+
+      // 検証: onUpdateCustomTitleは呼ばれない
+      expect(onUpdateCustomTitle).not.toHaveBeenCalled()
+    })
+
+    it('T039: キャンセルボタンで編集を中止できる', async () => {
+      // 準備
+      const user = userEvent.setup()
+      const onAdd = vi.fn()
+      const onRemove = vi.fn()
+      const onUpdateCustomTitle = vi.fn()
+      const subscriptions = [
+        {
+          id: '1',
+          url: 'https://example.com/rss',
+          title: 'Original Title',
+          customTitle: null,
+          subscribedAt: new Date().toISOString(),
+          lastFetchedAt: null,
+          status: 'active' as const,
+        },
+      ]
+
+      render(
+        <FeedManager
+          onAddFeed={onAdd}
+          onRemoveFeed={onRemove}
+          onUpdateCustomTitle={onUpdateCustomTitle}
+          subscriptions={subscriptions}
+        />
+      )
+
+      // 実行: 編集ボタンをクリック
+      const editButton = screen.getByRole('button', { name: /編集/i })
+      await user.click(editButton)
+
+      // 実行: タイトルを変更
+      const editInput = screen.getByDisplayValue('Original Title')
+      await user.clear(editInput)
+      await user.type(editInput, 'Changed Title')
+
+      // 実行: キャンセルボタンをクリック
+      const cancelButton = screen.getByRole('button', { name: /キャンセル/i })
+      await user.click(cancelButton)
+
+      // 検証: onUpdateCustomTitleは呼ばれない
+      expect(onUpdateCustomTitle).not.toHaveBeenCalled()
+
+      // 検証: 編集モードが終了し、元のタイトルが表示される
+      expect(screen.getByText('Original Title')).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /編集/i })).toBeInTheDocument()
+    })
+
+    it('T039-keyboard: Escapeキーで編集をキャンセルできる', async () => {
+      // 準備
+      const user = userEvent.setup()
+      const onAdd = vi.fn()
+      const onRemove = vi.fn()
+      const onUpdateCustomTitle = vi.fn()
+      const subscriptions = [
+        {
+          id: '1',
+          url: 'https://example.com/rss',
+          title: 'Original Title',
+          customTitle: null,
+          subscribedAt: new Date().toISOString(),
+          lastFetchedAt: null,
+          status: 'active' as const,
+        },
+      ]
+
+      render(
+        <FeedManager
+          onAddFeed={onAdd}
+          onRemoveFeed={onRemove}
+          onUpdateCustomTitle={onUpdateCustomTitle}
+          subscriptions={subscriptions}
+        />
+      )
+
+      // 実行: 編集モードに入る
+      const editButton = screen.getByRole('button', { name: /編集/i })
+      await user.click(editButton)
+
+      // 実行: タイトルを変更してEscapeを押す
+      const editInput = screen.getByDisplayValue('Original Title')
+      await user.clear(editInput)
+      await user.type(editInput, 'Changed Title')
+      await user.keyboard('{Escape}')
+
+      // 検証: onUpdateCustomTitleは呼ばれない
+      expect(onUpdateCustomTitle).not.toHaveBeenCalled()
+
+      // 検証: 編集モードが終了する
+      expect(screen.getByRole('button', { name: /編集/i })).toBeInTheDocument()
+    })
+
+    it('T039-keyboard: Enterキーで保存できる', async () => {
+      // 準備
+      const user = userEvent.setup()
+      const onAdd = vi.fn()
+      const onRemove = vi.fn()
+      const onUpdateCustomTitle = vi.fn()
+      const subscriptions = [
+        {
+          id: '1',
+          url: 'https://example.com/rss',
+          title: 'Original Title',
+          customTitle: null,
+          subscribedAt: new Date().toISOString(),
+          lastFetchedAt: null,
+          status: 'active' as const,
+        },
+      ]
+
+      render(
+        <FeedManager
+          onAddFeed={onAdd}
+          onRemoveFeed={onRemove}
+          onUpdateCustomTitle={onUpdateCustomTitle}
+          subscriptions={subscriptions}
+        />
+      )
+
+      // 実行: 編集モードに入る
+      const editButton = screen.getByRole('button', { name: /編集/i })
+      await user.click(editButton)
+
+      // 実行: タイトルを変更してEnterを押す
+      const editInput = screen.getByDisplayValue('Original Title')
+      await user.clear(editInput)
+      await user.type(editInput, 'New Title{Enter}')
+
+      // 検証: onUpdateCustomTitleが呼ばれる
+      expect(onUpdateCustomTitle).toHaveBeenCalledWith('1', 'New Title')
+    })
   })
 })
