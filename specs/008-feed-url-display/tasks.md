@@ -137,9 +137,9 @@
 
 ### Integration Test for User Story 2
 
-- [ ] T055 [US2] 統合テストを追加（frontend/tests/integration/feedTitleFlow.test.tsx）- カスタムタイトル編集フロー
-- [ ] T056 [US2] 統合テストを追加（frontend/tests/integration/feedTitleFlow.test.tsx）- 空文字バリデーションエラー
-- [ ] T057 [US2] 統合テストを追加（frontend/tests/integration/feedTitleFlow.test.tsx）- キャンセル操作
+- [x] T055 [US2] 統合テストを追加（frontend/tests/integration/feedTitleFlow.test.tsx）- カスタムタイトル編集フロー - 完了
+- [x] T056 [US2] 統合テストを追加（frontend/tests/integration/feedTitleFlow.test.tsx）- 空文字バリデーションエラー - 完了
+- [x] T057 [US2] 統合テストを追加（frontend/tests/integration/feedTitleFlow.test.tsx）- キャンセル操作（ボタン＋Escapeキー＋永続化） - 完了 (139 tests passed)
 
 **Checkpoint**: この時点で、User Stories 1と2の両方が独立して機能します。ユーザーはタイトルを自動取得でき、必要に応じて編集もできます。
 
