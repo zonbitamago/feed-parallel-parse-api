@@ -23,9 +23,48 @@ RSSフィード購読リストにおいて、URLのみの表示では識別し�
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-**Status**: ✅ PASS - プロジェクトにconstitution.mdが設定されていないため、ゲートチェックをスキップします。
+**Status**: ✅ PASS - すべての憲法要件を満たしています。
 
-**Note**: 今後プロジェクトの成長に応じて、constitution.mdを作成することを推奨します。
+### I. Test-Driven Development (t-wada Style)
+
+✅ **遵守**: この実装計画はTDDサイクルに従います
+
+- テストファースト: すべての実装の前にテストを書く
+- Red-Green-Refactor: 各機能で厳格にサイクルを回す
+- 小さいステップ: 各タスクを5-10分で完了するよう分割
+
+### II. テストカバレッジ
+
+✅ **遵守**: カバレッジ目標を設定済み
+
+- 新規コード: 100%カバレッジ（titleUtils, FeedManager編集機能）
+- テストピラミッド: Unit 70%, Integration 20%, E2E 10%
+- 高速実行: 単体テストは1秒以内
+
+### III. TypeScript + React 品質基準
+
+✅ **遵守**: 既存のプロジェクト設定が準拠
+
+- strict mode: 有効（tsconfig.json）
+- any型禁止: すべての関数に明示的な型定義
+- Props型定義: すべてのコンポーネントPropsを型定義
+- テスタビリティ優先: 依存性注入でテスト可能な設計
+
+### IV. コードレビュー基準
+
+✅ **計画済み**: レビュー基準を実装フローに組み込み
+
+- コミット戦略: test: → feat: → refactor: のプレフィックス使用
+- TDDサイクルの履歴: Git履歴で確認可能にする
+- カバレッジ100%: テスト完了まで次のステップに進まない
+
+### V. シンプルさの原則（YAGNI）
+
+✅ **遵守**: 最小限の実装
+
+- 新規依存関係ゼロ: 既存のツールのみで実装
+- 最小限の変更: Subscription型の拡張のみ
+- 段階的な実装: P1→P2→P3の優先順位で実装
 
 ## Project Structure
 
@@ -69,7 +108,7 @@ frontend/
 
 > **Fill ONLY if Constitution Check has violations that must be justified**
 
-該当なし - constitution.mdが未設定のため、違反項目はありません。
+該当なし - すべての憲法要件を満たしているため、違反項目はありません。
 
 ## Phase 0: Outline & Research
 
@@ -95,9 +134,10 @@ frontend/
    - 調査内容：既存のエスケープ処理、XSS対策
    - 期待される結論：使用するライブラリまたはユーティリティ関数の決定
 
-### Output
+### Research Output
 
 research.mdに以下の情報を記載：
+
 - 各調査項目の結果
 - 選択した実装アプローチとその理由
 - 代替案とその評価
