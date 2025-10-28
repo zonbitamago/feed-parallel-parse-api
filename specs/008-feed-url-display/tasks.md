@@ -107,33 +107,33 @@
 
 > **重要: これらのテストを最初に書き、実装前に失敗することを確認してください**
 
-- [ ] T034 [P] [US2] validateCustomTitle()のユニットテストを実装（frontend/src/types/models.test.ts）- 空文字エラー
-- [ ] T035 [P] [US2] validateCustomTitle()のユニットテストを実装（frontend/src/types/models.test.ts）- 200文字超過エラー
-- [ ] T036 [P] [US2] validateCustomTitle()のユニットテストを実装（frontend/src/types/models.test.ts）- 正常ケース
-- [ ] T037 [P] [US2] FeedManagerの編集UIコンポーネントテストを実装（frontend/src/components/FeedManager/FeedManager.test.tsx）- 編集モード切り替え
-- [ ] T038 [P] [US2] FeedManagerの編集UIコンポーネントテストを実装（frontend/src/components/FeedManager/FeedManager.test.tsx）- 保存処理
-- [ ] T039 [P] [US2] FeedManagerの編集UIコンポーネントテストを実装（frontend/src/components/FeedManager/FeedManager.test.tsx）- キャンセル処理
-- [ ] T040 [US2] テストを実行してすべて失敗することを確認（Red）
+- [x] T034 [P] [US2] validateCustomTitle()のユニットテストを実装（frontend/src/types/models.test.ts）- 空文字エラー
+- [x] T035 [P] [US2] validateCustomTitle()のユニットテストを実装（frontend/src/types/models.test.ts）- 200文字超過エラー
+- [x] T036 [P] [US2] validateCustomTitle()のユニットテストを実装（frontend/src/types/models.test.ts）- 正常ケース
+- [x] T037 [P] [US2] FeedManagerの編集UIコンポーネントテストを実装（frontend/src/components/FeedManager/FeedManager.test.tsx）- 編集モード切り替え
+- [x] T038 [P] [US2] FeedManagerの編集UIコンポーネントテストを実装（frontend/src/components/FeedManager/FeedManager.test.tsx）- 保存処理
+- [x] T039 [P] [US2] FeedManagerの編集UIコンポーネントテストを実装（frontend/src/components/FeedManager/FeedManager.test.tsx）- キャンセル処理
+- [x] T040 [US2] テストを実行してすべて失敗することを確認（Red）
 
 ### Implementation for User Story 2（t-wadaスタイルTDD: Green）
 
-- [ ] T041 [US2] FeedContainerにhandleUpdateCustomTitle()を実装（frontend/src/containers/FeedContainer.tsx）
-- [ ] T042 [US2] FeedManagerのPropsにonUpdateCustomTitleを追加（frontend/src/components/FeedManager/FeedManager.tsx）
-- [ ] T043 [US2] FeedManagerに編集状態管理用stateを追加（frontend/src/components/FeedManager/FeedManager.tsx）
-- [ ] T044 [P] [US2] handleStartEdit()を実装（frontend/src/components/FeedManager/FeedManager.tsx）
-- [ ] T045 [P] [US2] handleSaveEdit()を実装（frontend/src/components/FeedManager/FeedManager.tsx）
-- [ ] T046 [P] [US2] handleCancelEdit()を実装（frontend/src/components/FeedManager/FeedManager.tsx）
-- [ ] T047 [US2] 購読リスト表示部分に編集モードUIを追加（frontend/src/components/FeedManager/FeedManager.tsx）- 編集input、保存/キャンセルボタン
-- [ ] T048 [US2] 購読リスト表示部分に編集ボタンを追加（frontend/src/components/FeedManager/FeedManager.tsx）
-- [ ] T049 [US2] キーボード操作を実装（Enter: 保存、Escape: キャンセル）（frontend/src/components/FeedManager/FeedManager.tsx）
-- [ ] T050 [US2] テストを実行してすべて成功することを確認（Green）
+- [x] T041 [US2] FeedContainerにhandleUpdateCustomTitle()を実装（frontend/src/containers/FeedContainer.tsx）
+- [x] T042 [US2] FeedManagerのPropsにonUpdateCustomTitleを追加（frontend/src/components/FeedManager/FeedManager.tsx）
+- [x] T043 [US2] FeedManagerに編集状態管理用stateを追加（frontend/src/components/FeedManager/FeedManager.tsx）
+- [x] T044 [P] [US2] handleStartEdit()を実装（frontend/src/components/FeedManager/FeedManager.tsx）
+- [x] T045 [P] [US2] handleSaveEdit()を実装（frontend/src/components/FeedManager/FeedManager.tsx）
+- [x] T046 [P] [US2] handleCancelEdit()を実装（frontend/src/components/FeedManager/FeedManager.tsx）
+- [x] T047 [US2] 購読リスト表示部分に編集モードUIを追加（frontend/src/components/FeedManager/FeedManager.tsx）- 編集input、保存/キャンセルボタン
+- [x] T048 [US2] 購読リスト表示部分に編集ボタンを追加（frontend/src/components/FeedManager/FeedManager.tsx）
+- [x] T049 [US2] キーボード操作を実装（Enter: 保存、Escape: キャンセル）（frontend/src/components/FeedManager/FeedManager.tsx）
+- [x] T050 [US2] テストを実行してすべて成功することを確認（Green）
 
 ### Refactor for User Story 2（t-wadaスタイルTDD: Refactor）
 
-- [ ] T051 [US2] FeedManagerの編集ハンドラーをカスタムフックに抽出（frontend/src/hooks/useEditableTitle.ts）- オプショナル
-- [ ] T052 [US2] FeedManagerのコンポーネント構造をリファクタリング（編集UI部分を別コンポーネントに分離）- オプショナル
-- [ ] T053 [US2] エラーハンドリングの一貫性を向上（frontend/src/components/FeedManager/FeedManager.tsx）
-- [ ] T054 [US2] テストを実行してすべて成功することを確認（Refactorでテストが壊れていないことを確認）
+- [x] T051 [US2] FeedManagerの編集ハンドラーをカスタムフックに抽出（frontend/src/hooks/useFeedTitleEdit.ts）- 完了
+- [x] T052 [US2] FeedManagerのコンポーネント構造をリファクタリング（FeedEditRow, FeedDisplayRow, FeedSubscriptionItemに分離）- 完了
+- [x] T053 [US2] エラーハンドリングの一貫性を向上（frontend/src/constants/errorMessages.tsを作成し統一）- 完了
+- [x] T054 [US2] テストを実行してすべて成功することを確認（Refactorでテストが壊れていないことを確認）- 完了 (134 tests passed)
 
 ### Integration Test for User Story 2
 
