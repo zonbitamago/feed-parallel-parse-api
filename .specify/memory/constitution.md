@@ -1,50 +1,249 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+# feed-parallel-parse-api Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Test-Driven Development (t-wada Style) - 絶対遵守
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+**テスト駆動開発は必須です。t-wadaのTDD原則に従います。**
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+#### テストファースト（Test-First）
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+- **実装前にテストを書く**: 1行のプロダクションコードも、失敗するテストなしには書かない
+- **テストが仕様**: テストコードが要求仕様の実行可能なドキュメントとなる
+- **ユーザー承認**: テストケースをユーザーに見せて承認を得る（可能な場合）
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+#### Red-Green-Refactor サイクル
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+1. **Red（失敗するテストを書く）**:
+   - 新しい機能のテストを書く
+   - テストが失敗することを確認する（正しく失敗することを確認）
+   - コンパイルエラーも「Red」に含まれる
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+2. **Green（テストを通す）**:
+   - 最小限のコードでテストを通す
+   - 「仮実装」「明白な実装」「三角測量」のいずれかの手法を使う
+   - 品質は問わない、まず動かす
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+3. **Refactor（リファクタリング）**:
+   - テストを通したまま、コードの品質を向上させる
+   - 重複を排除する
+   - 意図を明確にする
+   - テストコードもリファクタリング対象
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+#### テスト駆動の3つの手法
+
+1. **仮実装（Fake It）**:
+   - まず定数を返す
+   - テストを追加しながら徐々に変数化・一般化
+   - 不安なときに使う
+
+2. **明白な実装（Obvious Implementation）**:
+   - シンプルな操作はそのまま実装
+   - 自信があるときに使う
+   - つまずいたら仮実装に戻る
+
+3. **三角測量（Triangulation）**:
+   - 2つ以上のテストから一般化を導く
+   - 抽象化の方向性が不明確なときに使う
+   - 例: 2つの具体例から共通のパターンを抽出
+
+#### 小さく確実に進む
+
+- **ベイビーステップ**: 5-10分で完了するサイクルを回す
+- **頻繁なコミット**: Red→Green→Refactor の各フェーズでコミット可能
+- **TODOリスト**: 次にやることをリスト化し、1つずつ消化
+
+#### テストの品質
+
+- **高速**: 単体テストは1秒以内、全体でも数秒以内
+- **独立**: テストの実行順序に依存しない
+- **反復可能**: 何度実行しても同じ結果
+- **自己検証**: 成功/失敗が自動判定される
+- **適時**: 実装とほぼ同時に書く
+
+### II. テストカバレッジと品質基準
+
+#### カバレッジ目標
+
+- **新規コード**: 100%のカバレッジを目指す
+- **既存コード変更**: 変更部分は100%カバー
+- **最低基準**: プロジェクト全体で80%以上
+
+#### テストの種類とバランス
+
+```text
+テストピラミッド:
+       /\        E2E Tests (少数、遅い)
+      /  \
+     /____\      Integration Tests (中程度)
+    /      \
+   /________\    Unit Tests (多数、高速)
+```
+
+- **単体テスト（Unit Tests）**: 70%
+  - 関数、メソッド、コンポーネント単位
+  - モックを活用
+  - 高速実行（ミリ秒単位）
+
+- **統合テスト（Integration Tests）**: 20%
+  - コンポーネント間の連携
+  - API契約の検証
+  - データベース連携
+
+- **E2Eテスト（End-to-End Tests）**: 10%
+  - ユーザーシナリオ全体
+  - クリティカルパスのみ
+  - CI/CDで実行
+
+### III. TypeScript + React の品質基準
+
+#### 型安全性
+
+- **any禁止**: `any`型の使用は原則禁止（型推論できない場合は`unknown`を使用）
+- **strict mode**: `tsconfig.json`で`"strict": true`を必須化
+- **型定義**: すべての関数、変数に明示的な型定義
+- **Props型定義**: React コンポーネントのPropsは必ず型定義
+
+#### コンポーネント設計
+
+- **単一責任**: 1つのコンポーネントは1つの責任
+- **Pure Components**: 可能な限り純粋関数として実装
+- **Props over State**: ステートは最小限に
+- **Hooks Rules**: React Hooksのルールを厳守
+
+#### テスト可能性
+
+- **テスタビリティ優先**: テストしやすい設計を優先
+- **依存性注入**: 外部依存はPropsで注入
+- **カスタムフックのテスト**: ロジックはカスタムフックに切り出してテスト
+
+### IV. コードレビュー基準
+
+#### 必須チェック項目
+
+1. **テストファーストの遵守**: テストコミットが実装コミットより先
+2. **TDDサイクル**: Red→Green→Refactor の履歴が確認できる
+3. **カバレッジ**: 新規コードのカバレッジが100%
+4. **型安全性**: TypeScriptの型チェックがすべてパス
+5. **リンター**: ESLint, Prettier の警告ゼロ
+
+#### レビュー観点
+
+- テストが仕様を表現しているか
+- テストケースは適切な粒度か
+- エッジケースをカバーしているか
+- リファクタリング後もテストが通るか
+
+### V. シンプルさの原則（YAGNI）
+
+- **必要になるまで作らない**: 将来の拡張性より現在のシンプルさ
+- **過剰設計の禁止**: 現在の要求を満たす最小限の設計
+- **リファクタリングで進化**: 必要になったら設計を改善
+
+## Development Workflow
+
+### 機能実装のフロー
+
+```text
+1. 仕様の理解
+   ↓
+2. TODOリスト作成（小さいタスクに分割）
+   ↓
+3. For each TODO:
+   ├─ Red: 失敗するテストを書く
+   ├─ Green: 最小限の実装でテストを通す
+   ├─ Refactor: コードの品質を向上
+   └─ Commit: 各フェーズでコミット
+   ↓
+4. 統合テストの追加
+   ↓
+5. E2Eテスト（必要な場合）
+   ↓
+6. コードレビュー
+   ↓
+7. マージ
+```
+
+### コミットメッセージ
+
+```text
+test: ○○機能のテストを追加（Red）
+feat: ○○機能を実装（Green）
+refactor: ○○の重複を排除（Refactor）
+```
+
+### ブランチ戦略
+
+- **main**: 常にリリース可能な状態
+- **feature/XXX**: 機能開発ブランチ
+- **TDDサイクル**: feature ブランチ内で Red→Green→Refactor を繰り返す
+
+## Quality Gates
+
+### マージ前の必須条件
+
+- [ ] すべてのテストがパス
+- [ ] カバレッジが基準（80%）以上
+- [ ] TypeScript の型チェックがパス
+- [ ] ESLint の警告ゼロ
+- [ ] コードレビュー承認
+- [ ] CI/CDパイプラインがグリーン
+
+### CI/CD パイプライン
+
+```yaml
+# GitHub Actions で自動実行
+1. Lint & Format Check
+2. Type Check (tsc)
+3. Unit Tests (Vitest)
+4. Integration Tests
+5. Build
+6. Coverage Report
+```
+
+## Technology Stack Constraints
+
+### 必須ツール
+
+- **テスティングフレームワーク**: Vitest 4.0+
+- **テストライブラリ**: @testing-library/react 16.0+
+- **型チェック**: TypeScript 5.9+
+- **リンター**: ESLint 9.0+
+- **フォーマッター**: Prettier
+
+### 新規依存関係の追加
+
+新しいライブラリを追加する場合：
+
+1. 既存ツールで解決できないか検討
+2. バンドルサイズへの影響を評価
+3. メンテナンス状況を確認（最終更新日、issue数）
+4. テスト可能性への影響を評価
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+### 憲法の位置づけ
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+- この憲法はすべての開発プラクティスに優先する
+- 例外が必要な場合は、理由を文書化し、チームの承認を得る
+- 違反が発見された場合は、修正を最優先とする
+
+### 憲法の改訂
+
+- 改訂にはプロジェクトメンバーの合意が必要
+- 改訂理由と影響範囲を文書化
+- 既存コードへの影響を評価し、移行計画を作成
+
+### AIエージェントの活用
+
+- AIエージェント（Claude Code等）を活用する場合も、この憲法を遵守
+- AIが生成したコードも、TDDサイクルとレビュープロセスの対象
+- AIには憲法の内容を指示し、遵守させる
+
+### 参考資料
+
+- 和田卓人『テスト駆動開発』（オーム社）
+- Kent Beck『Test Driven Development: By Example』
+- Martin Fowler『Refactoring』
+
+**Version**: 1.0.0 | **Ratified**: 2025-10-29 | **Last Amended**: 2025-10-29

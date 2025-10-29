@@ -44,7 +44,7 @@ describe('useFeedAPI', () => {
     const { result } = renderHook(() => useFeedAPI())
 
     await result.current.fetchFeeds([
-      { id: '1', url: 'https://example.com/rss', title: null, subscribedAt: new Date().toISOString(), lastFetchedAt: null, status: 'active' }
+      { id: '1', url: 'https://example.com/rss', title: null, customTitle: null, subscribedAt: new Date().toISOString(), lastFetchedAt: null, status: 'active' }
     ])
 
     await waitFor(() => {
@@ -72,7 +72,7 @@ describe('useFeedAPI', () => {
     const { result } = renderHook(() => useFeedAPI())
 
     await result.current.fetchFeeds([
-      { id: '1', url: 'https://example.com/rss', title: null, subscribedAt: new Date().toISOString(), lastFetchedAt: null, status: 'active' }
+      { id: '1', url: 'https://example.com/rss', title: null, customTitle: null, subscribedAt: new Date().toISOString(), lastFetchedAt: null, status: 'active' }
     ])
 
     await waitFor(() => {

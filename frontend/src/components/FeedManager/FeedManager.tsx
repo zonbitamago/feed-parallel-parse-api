@@ -1,28 +1,58 @@
 import { useState, useEffect } from 'react'
 import { isValidFeedURL, validateSubscriptionCount } from '../../utils/urlValidation'
 import type { Subscription } from '../../types/models'
+import { useFeedTitleEdit } from '../../hooks/useFeedTitleEdit'
+import { useFeedPreview } from '../../hooks/useFeedPreview'
+import { FeedSubscriptionItem } from './FeedSubscriptionItem'
+import { URL_ERROR_MESSAGES } from '../../constants/errorMessages'
 
 interface FeedManagerProps {
   onAddFeed: (url: string) => void
   onRemoveFeed?: (id: string) => void
+  onUpdateCustomTitle?: (id: string, customTitle: string) => void
   subscriptions: Subscription[]
 }
 
-export function FeedManager({ onAddFeed, onRemoveFeed, subscriptions }: FeedManagerProps) {
+export function FeedManager({ onAddFeed, onRemoveFeed, onUpdateCustomTitle, subscriptions }: FeedManagerProps) {
   const [url, setUrl] = useState('')
   const [error, setError] = useState<string | null>(null)
+
+  // カスタムタイトル編集ロジック（カスタムフックに委譲）
+  const {
+    editingId,
+    editValue,
+    editError,
+    editInputRef,
+    startEdit,
+    saveEdit,
+    cancelEdit,
+    handleKeyDown,
+    changeEditValue,
+  } = useFeedTitleEdit(onUpdateCustomTitle)
+
+  // フィードタイトルプレビュー機能（カスタムフックに委譲）
+  const {
+    previewTitle,
+    isLoadingPreview,
+    previewError,
+    fetchPreview,
+    clearPreview,
+  } = useFeedPreview()
 
   const maxSubscriptions = 100
   const isAtLimit = subscriptions.length >= maxSubscriptions
 
-  // リアルタイムURL検証
+  // リアルタイムURL検証とプレビュー取得
   useEffect(() => {
     if (url && !isValidFeedURL(url)) {
-      setError('無効なURLです。http://またはhttps://で始まるURLを入力してください')
+      setError(URL_ERROR_MESSAGES.INVALID_URL_DETAILED)
+      clearPreview()
     } else {
       setError(null)
+      // 有効なURLの場合はプレビューを取得
+      fetchPreview(url)
     }
-  }, [url])
+  }, [url, fetchPreview, clearPreview])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -32,7 +62,7 @@ export function FeedManager({ onAddFeed, onRemoveFeed, subscriptions }: FeedMana
     }
 
     if (!isValidFeedURL(url)) {
-      setError('無効なURLです')
+      setError(URL_ERROR_MESSAGES.INVALID_URL)
       return
     }
 
@@ -45,6 +75,7 @@ export function FeedManager({ onAddFeed, onRemoveFeed, subscriptions }: FeedMana
     onAddFeed(url.trim())
     setUrl('')
     setError(null)
+    clearPreview()
   }
 
   return (
@@ -72,6 +103,45 @@ export function FeedManager({ onAddFeed, onRemoveFeed, subscriptions }: FeedMana
               {error}
             </p>
           )}
+          {/* フィードタイトルプレビュー表示UI（ローディング・成功・エラー状態） */}
+          {!error && isLoadingPreview && (
+            <div
+              className="flex items-center gap-2 mt-2 px-3 py-2 bg-blue-50 rounded-md border border-blue-200"
+              role="status"
+              aria-live="polite"
+              aria-label="フィードタイトルを取得中"
+            >
+              <svg className="animate-spin h-4 w-4 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              <span className="text-sm text-blue-700">フィードタイトルを取得中...</span>
+            </div>
+          )}
+          {!error && previewTitle && !isLoadingPreview && (
+            <div
+              className="mt-2 px-3 py-2 bg-green-50 rounded-md border border-green-200"
+              role="status"
+              aria-live="polite"
+              aria-label={`プレビュー: ${previewTitle}`}
+            >
+              <p className="text-sm text-green-800">
+                <span className="font-semibold">プレビュー:</span> {previewTitle}
+              </p>
+            </div>
+          )}
+          {!error && previewError && !isLoadingPreview && (
+            <div
+              className="mt-2 px-3 py-2 bg-red-50 rounded-md border border-red-200"
+              role="alert"
+              aria-live="assertive"
+              aria-label={`エラー: ${previewError}`}
+            >
+              <p className="text-sm text-red-700">
+                <span className="font-semibold">エラー:</span> {previewError}
+              </p>
+            </div>
+          )}
         </div>
         <button
           type="submit"
@@ -97,39 +167,22 @@ export function FeedManager({ onAddFeed, onRemoveFeed, subscriptions }: FeedMana
 
           <div className="space-y-2">
             {subscriptions.map((subscription) => (
-              <div
+              <FeedSubscriptionItem
                 key={subscription.id}
-                className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200"
-              >
-                <div className="flex-1 min-w-0">
-                  <p className="font-medium text-gray-900 truncate">
-                    {subscription.title || subscription.url}
-                  </p>
-                  <p className="text-sm text-gray-500 truncate">
-                    {subscription.url}
-                  </p>
-                  {subscription.status === 'error' && (
-                    <p className="text-xs text-red-600 mt-1">
-                      エラー: 取得に失敗しました
-                    </p>
-                  )}
-                  {subscription.status === 'active' && subscription.lastFetchedAt && (
-                    <p className="text-xs text-green-600 mt-1">
-                      最終取得: {new Date(subscription.lastFetchedAt).toLocaleString('ja-JP')}
-                    </p>
-                  )}
-                </div>
-
-                {onRemoveFeed && (
-                  <button
-                    onClick={() => onRemoveFeed(subscription.id)}
-                    className="ml-3 px-3 py-1 text-sm text-red-600 hover:text-red-800 hover:bg-red-50 rounded transition-colors"
-                    aria-label="削除"
-                  >
-                    削除
-                  </button>
-                )}
-              </div>
+                subscription={subscription}
+                isEditing={editingId === subscription.id}
+                editValue={editValue}
+                editError={editError}
+                editInputRef={editInputRef}
+                onStartEdit={() => startEdit(subscription)}
+                onSave={() => saveEdit(subscription.id)}
+                onCancel={cancelEdit}
+                onRemove={() => onRemoveFeed?.(subscription.id)}
+                onChangeValue={changeEditValue}
+                onKeyDown={(e) => handleKeyDown(e, subscription.id)}
+                showEditButton={!!onUpdateCustomTitle}
+                showRemoveButton={!!onRemoveFeed}
+              />
             ))}
           </div>
         </div>

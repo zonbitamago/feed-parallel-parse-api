@@ -20,6 +20,7 @@ describe('storage', () => {
           id: '1',
           url: 'https://example.com/rss',
           title: 'Test Feed',
+          customTitle: null,
           subscribedAt: '2025-01-01T10:00:00Z',
           lastFetchedAt: null,
           status: 'active',
@@ -30,6 +31,56 @@ describe('storage', () => {
 
       const result = loadSubscriptions()
       expect(result).toEqual(subscriptions)
+    })
+
+    it('customTitleフィールドがない既存データを正規化する', () => {
+      // 既存データ（customTitleフィールドなし）
+      const oldSubscriptions = [
+        {
+          id: '1',
+          url: 'https://example.com/rss',
+          title: 'Test Feed',
+          subscribedAt: '2025-01-01T10:00:00Z',
+          lastFetchedAt: null,
+          status: 'active',
+        },
+      ]
+
+      localStorage.setItem('rss_reader_subscriptions', JSON.stringify({ subscriptions: oldSubscriptions }))
+
+      const result = loadSubscriptions()
+
+      // customTitleがnullとして正規化されることを確認
+      expect(result).toEqual([
+        {
+          id: '1',
+          url: 'https://example.com/rss',
+          title: 'Test Feed',
+          customTitle: null,
+          subscribedAt: '2025-01-01T10:00:00Z',
+          lastFetchedAt: null,
+          status: 'active',
+        },
+      ])
+    })
+
+    it('customTitleがundefinedの場合はnullに正規化する', () => {
+      const subscriptions = [
+        {
+          id: '1',
+          url: 'https://example.com/rss',
+          title: 'Test Feed',
+          customTitle: undefined,
+          subscribedAt: '2025-01-01T10:00:00Z',
+          lastFetchedAt: null,
+          status: 'active',
+        },
+      ]
+
+      localStorage.setItem('rss_reader_subscriptions', JSON.stringify({ subscriptions }))
+
+      const result = loadSubscriptions()
+      expect(result[0].customTitle).toBe(null)
     })
 
     it('無効なJSONを適切に処理する', () => {
@@ -46,6 +97,7 @@ describe('storage', () => {
           id: '1',
           url: 'https://example.com/rss',
           title: 'Test Feed',
+          customTitle: null,
           subscribedAt: '2025-01-01T10:00:00Z',
           lastFetchedAt: null,
           status: 'active',

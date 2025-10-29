@@ -12,7 +12,7 @@ describe('Subscription Persistence Integration', () => {
   it('購読をlocalStorageに永続化する', async () => {
     // 準備
     const user = userEvent.setup()
-    const { rerender } = render(<App />)
+    render(<App />)
 
     // 実行: フィードを追加
     const input = screen.getByPlaceholderText(/URL/i)

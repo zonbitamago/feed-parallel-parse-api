@@ -15,7 +15,7 @@ export function FeedContainer({ onRefreshReady }: FeedContainerProps) {
   const { state: subState, dispatch: subDispatch } = useSubscription()
   const { dispatch: articleDispatch } = useArticle()
   const { dispatch: uiDispatch } = useUI()
-  const { articles, errors, isLoading, fetchFeeds } = useFeedAPI()
+  const { articles, errors, isLoading, fetchFeeds, updatedSubscriptions } = useFeedAPI()
 
   // マウント時にlocalStorageから購読情報を読み込む
   useEffect(() => {
@@ -26,12 +26,12 @@ export function FeedContainer({ onRefreshReady }: FeedContainerProps) {
     }
   }, [subDispatch, uiDispatch])
 
-  // 購読が変更されたらフィードを取得
+  // 購読の数が変更されたらフィードを取得（titleの更新では再取得しない）
   useEffect(() => {
     if (subState.subscriptions.length > 0) {
       fetchFeeds(subState.subscriptions)
     }
-  }, [subState.subscriptions, fetchFeeds])
+  }, [subState.subscriptions.length, subState.subscriptions, fetchFeeds])
 
   // API結果が変更されたら記事Contextを更新
   useEffect(() => {
@@ -49,6 +49,35 @@ export function FeedContainer({ onRefreshReady }: FeedContainerProps) {
       articleDispatch({ type: 'ADD_ERROR', payload: error })
     })
   }, [errors, articleDispatch])
+
+  // フィード取得後にtitleを更新したSubscriptionを永続化
+  // 重要: titleのみが変更された場合は再フェッチを避けるため、subscriptionsオブジェクトへの依存を避ける
+  useEffect(() => {
+    if (updatedSubscriptions.length === 0) return
+
+    // タイトルが実際に変更されたSubscriptionのみを抽出
+    const changedSubscriptions = updatedSubscriptions.filter(updatedSub => {
+      const current = subState.subscriptions.find(s => s.id === updatedSub.id)
+      return current && current.title !== updatedSub.title
+    })
+
+    // 変更がない場合は何もしない（無限ループ防止）
+    if (changedSubscriptions.length === 0) return
+
+    // Contextを更新
+    changedSubscriptions.forEach(updatedSub => {
+      subDispatch({ type: 'UPDATE_SUBSCRIPTION', payload: updatedSub })
+    })
+
+    // localStorageを更新（マージ処理）
+    const mergedSubscriptions = subState.subscriptions.map(sub => {
+      const updated = updatedSubscriptions.find(u => u.id === sub.id)
+      return updated && updated.title !== sub.title ? updated : sub
+    })
+    saveSubscriptions(mergedSubscriptions)
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [updatedSubscriptions])
 
   const handleRefresh = useCallback(() => {
     if (subState.subscriptions.length > 0) {
@@ -71,6 +100,7 @@ export function FeedContainer({ onRefreshReady }: FeedContainerProps) {
       id: crypto.randomUUID(),
       url,
       title: null,
+      customTitle: null,
       subscribedAt: new Date().toISOString(),
       lastFetchedAt: null,
       status: 'active',
@@ -94,10 +124,29 @@ export function FeedContainer({ onRefreshReady }: FeedContainerProps) {
     }
   }
 
+  // カスタムタイトル更新ハンドラー
+  const handleUpdateCustomTitle = (id: string, customTitle: string) => {
+    const subscription = subState.subscriptions.find(sub => sub.id === id)
+    if (!subscription) return
+
+    const updatedSubscription: Subscription = {
+      ...subscription,
+      customTitle,
+    }
+
+    subDispatch({ type: 'UPDATE_SUBSCRIPTION', payload: updatedSubscription })
+
+    const updated = subState.subscriptions.map(sub =>
+      sub.id === id ? updatedSubscription : sub
+    )
+    saveSubscriptions(updated)
+  }
+
   return (
     <FeedManager
       onAddFeed={handleAddFeed}
       onRemoveFeed={handleRemoveFeed}
+      onUpdateCustomTitle={handleUpdateCustomTitle}
       subscriptions={subState.subscriptions}
     />
   )
