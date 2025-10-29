@@ -100,7 +100,7 @@ export function useFeedPreview() {
       setPreviewError(null)
 
       try {
-        const response = await parseFeeds([url])
+        const response = await parseFeeds([url], { signal: abortControllerRef.current.signal })
 
         // エラーがある場合
         if (response.errors.length > 0) {

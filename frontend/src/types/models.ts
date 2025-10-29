@@ -55,16 +55,16 @@ export function hasCustomTitle(subscription: Subscription): boolean {
 /**
  * カスタムタイトルのバリデーション
  */
-export function validateCustomTitle(title: string): { valid: boolean; error?: string } {
+export function validateCustomTitle(title: string): { valid: boolean; error?: string; trimmed: string } {
   const trimmed = title.trim();
 
   if (trimmed.length === 0) {
-    return { valid: false, error: TITLE_ERROR_MESSAGES.EMPTY_TITLE };
+    return { valid: false, error: TITLE_ERROR_MESSAGES.EMPTY_TITLE, trimmed };
   }
 
   if (trimmed.length > 200) {
-    return { valid: false, error: TITLE_ERROR_MESSAGES.TITLE_TOO_LONG };
+    return { valid: false, error: TITLE_ERROR_MESSAGES.TITLE_TOO_LONG, trimmed };
   }
 
-  return { valid: true };
+  return { valid: true, trimmed };
 }

@@ -17,13 +17,18 @@ export class FeedAPIError extends Error {
   }
 }
 
-export async function parseFeeds(urls: string[]): Promise<ParseResponse> {
+export async function parseFeeds(urls: string[], options?: { signal?: AbortSignal }): Promise<ParseResponse> {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), API_TIMEOUT);
 
+  // 外部からのAbortSignalがあれば、それをリスンする
+  if (options?.signal) {
+    options.signal.addEventListener('abort', () => controller.abort());
+  }
+
   try {
     const request: ParseRequest = { urls };
-    
+
     const response = await fetch(`${API_BASE_URL}/api/parse`, {
       method: 'POST',
       headers: {

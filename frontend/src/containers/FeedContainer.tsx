@@ -31,8 +31,7 @@ export function FeedContainer({ onRefreshReady }: FeedContainerProps) {
     if (subState.subscriptions.length > 0) {
       fetchFeeds(subState.subscriptions)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [subState.subscriptions.length])
+  }, [subState.subscriptions.length, subState.subscriptions, fetchFeeds])
 
   // API結果が変更されたら記事Contextを更新
   useEffect(() => {

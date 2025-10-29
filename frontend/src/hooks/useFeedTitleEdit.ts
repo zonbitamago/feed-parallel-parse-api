@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import type { Subscription } from '../types/models'
 import { getDisplayTitle, validateCustomTitle } from '../types/models'
 
@@ -18,16 +18,16 @@ export function useFeedTitleEdit(onUpdate?: (id: string, customTitle: string) =>
   /**
    * 編集モード開始
    */
-  const startEdit = (subscription: Subscription) => {
+  const startEdit = useCallback((subscription: Subscription) => {
     setEditingId(subscription.id)
     setEditValue(getDisplayTitle(subscription))
     setEditError(null)
-  }
+  }, [])
 
   /**
    * 編集保存
    */
-  const saveEdit = (id: string) => {
+  const saveEdit = useCallback((id: string) => {
     const validation = validateCustomTitle(editValue)
     if (!validation.valid) {
       setEditError(validation.error || null)
@@ -35,27 +35,27 @@ export function useFeedTitleEdit(onUpdate?: (id: string, customTitle: string) =>
     }
 
     if (onUpdate) {
-      onUpdate(id, editValue.trim())
+      onUpdate(id, validation.trimmed)
     }
 
     setEditingId(null)
     setEditValue('')
     setEditError(null)
-  }
+  }, [editValue, onUpdate])
 
   /**
    * 編集キャンセル
    */
-  const cancelEdit = () => {
+  const cancelEdit = useCallback(() => {
     setEditingId(null)
     setEditValue('')
     setEditError(null)
-  }
+  }, [])
 
   /**
    * キーボード操作ハンドラー（Enter: 保存、Escape: キャンセル）
    */
-  const handleKeyDown = (e: React.KeyboardEvent, id: string) => {
+  const handleKeyDown = useCallback((e: React.KeyboardEvent, id: string) => {
     if (e.key === 'Enter') {
       e.preventDefault()
       saveEdit(id)
@@ -63,14 +63,14 @@ export function useFeedTitleEdit(onUpdate?: (id: string, customTitle: string) =>
       e.preventDefault()
       cancelEdit()
     }
-  }
+  }, [saveEdit, cancelEdit])
 
   /**
    * 編集値変更ハンドラー
    */
-  const changeEditValue = (value: string) => {
+  const changeEditValue = useCallback((value: string) => {
     setEditValue(value)
-  }
+  }, [])
 
   // 編集モード開始時にinputにフォーカス
   useEffect(() => {
