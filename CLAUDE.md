@@ -10,6 +10,7 @@ Auto-generated from all feature plans. Last updated: 2025-10-27
 - TypeScript 5.9.3 (Frontend), GitHub Actions YAML (CI設定) + React 19.1.1, Vite 7.1.7, Vitest 4.0.3, @testing-library/react 16.3.0 (001-frontend-ci-tests)
 - TypeScript 5.9.3, React 19.1.1 + Vite 7.1.7, TailwindCSS 4.x, date-fns 4.x (008-feed-url-display)
 - localStorage（ブラウザのクライアントサイドストレージ） (008-feed-url-display)
+- TypeScript 5.9.3 + React 19.1.1 + Vite 7.1.7（ビルド）, date-fns 4.x（日付処理）, TailwindCSS 4.x（スタイリング） (009-fix-excessive-requests)
 
 - Go 1.2x + github.com/mmcdole/gofeed, 標準ライブラリ encoding/xml (006-rss-format-support)
 
@@ -29,9 +30,9 @@ tests/
 Go 1.2x: Follow standard conventions
 
 ## Recent Changes
+- 009-fix-excessive-requests: Added TypeScript 5.9.3 + React 19.1.1 + Vite 7.1.7（ビルド）, date-fns 4.x（日付処理）, TailwindCSS 4.x（スタイリング）
 - 008-feed-url-display: Added TypeScript 5.9.3, React 19.1.1 + Vite 7.1.7, TailwindCSS 4.x, date-fns 4.x
 - 001-frontend-ci-tests: Added TypeScript 5.9.3 (Frontend), GitHub Actions YAML (CI設定) + React 19.1.1, Vite 7.1.7, Vitest 4.0.3, @testing-library/react 16.3.0
-- 007-real-http-fetch: Added Go 1.25.1
 
 
 <!-- MANUAL ADDITIONS START -->
