@@ -57,16 +57,25 @@ Go 1.2x: Follow standard conventions
 
 ### watchモード禁止
 
-- ❌ **禁止**: `npm test` (watchモード)
-- ✅ **推奨**: `npm test -- --run` (1回限りの実行)
+このプロジェクトのpackage.jsonは既にCPU負荷対策済みです：
+
+```json
+"scripts": {
+  "test": "vitest run",        // デフォルトで1回限りの実行
+  "test:watch": "vitest"       // watchモードは明示的に分離
+}
+```
+
+- ✅ **推奨**: `npm test` (1回限りの実行、CPU負荷低)
+- ⚠️ **注意**: `npm run test:watch` (watchモード、CPU負荷高)
 - **理由**: watchモードはファイル監視によりCPU負荷が高くなり、開発マシンのパフォーマンスを低下させる
 
 ### その他のCPU負荷対策
 
 - **並列実行の制御**: 大規模なテストスイートでは`--maxWorkers`オプションで並列数を制限
-  - 例: `npm test -- --run --maxWorkers=2`
+  - 例: `npm test -- --maxWorkers=2`
 - **選択的テスト実行**: 開発中は変更したファイルのテストのみを実行
-  - 例: `npm test -- --run FeedManager.test.tsx`
+  - 例: `npm test FeedManager.test.tsx`
   - 全テストはコミット前またはCI/CDで実行
 
 ## ドキュメント維持ルール（重要）
