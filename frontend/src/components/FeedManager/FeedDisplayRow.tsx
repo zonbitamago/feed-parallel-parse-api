@@ -12,12 +12,14 @@ interface FeedDisplayRowProps {
  * フィードのタイトル、URL、ステータスを表示
  */
 export function FeedDisplayRow({ subscription }: FeedDisplayRowProps) {
+  const displayTitle = getDisplayTitle(subscription)
+
   return (
     <>
-      <p className="font-medium text-gray-900 truncate">
-        {getDisplayTitle(subscription)}
+      <p className="font-medium text-gray-900 truncate" title={displayTitle}>
+        {displayTitle}
       </p>
-      <p className="text-sm text-gray-500 truncate">
+      <p className="text-sm text-gray-500 truncate" title={subscription.url}>
         {subscription.url}
       </p>
       {subscription.status === 'error' && (
