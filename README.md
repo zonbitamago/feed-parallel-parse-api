@@ -9,7 +9,9 @@
 
 仕様・テスト・実装は完全TDD原則に準拠し、すべて日本語で明示されています。
 
-**本番環境**: https://feed-parallel-parse-api.vercel.app/
+**本番環境**: <https://feed-parallel-parse-api.vercel.app/>
+
+**Vercelダッシュボード**: <https://vercel.com/zonbitamago/feed-parallel-parse-api>
 
 ## プロジェクト構成
 
@@ -27,6 +29,7 @@ feed-parallel-parse-api/
 ### 特徴
 
 - ✅ **統合フィード表示**: 複数のRSSフィードをまとめて閲覧
+- ✅ **フィード識別表示**: 自動取得されたフィードタイトル表示、手動編集にも対応
 - ✅ **リアルタイム検索**: 記事のタイトルや要約から素早く検索（300msデバウンス）
 - ✅ **フィード購読管理**: URL追加・削除、最大100件まで購読可能
 - ✅ **自動更新**: ワンクリックで全フィードを更新
@@ -41,7 +44,8 @@ feed-parallel-parse-api/
 - TailwindCSS 4.1（スタイリング）
 - Vitest 4.0 + React Testing Library 16.3（テスト）
 - react-window 2.2（仮想スクロール）
-- **テストカバレッジ**: 99% (96/97 テスト合格)
+- date-fns 4.1（日付処理）
+- **テストカバレッジ**: 25ファイル・153テスト合格（1スキップ）
 
 ### セットアップ・開発
 
@@ -164,8 +168,8 @@ go test ./...
 
 **テストジョブ**:
 
-- ✅ **Backend Tests (Go)**: Go 1.25でのユニット・統合テスト（約49秒）
-- ✅ **Frontend Tests (Vitest)**: React + TypeScript のユニットテスト（約35秒、96テスト合格）
+- ✅ **Backend Tests (Go)**: Go 1.25.1でのユニット・統合テスト（約49秒）
+- ✅ **Frontend Tests (Vitest)**: React + TypeScript のユニットテスト（約35秒、153テスト合格）
 
 **Branch Protection**:
 
