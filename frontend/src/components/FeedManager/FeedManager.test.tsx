@@ -170,7 +170,7 @@ describe('FeedManager', () => {
 
   // User Story 2: カスタムタイトル編集機能のテスト (T037-T039)
   describe('カスタムタイトル編集', () => {
-    it('T037: 編集ボタンをクリックすると編集モードに切り替わる', async () => {
+    it('編集ボタンをクリックすると編集モードに切り替わる', async () => {
       // 準備
       const user = userEvent.setup()
       const onAdd = vi.fn()
@@ -214,7 +214,7 @@ describe('FeedManager', () => {
       expect(screen.queryByRole('button', { name: /編集/i })).not.toBeInTheDocument()
     })
 
-    it('T038: 編集してタイトルを保存できる', async () => {
+    it('編集してタイトルを保存できる', async () => {
       // 準備
       const user = userEvent.setup()
       const onAdd = vi.fn()
@@ -261,7 +261,7 @@ describe('FeedManager', () => {
       expect(screen.getByRole('button', { name: /編集/i })).toBeInTheDocument()
     })
 
-    it('T038-validation: 空文字での保存はエラーメッセージを表示', async () => {
+    it('空文字での保存はエラーメッセージを表示', async () => {
       // 準備
       const user = userEvent.setup()
       const onAdd = vi.fn()
@@ -307,7 +307,7 @@ describe('FeedManager', () => {
       expect(onUpdateCustomTitle).not.toHaveBeenCalled()
     })
 
-    it('T039: キャンセルボタンで編集を中止できる', async () => {
+    it('キャンセルボタンで編集を中止できる', async () => {
       // 準備
       const user = userEvent.setup()
       const onAdd = vi.fn()
@@ -355,7 +355,7 @@ describe('FeedManager', () => {
       expect(screen.getByRole('button', { name: /編集/i })).toBeInTheDocument()
     })
 
-    it('T039-keyboard: Escapeキーで編集をキャンセルできる', async () => {
+    it('Escapeキーで編集をキャンセルできる', async () => {
       // 準備
       const user = userEvent.setup()
       const onAdd = vi.fn()
@@ -399,7 +399,7 @@ describe('FeedManager', () => {
       expect(screen.getByRole('button', { name: /編集/i })).toBeInTheDocument()
     })
 
-    it('T039-keyboard: Enterキーで保存できる', async () => {
+    it('Enterキーで保存できる', async () => {
       // 準備
       const user = userEvent.setup()
       const onAdd = vi.fn()
@@ -441,7 +441,7 @@ describe('FeedManager', () => {
   })
 
   describe('フィードプレビュー (User Story 3)', () => {
-    it('T060: URL入力時にフィードタイトルのプレビューが表示される', async () => {
+    it('URL入力時にフィードタイトルのプレビューが表示される', async () => {
       // 準備
       const user = userEvent.setup()
       const onAdd = vi.fn()
@@ -461,7 +461,7 @@ describe('FeedManager', () => {
       expect(screen.getByText(/Preview Blog Title/i)).toBeInTheDocument()
     })
 
-    it('T060-loading: プレビュー取得中はローディング表示が出る', async () => {
+    it('プレビュー取得中はローディング表示が出る', async () => {
       // 準備: APIレスポンスを遅延させる
       server.use(
         http.post('*/api/parse', async () => {
@@ -494,7 +494,7 @@ describe('FeedManager', () => {
       }, { timeout: 1000 })
     })
 
-    it('T061: プレビュー取得に失敗した場合はエラーメッセージが表示される', async () => {
+    it('プレビュー取得に失敗した場合はエラーメッセージが表示される', async () => {
       // 準備: エラーレスポンスをモック
       server.use(
         http.post('*/api/parse', () => {
@@ -525,7 +525,7 @@ describe('FeedManager', () => {
       }, { timeout: 3000 })
     })
 
-    it('T061-clear: URL入力をクリアするとプレビューも消える', async () => {
+    it('URL入力をクリアするとプレビューも消える', async () => {
       // 準備
       const user = userEvent.setup()
       const onAdd = vi.fn()

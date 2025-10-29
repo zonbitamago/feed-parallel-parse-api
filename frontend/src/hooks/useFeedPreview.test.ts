@@ -37,7 +37,7 @@ afterEach(() => {
 afterAll(() => server.close())
 
 describe('useFeedPreview', () => {
-  it('T058: 有効なURLを入力するとフィードタイトルのプレビューを取得する', async () => {
+  it('有効なURLを入力するとフィードタイトルのプレビューを取得する', async () => {
     // 準備
     const { result } = renderHook(() => useFeedPreview())
 
@@ -59,7 +59,7 @@ describe('useFeedPreview', () => {
     expect(result.current.previewError).toBeNull()
   })
 
-  it('T058-debounce: URL入力をデバウンスして不要なAPI呼び出しを削減する', async () => {
+  it('URL入力をデバウンスして不要なAPI呼び出しを削減する', async () => {
     // モックサーバーの呼び出し回数をカウント
     let callCount = 0
     server.use(
@@ -97,7 +97,7 @@ describe('useFeedPreview', () => {
     expect(callCount).toBe(1)
   })
 
-  it('T059: 無効なURLや存在しないフィードの場合はエラーを返す', async () => {
+  it('無効なURLや存在しないフィードの場合はエラーを返す', async () => {
     // 準備: エラーレスポンスをモック
     server.use(
       http.post('*/api/parse', () => {
@@ -128,7 +128,7 @@ describe('useFeedPreview', () => {
     expect(result.current.isLoadingPreview).toBe(false)
   })
 
-  it('T059-network: ネットワークエラーが発生した場合はエラーを返す', async () => {
+  it('ネットワークエラーが発生した場合はエラーを返す', async () => {
     // 準備: ネットワークエラーをモック
     server.use(
       http.post('*/api/parse', () => {
