@@ -394,6 +394,21 @@ interface Article {
 - 各フィードのタイムアウト: 10秒
 - タイトルキャッシュTTL: 10分
 
+#### フィード再フェッチの最適化
+
+**問題**: フィードタイトル更新時に不要なAPIリクエストが発生していた
+
+**解決**: `FeedContainer`の`useEffect`依存配列を最適化
+- **変更前**: `[subState.subscriptions.length, subState.subscriptions, fetchFeeds]`
+- **変更後**: `[subState.subscriptions.length, fetchFeeds]`
+- **効果**: タイトル更新時（customTitle編集、自動取得されたtitle更新）に再フェッチが発生しない
+- **動作保証**: フィード追加・削除時のみAPIリクエストを実行（`subscriptions.length`の変化を監視）
+
+この最適化により、以下のシナリオで不要なAPIリクエストが削減されます：
+- カスタムタイトルの編集・保存
+- フィード追加時の自動タイトル取得後の更新
+- ページリロード時のタイトル反映
+
 ---
 
 ## 9. UI/UX設計
