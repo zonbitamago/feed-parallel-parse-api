@@ -1,7 +1,29 @@
-import { describe, it, expect, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { describe, it, expect, vi, beforeAll, afterAll, afterEach } from 'vitest'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { http, HttpResponse } from 'msw'
+import { setupServer } from 'msw/node'
 import { FeedManager } from './FeedManager'
+
+// MSWサーバーのセットアップ（プレビュー機能用）
+const server = setupServer(
+  http.post('*/api/parse', () => {
+    return HttpResponse.json({
+      feeds: [
+        {
+          title: 'Preview Blog Title',
+          link: 'https://example.com/feed',
+          articles: [],
+        },
+      ],
+      errors: [],
+    })
+  })
+)
+
+beforeAll(() => server.listen())
+afterEach(() => server.resetHandlers())
+afterAll(() => server.close())
 
 describe('FeedManager', () => {
   it('URL入力欄をレンダリングする', () => {
@@ -415,6 +437,116 @@ describe('FeedManager', () => {
 
       // 検証: onUpdateCustomTitleが呼ばれる
       expect(onUpdateCustomTitle).toHaveBeenCalledWith('1', 'New Title')
+    })
+  })
+
+  describe('フィードプレビュー (User Story 3)', () => {
+    it('T060: URL入力時にフィードタイトルのプレビューが表示される', async () => {
+      // 準備
+      const user = userEvent.setup()
+      const onAdd = vi.fn()
+
+      render(<FeedManager onAddFeed={onAdd} subscriptions={[]} />)
+
+      // 実行: 有効なURLを入力
+      const input = screen.getByPlaceholderText(/RSSフィードのURLを入力/i)
+      await user.type(input, 'https://example.com/feed')
+
+      // 検証: プレビューが表示される（デバウンス後）
+      await waitFor(() => {
+        expect(screen.getByText(/プレビュー:/i)).toBeInTheDocument()
+      }, { timeout: 3000 })
+
+      // 検証: プレビュータイトルが表示される
+      expect(screen.getByText(/Preview Blog Title/i)).toBeInTheDocument()
+    })
+
+    it('T060-loading: プレビュー取得中はローディング表示が出る', async () => {
+      // 準備: APIレスポンスを遅延させる
+      server.use(
+        http.post('*/api/parse', async () => {
+          await new Promise(resolve => setTimeout(resolve, 1000))
+          return HttpResponse.json({
+            feeds: [
+              {
+                title: 'Preview Blog Title',
+                link: 'https://example.com/feed',
+                articles: [],
+              },
+            ],
+            errors: [],
+          })
+        })
+      )
+
+      const user = userEvent.setup()
+      const onAdd = vi.fn()
+
+      render(<FeedManager onAddFeed={onAdd} subscriptions={[]} />)
+
+      // 実行: URLを入力
+      const input = screen.getByPlaceholderText(/RSSフィードのURLを入力/i)
+      await user.type(input, 'https://example.com/feed')
+
+      // 検証: ローディング表示が出る（デバウンス500ms + レスポンス遅延1000ms）
+      await waitFor(() => {
+        expect(screen.getByText(/フィードタイトルを取得中/i)).toBeInTheDocument()
+      }, { timeout: 1000 })
+    })
+
+    it('T061: プレビュー取得に失敗した場合はエラーメッセージが表示される', async () => {
+      // 準備: エラーレスポンスをモック
+      server.use(
+        http.post('*/api/parse', () => {
+          return HttpResponse.json({
+            feeds: [],
+            errors: [
+              {
+                url: 'https://invalid-feed.com/rss',
+                message: 'フィードの取得に失敗しました',
+              },
+            ],
+          })
+        })
+      )
+
+      const user = userEvent.setup()
+      const onAdd = vi.fn()
+
+      render(<FeedManager onAddFeed={onAdd} subscriptions={[]} />)
+
+      // 実行: 無効なURLを入力
+      const input = screen.getByPlaceholderText(/RSSフィードのURLを入力/i)
+      await user.type(input, 'https://invalid-feed.com/rss')
+
+      // 検証: エラーメッセージが表示される
+      await waitFor(() => {
+        expect(screen.getByText(/フィードの取得に失敗しました/i)).toBeInTheDocument()
+      }, { timeout: 3000 })
+    })
+
+    it('T061-clear: URL入力をクリアするとプレビューも消える', async () => {
+      // 準備
+      const user = userEvent.setup()
+      const onAdd = vi.fn()
+
+      render(<FeedManager onAddFeed={onAdd} subscriptions={[]} />)
+
+      // 実行: URLを入力してプレビューを表示
+      const input = screen.getByPlaceholderText(/RSSフィードのURLを入力/i)
+      await user.type(input, 'https://example.com/feed')
+
+      await waitFor(() => {
+        expect(screen.getByText(/プレビュー:/i)).toBeInTheDocument()
+      }, { timeout: 3000 })
+
+      // 実行: URLをクリア
+      await user.clear(input)
+
+      // 検証: プレビューが消える
+      await waitFor(() => {
+        expect(screen.queryByText(/プレビュー:/i)).not.toBeInTheDocument()
+      })
     })
   })
 })
