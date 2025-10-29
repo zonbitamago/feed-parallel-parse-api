@@ -80,7 +80,7 @@ describe('FeedManager', () => {
     expect(screen.getByText(/上限/i)).toBeInTheDocument()
   })
 
-  // US2: 購読管理機能のテスト
+  // 購読管理機能のテスト
   it('購読リストを表示する', () => {
     const onAdd = vi.fn()
     const onRemove = vi.fn()

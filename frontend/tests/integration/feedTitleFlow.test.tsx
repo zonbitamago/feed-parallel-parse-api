@@ -6,12 +6,12 @@ import { setupServer } from 'msw/node'
 import App from '../../src/App'
 
 /**
- * User Story 1: フィードタイトルの自動取得と表示
+ * フィードタイトルの自動取得と表示
  *
  * 統合テスト:
- * - T031: フィード追加→タイトル表示確認
- * - T032: リロード後の永続化確認
- * - T033: HTMLエンティティを含むタイトルの処理確認
+ * - フィード追加からタイトル表示までの確認
+ * - リロード後の永続化確認
+ * - HTMLエンティティを含むタイトルの処理確認
  */
 
 const server = setupServer(
@@ -44,7 +44,7 @@ afterEach(() => {
 afterAll(() => server.close())
 
 describe('Feed Title Flow Integration', () => {
-  it('T031: フィード追加時にタイトルが自動取得され表示される', async () => {
+  it('フィード追加時にタイトルが自動取得され表示される', async () => {
     // 準備
     const user = userEvent.setup()
     render(<App />)
@@ -69,7 +69,7 @@ describe('Feed Title Flow Integration', () => {
     expect(screen.getByText('Breaking News')).toBeInTheDocument()
   })
 
-  it('T032: リロード後もフィードタイトルが永続化されている', async () => {
+  it('リロード後もフィードタイトルが永続化されている', async () => {
     // 準備: 最初のレンダリングでフィードを追加
     const user = userEvent.setup()
     const { unmount } = render(<App />)
@@ -101,7 +101,7 @@ describe('Feed Title Flow Integration', () => {
     expect(screen.getByText('https://example.com/feed')).toBeInTheDocument()
   })
 
-  it('T033: HTMLエンティティを含むタイトルが正しく処理される', async () => {
+  it('HTMLエンティティを含むタイトルが正しく処理される', async () => {
     // 準備: HTMLエンティティを含むレスポンスをモック
     server.use(
       http.post('*/api/parse', () => {
@@ -239,15 +239,15 @@ describe('Feed Title Flow Integration', () => {
 })
 
 /**
- * User Story 2: フィード表示名の手動編集
+ * フィード表示名の手動編集
  *
  * 統合テスト:
- * - T055: カスタムタイトル編集フロー
- * - T056: 空文字バリデーションエラー
- * - T057: キャンセル操作
+ * - カスタムタイトル編集の完全なフロー
+ * - 空文字バリデーションエラー
+ * - キャンセル操作
  */
 describe('Custom Title Edit Flow Integration', () => {
-  it('T055: カスタムタイトルを編集→保存→表示確認の完全なフロー', async () => {
+  it('カスタムタイトルを編集→保存→表示確認の完全なフロー', async () => {
     // 準備: フィードを追加
     const user = userEvent.setup()
     render(<App />)
@@ -297,7 +297,7 @@ describe('Custom Title Edit Flow Integration', () => {
     expect(screen.getByRole('button', { name: /編集/i })).toBeInTheDocument()
   })
 
-  it('T056: 空文字で保存しようとするとバリデーションエラーが表示される', async () => {
+  it('空文字で保存しようとするとバリデーションエラーが表示される', async () => {
     // 準備: フィードを追加
     const user = userEvent.setup()
     render(<App />)
@@ -336,7 +336,7 @@ describe('Custom Title Edit Flow Integration', () => {
     expect(screen.getAllByText('Tech News Blog').length).toBeGreaterThanOrEqual(1)
   })
 
-  it('T057: キャンセルボタンで編集を中止できる', async () => {
+  it('キャンセルボタンで編集を中止できる', async () => {
     // 準備: フィードを追加
     const user = userEvent.setup()
     render(<App />)
@@ -379,7 +379,7 @@ describe('Custom Title Edit Flow Integration', () => {
     expect(screen.queryByText('This Should Not Be Saved')).not.toBeInTheDocument()
   })
 
-  it('T057-keyboard: Escapeキーで編集を中止できる', async () => {
+  it('Escapeキーで編集を中止できる', async () => {
     // 準備: フィードを追加
     const user = userEvent.setup()
     render(<App />)

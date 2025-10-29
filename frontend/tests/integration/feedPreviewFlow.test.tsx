@@ -6,10 +6,10 @@ import { setupServer } from 'msw/node'
 import App from '../../src/App'
 
 /**
- * User Story 3: フィード追加時のタイトルプレビュー - 統合テスト
+ * フィード追加時のタイトルプレビュー - 統合テスト
  *
- * T071: プレビュー表示→フィード追加フロー
- * T072: 無効なURLでのプレビューエラー
+ * プレビュー表示からフィード追加までの完全なフロー
+ * 無効なURLでのプレビューエラー処理
  */
 
 const server = setupServer(
@@ -41,8 +41,8 @@ afterEach(() => {
 })
 afterAll(() => server.close())
 
-describe('フィードプレビューフロー統合テスト (User Story 3)', () => {
-  it('T071: URL入力→プレビュー表示→フィード追加の一連のフロー', async () => {
+describe('フィードプレビューフロー統合テスト', () => {
+  it('URL入力→プレビュー表示→フィード追加の一連のフロー', async () => {
     // 準備
     const user = userEvent.setup()
     render(<App />)
@@ -87,7 +87,7 @@ describe('フィードプレビューフロー統合テスト (User Story 3)', (
     expect(screen.getByText(/購読中: 1/i)).toBeInTheDocument()
   })
 
-  it('T072: 無効なURLでプレビューエラーが表示されるが、追加は試行できる', async () => {
+  it('無効なURLでプレビューエラーが表示されるが、追加は試行できる', async () => {
     // 準備: 常にエラーレスポンスをモック
     server.use(
       http.post('*/api/parse', () => {
@@ -144,7 +144,7 @@ describe('フィードプレビューフロー統合テスト (User Story 3)', (
     expect(screen.getAllByText(/invalid-feed.example.com/i).length).toBeGreaterThan(0)
   })
 
-  it('T071-extra: URL入力中にプレビューがデバウンスされることを確認', async () => {
+  it('URL入力中にプレビューがデバウンスされることを確認', async () => {
     // APIコールカウンター
     let apiCallCount = 0
     server.use(
@@ -183,7 +183,7 @@ describe('フィードプレビューフロー統合テスト (User Story 3)', (
     expect(apiCallCount).toBe(1)
   })
 
-  it('T072-extra: URL変更時に古いプレビューがクリアされる', async () => {
+  it('URL変更時に古いプレビューがクリアされる', async () => {
     const user = userEvent.setup()
     render(<App />)
 
