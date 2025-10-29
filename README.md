@@ -181,6 +181,7 @@ go test ./...
 - TDD 原則（テスト → 実装 → 検証）
 - Speckit で仕様・タスク・テスト・ドキュメントを一元管理・自動生成
 - OpenAPI/CI/CD による API 定義書自動生成・参照性担保
+- **システム仕様書（SPECIFICATION.md）の維持**: PR作成時に必ず更新し、最新の機能を反映
 - AI アシスタント:
   - ローカル開発: Claude Code ([CLAUDE.md](CLAUDE.md))
   - PR レビュー: GitHub Copilot ([.github/copilot-instructions.md](.github/copilot-instructions.md))
