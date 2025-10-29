@@ -11,7 +11,7 @@
 
 **本番環境**: <https://feed-parallel-parse-api.vercel.app/>
 
-**Vercelダッシュボード**: <https://vercel.com/zonbitamago/feed-parallel-parse-api>
+**Vercelダッシュボード**: <https://vercel.com/zonbitamagos-projects/feed-parallel-parse-api>
 
 ## プロジェクト構成
 
