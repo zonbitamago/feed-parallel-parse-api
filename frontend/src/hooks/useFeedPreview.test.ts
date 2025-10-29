@@ -5,11 +5,13 @@ import { setupServer } from 'msw/node'
 import { useFeedPreview } from './useFeedPreview'
 
 /**
- * User Story 3: フィード追加時のタイトルプレビュー
+ * useFeedPreview カスタムフックのテスト
  *
- * useFeedPreview()カスタムフックのテスト:
- * - T058: プレビュー取得成功
- * - T059: プレビュー取得失敗
+ * フィードタイトルプレビュー機能のユニットテスト:
+ * - プレビュー取得成功
+ * - プレビュー取得失敗（無効URL、ネットワークエラー）
+ * - デバウンス処理（500ms遅延）
+ * - AbortControllerによるリクエストキャンセル
  */
 
 const server = setupServer(

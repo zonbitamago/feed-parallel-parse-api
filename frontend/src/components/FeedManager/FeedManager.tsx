@@ -17,7 +17,7 @@ export function FeedManager({ onAddFeed, onRemoveFeed, onUpdateCustomTitle, subs
   const [url, setUrl] = useState('')
   const [error, setError] = useState<string | null>(null)
 
-  // T051: 編集ロジックをカスタムフックに委譲
+  // カスタムタイトル編集ロジック（カスタムフックに委譲）
   const {
     editingId,
     editValue,
@@ -30,7 +30,7 @@ export function FeedManager({ onAddFeed, onRemoveFeed, onUpdateCustomTitle, subs
     changeEditValue,
   } = useFeedTitleEdit(onUpdateCustomTitle)
 
-  // T064: プレビュー機能をカスタムフックに委譲
+  // フィードタイトルプレビュー機能（カスタムフックに委譲）
   const {
     previewTitle,
     isLoadingPreview,
@@ -103,7 +103,7 @@ export function FeedManager({ onAddFeed, onRemoveFeed, onUpdateCustomTitle, subs
               {error}
             </p>
           )}
-          {/* T065-T066-T069-T073: プレビュー表示UI（成功・ローディング・エラー） */}
+          {/* フィードタイトルプレビュー表示UI（ローディング・成功・エラー状態） */}
           {!error && isLoadingPreview && (
             <div
               className="flex items-center gap-2 mt-2 px-3 py-2 bg-blue-50 rounded-md border border-blue-200"
