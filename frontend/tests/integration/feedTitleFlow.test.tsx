@@ -15,12 +15,15 @@ import App from '../../src/App'
  */
 
 const server = setupServer(
-  http.post('*/api/parse', () => {
-    return HttpResponse.json({
-      feeds: [
-        {
+  http.post('*/api/parse', async ({ request }) => {
+    const body = await request.json() as { urls: string[] }
+
+    // URLに基づいて適切なレスポンスを返す
+    const feeds = body.urls.map(url => {
+      if (url.includes('example.com/feed')) {
+        return {
           title: 'Tech News Blog',
-          link: 'https://example.com/feed',
+          link: url,
           articles: [
             {
               title: 'Breaking News',
@@ -29,8 +32,17 @@ const server = setupServer(
               summary: 'Latest tech news',
             },
           ],
-        },
-      ],
+        }
+      }
+      return {
+        title: 'Unknown Feed',
+        link: url,
+        articles: [],
+      }
+    })
+
+    return HttpResponse.json({
+      feeds,
       errors: [],
     })
   })
@@ -65,8 +77,10 @@ describe('Feed Title Flow Integration', () => {
     // 検証: URLも副次的に表示される
     expect(screen.getByText('https://example.com/feed')).toBeInTheDocument()
 
-    // 検証: 記事も表示される
-    expect(screen.getByText('Breaking News')).toBeInTheDocument()
+    // 検証: 記事も表示される（記事取得は非同期で少し遅れる）
+    await waitFor(() => {
+      expect(screen.getByText('Breaking News')).toBeInTheDocument()
+    }, { timeout: 3000 })
   })
 
   it('リロード後もフィードタイトルが永続化されている', async () => {
