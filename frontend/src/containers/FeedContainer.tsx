@@ -29,12 +29,15 @@ export function FeedContainer({ onRefreshReady }: FeedContainerProps) {
     }
   }, [subDispatch, uiDispatch])
 
-  // 購読の数が変更されたらフィードを取得（titleの更新では再取得しない）
+  // 購読の数が変更されたらフィードを取得
+  // 注: 依存配列にsubState.subscriptionsではなくlengthのみを指定することで、
+  // タイトル更新時の不要な再フェッチを防止（フィード追加・削除時のみ実行）
   useEffect(() => {
     if (subState.subscriptions.length > 0) {
       fetchFeeds(subState.subscriptions)
     }
-  }, [subState.subscriptions.length, subState.subscriptions, fetchFeeds])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [subState.subscriptions.length, fetchFeeds])
 
   // API結果が変更されたら記事Contextを更新
   useEffect(() => {
