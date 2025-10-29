@@ -36,6 +36,11 @@ feed-parallel-parse-api/
 - ✅ **仮想スクロール**: 大量記事の高速表示（50件ずつ遅延ロード）
 - ✅ **アクセシビリティ**: ARIA属性、キーボードナビゲーション完備
 - ✅ **レスポンシブデザイン**: モバイル・デスクトップ対応
+- ✅ **PWA対応**: デスクトップアプリとしてインストール可能
+  - オフライン動作（キャッシュファースト戦略）
+  - ネットワーク状態の自動検出と通知
+  - Service Worker自動更新検出
+  - 専用アプリアイコン（3サイズ）
 
 ### 技術スタック
 
@@ -45,7 +50,9 @@ feed-parallel-parse-api/
 - Vitest 4.0 + React Testing Library 16.3（テスト）
 - react-window 2.2（仮想スクロール）
 - date-fns 4.1（日付処理）
-- **テストカバレッジ**: 25ファイル・153テスト合格（1スキップ）
+- vite-plugin-pwa 1.1（PWA対応）
+- workbox-window（Service Worker管理）
+- **テストカバレッジ**: 33ファイル・188テスト合格（99.0%、1スキップ）
 
 ### セットアップ・開発
 
@@ -169,7 +176,7 @@ go test ./...
 **テストジョブ**:
 
 - ✅ **Backend Tests (Go)**: Go 1.25.1でのユニット・統合テスト（約49秒）
-- ✅ **Frontend Tests (Vitest)**: React + TypeScript のユニットテスト（約35秒、153テスト合格）
+- ✅ **Frontend Tests (Vitest)**: React + TypeScript のユニットテスト（約35秒、188テスト合格）
 
 **Branch Protection**:
 

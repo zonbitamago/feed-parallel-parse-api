@@ -12,6 +12,8 @@ Auto-generated from all feature plans. Last updated: 2025-10-27
 - localStorage（ブラウザのクライアントサイドストレージ） (008-feed-url-display)
 - TypeScript 5.9.3 + React 19.1.1 + Vite 7.1.7（ビルド）, date-fns 4.x（日付処理）, TailwindCSS 4.x（スタイリング） (009-fix-excessive-requests)
 - TypeScript 5.9.3 + React 19.1.1, Vite 7.1.7 (010-fix-useeffect-deps)
+- TypeScript 5.9.3, React 19.1.1 + Vite 7.1.7（ビルドツール）, vite-plugin-pwa（PWAプラグイン）, Workbox（Service Workerライブラリ） (011-pwa)
+- localStorage（既存のフィード購読データ）, Cache Storage API（Service Workerによるキャッシュ管理） (011-pwa)
 
 - Go 1.2x + github.com/mmcdole/gofeed, 標準ライブラリ encoding/xml (006-rss-format-support)
 
@@ -31,9 +33,9 @@ tests/
 Go 1.2x: Follow standard conventions
 
 ## Recent Changes
+- 011-pwa: Added TypeScript 5.9.3, React 19.1.1 + Vite 7.1.7（ビルドツール）, vite-plugin-pwa（PWAプラグイン）, Workbox（Service Workerライブラリ）
 - 010-fix-useeffect-deps: Added TypeScript 5.9.3 + React 19.1.1, Vite 7.1.7
 - 009-fix-excessive-requests: Added TypeScript 5.9.3 + React 19.1.1 + Vite 7.1.7（ビルド）, date-fns 4.x（日付処理）, TailwindCSS 4.x（スタイリング）
-- 008-feed-url-display: Added TypeScript 5.9.3, React 19.1.1 + Vite 7.1.7, TailwindCSS 4.x, date-fns 4.x
 
 
 <!-- MANUAL ADDITIONS START -->
@@ -128,9 +130,30 @@ PR作成前
 
 ### PR作成前チェックリスト
 
-- [ ] SPECIFICATION.mdを更新した
-- [ ] README.md更新の必要性を判断フローで確認した
-- [ ] 必要に応じてREADME.mdを更新した
-- [ ] 最終更新日を更新した
+**重要**: これらは必須確認項目です。全てチェックしてください。
+
+- [ ] **SPECIFICATION.mdを更新した**（必須）
+- [ ] **README.md更新の必要性を判断フローで確認した**（必須）
+- [ ] **必要に応じてREADME.mdを更新した**
+  - 新機能追加時は**ほぼ確実に必要**
+  - 技術スタック変更時は**必須**
+  - テストカバレッジ変更時も数値を更新
+- [ ] **最終更新日を更新した**
+- [ ] **README更新時は別コミットで作成した**（推奨）
+
+#### README更新の重要性
+
+README.mdはプロジェクトの顔です。以下の理由で常に最新に保つ必要があります：
+
+1. **新規ユーザーの第一印象**: 機能一覧が古いと誤解を招く
+2. **技術スタックの正確性**: 依存関係が不明確だと環境構築でエラーが発生
+3. **テスト統計の信頼性**: カバレッジが古いと品質が不明瞭
+4. **CI/CDとの整合性**: GitHub Actionsの設定と一致させる
+
+**実装例**（今回のPWA機能追加）:
+- ✅ 特徴セクションにPWA機能を追加（4項目）
+- ✅ 技術スタックにvite-plugin-pwa、workbox-window追加
+- ✅ テストカバレッジを153→188に更新
+- ✅ 別コミット `docs(readme):` で作成
 
 <!-- MANUAL ADDITIONS END -->

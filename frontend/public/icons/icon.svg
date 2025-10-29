@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- 背景 -->
+  <rect width="512" height="512" fill="#3b82f6" rx="64"/>
+
+  <!-- RSSアイコン（白） -->
+  <g fill="white">
+    <!-- 小さい円（左下） -->
+    <circle cx="128" cy="384" r="48"/>
+
+    <!-- 中間の弧 -->
+    <path d="M 128 288 A 96 96 0 0 1 224 384 L 176 384 A 48 48 0 0 0 128 336 Z" opacity="0.8"/>
+
+    <!-- 大きい弧 -->
+    <path d="M 128 192 A 192 192 0 0 1 320 384 L 272 384 A 144 144 0 0 0 128 240 Z" opacity="0.6"/>
+
+    <!-- 記事リストの線（右側） -->
+    <rect x="200" y="128" width="184" height="24" rx="12" opacity="0.9"/>
+    <rect x="200" y="176" width="184" height="24" rx="12" opacity="0.9"/>
+    <rect x="200" y="224" width="128" height="24" rx="12" opacity="0.9"/>
+  </g>
+</svg>

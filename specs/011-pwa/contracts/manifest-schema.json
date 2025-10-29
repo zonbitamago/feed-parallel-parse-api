@@ -1,0 +1,196 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Web App Manifest",
+  "description": "PWA Web App Manifest スキーマ（W3C準拠）",
+  "type": "object",
+  "required": ["name", "short_name", "start_url", "display", "icons"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "アプリの正式名称（最大45文字推奨）",
+      "maxLength": 45,
+      "examples": ["RSS Feed Reader"]
+    },
+    "short_name": {
+      "type": "string",
+      "description": "短縮名（ホーム画面アイコン下に表示、最大12文字推奨）",
+      "maxLength": 12,
+      "examples": ["RSS Reader"]
+    },
+    "description": {
+      "type": "string",
+      "description": "アプリの説明文",
+      "maxLength": 300,
+      "examples": ["並列処理可能なRSSフィードリーダー"]
+    },
+    "start_url": {
+      "type": "string",
+      "description": "アプリ起動時のURL",
+      "format": "uri-reference",
+      "examples": ["/", "/index.html", "/?utm_source=pwa"]
+    },
+    "display": {
+      "type": "string",
+      "description": "アプリの表示モード",
+      "enum": ["standalone", "fullscreen", "minimal-ui", "browser"],
+      "default": "standalone"
+    },
+    "background_color": {
+      "type": "string",
+      "description": "スプラッシュ画面の背景色（HEXカラーコード）",
+      "pattern": "^#[0-9a-fA-F]{6}$",
+      "examples": ["#ffffff", "#000000"]
+    },
+    "theme_color": {
+      "type": "string",
+      "description": "ブラウザUIのテーマカラー（HEXカラーコード）",
+      "pattern": "^#[0-9a-fA-F]{6}$",
+      "examples": ["#3b82f6", "#2563eb"]
+    },
+    "orientation": {
+      "type": "string",
+      "description": "画面の向き",
+      "enum": [
+        "any",
+        "natural",
+        "landscape",
+        "landscape-primary",
+        "landscape-secondary",
+        "portrait",
+        "portrait-primary",
+        "portrait-secondary"
+      ],
+      "default": "any"
+    },
+    "icons": {
+      "type": "array",
+      "description": "アプリアイコンの配列",
+      "minItems": 2,
+      "items": {
+        "$ref": "#/definitions/icon"
+      }
+    },
+    "categories": {
+      "type": "array",
+      "description": "アプリのカテゴリ（アプリストア用）",
+      "items": {
+        "type": "string",
+        "enum": [
+          "books",
+          "business",
+          "education",
+          "entertainment",
+          "finance",
+          "fitness",
+          "food",
+          "games",
+          "government",
+          "health",
+          "kids",
+          "lifestyle",
+          "magazines",
+          "medical",
+          "music",
+          "navigation",
+          "news",
+          "personalization",
+          "photo",
+          "politics",
+          "productivity",
+          "security",
+          "shopping",
+          "social",
+          "sports",
+          "travel",
+          "utilities",
+          "weather"
+        ]
+      },
+      "examples": [["news", "productivity"]]
+    },
+    "screenshots": {
+      "type": "array",
+      "description": "スクリーンショット（インストールプロンプト用）",
+      "items": {
+        "$ref": "#/definitions/screenshot"
+      }
+    },
+    "scope": {
+      "type": "string",
+      "description": "Service Workerのスコープ（通常はstart_urlと同じ）",
+      "format": "uri-reference",
+      "default": "/"
+    },
+    "lang": {
+      "type": "string",
+      "description": "アプリの言語（ISO 639-1）",
+      "pattern": "^[a-z]{2}(-[A-Z]{2})?$",
+      "examples": ["ja", "en", "ja-JP"]
+    },
+    "dir": {
+      "type": "string",
+      "description": "テキストの方向",
+      "enum": ["ltr", "rtl", "auto"],
+      "default": "auto"
+    }
+  },
+  "definitions": {
+    "icon": {
+      "type": "object",
+      "required": ["src", "sizes", "type"],
+      "properties": {
+        "src": {
+          "type": "string",
+          "description": "アイコン画像のパス",
+          "format": "uri-reference",
+          "examples": ["/icons/icon-192x192.png"]
+        },
+        "sizes": {
+          "type": "string",
+          "description": "アイコンのサイズ（WxH形式、複数指定可）",
+          "pattern": "^\\d+x\\d+(\\s+\\d+x\\d+)*$",
+          "examples": ["192x192", "512x512", "192x192 512x512"]
+        },
+        "type": {
+          "type": "string",
+          "description": "画像のMIMEタイプ",
+          "enum": ["image/png", "image/jpeg", "image/webp", "image/svg+xml"],
+          "default": "image/png"
+        },
+        "purpose": {
+          "type": "string",
+          "description": "アイコンの用途",
+          "enum": ["any", "maskable", "any maskable", "monochrome"],
+          "default": "any"
+        }
+      }
+    },
+    "screenshot": {
+      "type": "object",
+      "required": ["src", "sizes", "type"],
+      "properties": {
+        "src": {
+          "type": "string",
+          "description": "スクリーンショット画像のパス",
+          "format": "uri-reference"
+        },
+        "sizes": {
+          "type": "string",
+          "description": "画像のサイズ（WxH形式）",
+          "pattern": "^\\d+x\\d+$",
+          "examples": ["1280x720", "1920x1080"]
+        },
+        "type": {
+          "type": "string",
+          "description": "画像のMIMEタイプ",
+          "enum": ["image/png", "image/jpeg", "image/webp"]
+        },
+        "label": {
+          "type": "string",
+          "description": "スクリーンショットの説明",
+          "maxLength": 100
+        }
+      }
+    }
+  }
+}
