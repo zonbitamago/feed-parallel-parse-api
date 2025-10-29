@@ -155,30 +155,30 @@
 
 > **重要: これらのテストを最初に書き、実装前に失敗することを確認してください**
 
-- [ ] T058 [P] [US3] useFeedPreview()カスタムフックのテストを実装（frontend/src/hooks/useFeedPreview.test.ts）- プレビュー取得成功
-- [ ] T059 [P] [US3] useFeedPreview()カスタムフックのテストを実装（frontend/src/hooks/useFeedPreview.test.ts）- プレビュー取得失敗
-- [ ] T060 [P] [US3] FeedManagerのプレビュー表示テストを実装（frontend/src/components/FeedManager/FeedManager.test.tsx）- タイトルプレビュー表示
-- [ ] T061 [P] [US3] FeedManagerのプレビュー表示テストを実装（frontend/src/components/FeedManager/FeedManager.test.tsx）- エラーメッセージ表示
-- [ ] T062 [US3] テストを実行してすべて失敗することを確認（Red）
+- [x] T058 [P] [US3] useFeedPreview()カスタムフックのテストを実装（frontend/src/hooks/useFeedPreview.test.ts）- プレビュー取得成功 - 完了 (6テスト作成)
+- [x] T059 [P] [US3] useFeedPreview()カスタムフックのテストを実装（frontend/src/hooks/useFeedPreview.test.ts）- プレビュー取得失敗 - 完了
+- [x] T060 [P] [US3] FeedManagerのプレビュー表示テストを実装（frontend/src/components/FeedManager/FeedManager.test.tsx）- タイトルプレビュー表示 - 完了
+- [x] T061 [P] [US3] FeedManagerのプレビュー表示テストを実装（frontend/src/components/FeedManager/FeedManager.test.tsx）- エラーメッセージ表示 - 完了 (4テスト追加)
+- [x] T062 [US3] テストを実行してすべて失敗することを確認（Red）- 完了 (4 failed, 139 passed)
 
 ### Implementation for User Story 3（t-wadaスタイルTDD: Green）
 
-- [ ] T063 [US3] useFeedPreview()カスタムフックを作成（frontend/src/hooks/useFeedPreview.ts）- URL入力でプレビュー取得
-- [ ] T064 [US3] FeedManagerにuseFeedPreview()を統合（frontend/src/components/FeedManager/FeedManager.tsx）
-- [ ] T065 [US3] フィード追加フォームにプレビュー表示UIを追加（frontend/src/components/FeedManager/FeedManager.tsx）
-- [ ] T066 [US3] プレビューのローディング状態とエラー状態を表示（frontend/src/components/FeedManager/FeedManager.tsx）
-- [ ] T067 [US3] テストを実行してすべて成功することを確認（Green）
+- [x] T063 [US3] useFeedPreview()カスタムフックを作成（frontend/src/hooks/useFeedPreview.ts）- URL入力でプレビュー取得 - 完了
+- [x] T064 [US3] FeedManagerにuseFeedPreview()を統合（frontend/src/components/FeedManager/FeedManager.tsx）- 完了
+- [x] T065 [US3] フィード追加フォームにプレビュー表示UIを追加（frontend/src/components/FeedManager/FeedManager.tsx）- 完了
+- [x] T066 [US3] プレビューのローディング状態とエラー状態を表示（frontend/src/components/FeedManager/FeedManager.tsx）- 完了
+- [x] T067 [US3] テストを実行してすべて成功することを確認（Green）- 完了 (149 passed, 1 skipped)
 
 ### Refactor for User Story 3（t-wadaスタイルTDD: Refactor）
 
-- [ ] T068 [US3] useFeedPreview()のデバウンス処理を最適化（不要なAPI呼び出しを削減）
-- [ ] T069 [US3] プレビューUIのスタイリングを改善（frontend/src/components/FeedManager/FeedManager.tsx）
-- [ ] T070 [US3] テストを実行してすべて成功することを確認（Refactorでテストが壊れていないことを確認）
+- [x] T068 [US3] useFeedPreview()のデバウンス処理を最適化（不要なAPI呼び出しを削減）- 完了 (AbortController追加)
+- [x] T069 [US3] プレビューUIのスタイリングを改善（frontend/src/components/FeedManager/FeedManager.tsx）- 完了 (青/緑/赤背景 + アイコン)
+- [x] T070 [US3] テストを実行してすべて成功することを確認（Refactorでテストが壊れていないことを確認）- 完了 (149 passed, 1 skipped)
 
 ### Integration Test for User Story 3
 
-- [ ] T071 [US3] 統合テストを追加（frontend/tests/integration/feedTitleFlow.test.tsx）- プレビュー表示→フィード追加フロー
-- [ ] T072 [US3] 統合テストを追加（frontend/tests/integration/feedTitleFlow.test.tsx）- 無効なURLでのプレビューエラー
+- [x] T071 [US3] 統合テストを追加（frontend/tests/integration/feedPreviewFlow.test.tsx）- プレビュー表示→フィード追加フロー - 完了
+- [x] T072 [US3] 統合テストを追加（frontend/tests/integration/feedPreviewFlow.test.tsx）- 無効なURLでのプレビューエラー - 完了 (4テスト、153 passed total)
 
 **Checkpoint**: すべてのUser Storyが独立して機能します。ユーザーはプレビュー確認→タイトル自動取得→必要に応じて編集、という完全なフローを利用できます。
 
