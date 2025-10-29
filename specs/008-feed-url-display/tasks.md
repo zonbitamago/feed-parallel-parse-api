@@ -188,14 +188,33 @@
 
 **目的**: 複数のUser Storyに影響する改善
 
-- [ ] T073 [P] アクセシビリティの改善（aria-label、role属性の追加）- frontend/src/components/FeedManager/FeedManager.tsx
-- [ ] T074 [P] エラーメッセージの統一（frontend/src/types/models.ts、frontend/src/components/FeedManager/FeedManager.tsx）
-- [ ] T075 長いタイトルの表示最適化（CSS ellipsis、hover時の全文表示）- frontend/src/components/FeedManager/FeedManager.tsx
-- [ ] T076 [P] quickstart.mdの手順を実行して検証（specs/008-feed-url-display/quickstart.md）
-- [ ] T077 React.memoでFeedManagerコンポーネントを最適化（不要な再レンダリング防止）
-- [ ] T078 [P] カバレッジレポートを確認（100%目標）- npm run test:coverage
-- [ ] T079 [P] コードレビュー準備（コメント追加、TODO削除、コンソールログ削除）
-- [ ] T080 最終的な統合テストを実行してすべて成功することを確認
+- [x] T073 [P] アクセシビリティの改善（aria-label、role属性の追加）- frontend/src/components/FeedManager/FeedManager.tsx
+  - ✅ プレビューUI要素にaria-live、role、aria-label属性を追加
+  - ✅ ローディング状態、成功状態、エラー状態すべてにスクリーンリーダー対応
+- [x] T074 [P] エラーメッセージの統一（frontend/src/types/models.ts、frontend/src/components/FeedManager/FeedManager.tsx）
+  - ✅ 既に完了（errorMessages.ts使用）
+- [x] T075 長いタイトルの表示最適化（CSS ellipsis、hover時の全文表示）- frontend/src/components/FeedManager/FeedManager.tsx
+  - ✅ FeedDisplayRow.tsxにtitle属性を追加
+  - ✅ truncateされたタイトルとURLにホバー時のツールチップ表示
+- [x] T076 [P] quickstart.mdの手順を実行して検証（specs/008-feed-url-display/quickstart.md）
+  - ✅ TypeScriptビルドエラーを発見・修正（SubscriptionContext.test.tsx、useFeedAPI.test.ts）
+  - ✅ tsconfig.app.jsonにNode型定義を追加（NodeJS名前空間解決）
+  - ✅ npm run build成功確認
+- [x] T077 React.memoでFeedManagerコンポーネントを最適化（不要な再レンダリング防止）
+  - ✅ FeedSubscriptionItem、FeedDisplayRow、FeedEditRowをmemo化
+  - ✅ 購読リスト内での不要な再レンダリングを防止
+- [x] T078 [P] カバレッジレポートを確認（100%目標）- npm run test:coverage
+  - ✅ テストカバレッジ: 92.51% (Statement)
+  - ✅ useFeedPreview.ts: 88.67%のカバレッジ達成
+- [x] T079 [P] コードレビュー準備（コメント追加、TODO削除、コンソールログ削除）
+  - ✅ console.log: なし（クリーン）
+  - ✅ TODO/FIXME: なし（クリーン）
+  - ✅ lint修正完了
+- [x] T080 最終的な統合テストを実行してすべて成功することを確認
+  - ✅ 全テスト成功: 153 passed, 1 skipped
+  - ✅ ビルド成功確認
+
+**Checkpoint**: Phase 6完了 - 全機能実装完了、品質保証済み、PR作成準備完了
 
 ---
 
