@@ -12,6 +12,10 @@ export const FEED_ERROR_MESSAGES = {
   FETCH_FAILED: 'フィードの取得に失敗しました',
   /** フィード取得失敗時の表示用メッセージ */
   FETCH_FAILED_DISPLAY: 'エラー: 取得に失敗しました',
+  /** 重複フィード登録エラー */
+  DUPLICATE_FEED: 'このフィードは既に登録されています',
+  /** フィードタイトル取得失敗エラー */
+  TITLE_FETCH_FAILED: 'フィードのタイトルを取得できませんでした。URLをタイトルとして使用します。',
 } as const
 
 /**

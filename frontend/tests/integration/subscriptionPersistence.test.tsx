@@ -1,7 +1,37 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, beforeAll, afterAll, afterEach as afterEachTest } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { http, HttpResponse } from 'msw'
+import { setupServer } from 'msw/node'
 import App from '../../src/App'
+
+const API_BASE_URL = 'https://feed-parallel-parse-api.vercel.app'
+
+// MSWサーバーのセットアップ
+const server = setupServer(
+  http.post(`${API_BASE_URL}/api/parse`, async ({ request }) => {
+    const body = await request.json() as { urls: string[] }
+    const feeds = body.urls.map(url => {
+      // URLに基づいて異なるタイトルを返す
+      if (url.includes('rss1')) {
+        return { title: 'Feed 1', link: url, articles: [] }
+      } else if (url.includes('rss2')) {
+        return { title: 'Feed 2', link: url, articles: [] }
+      } else {
+        return { title: 'Test Feed', link: url, articles: [] }
+      }
+    })
+
+    return HttpResponse.json({
+      feeds,
+      errors: [],
+    })
+  })
+)
+
+beforeAll(() => server.listen())
+afterEachTest(() => server.resetHandlers())
+afterAll(() => server.close())
 
 describe('Subscription Persistence Integration', () => {
   beforeEach(() => {
@@ -20,12 +50,18 @@ describe('Subscription Persistence Integration', () => {
     const addButton = screen.getByRole('button', { name: /追加/i })
     await user.click(addButton)
 
+    // タイトル取得を待つ
+    await waitFor(() => {
+      const stored = localStorage.getItem('rss_reader_subscriptions')
+      expect(stored).toBeTruthy()
+    }, { timeout: 3000 })
+
     // 検証: localStorageに保存されていることを確認
-    const stored = localStorage.getItem('rss_reader_subscriptions')
-    expect(stored).toBeTruthy()
-    const parsed = JSON.parse(stored!)
+    const stored = localStorage.getItem('rss_reader_subscriptions')!
+    const parsed = JSON.parse(stored)
     expect(parsed.subscriptions).toHaveLength(1)
     expect(parsed.subscriptions[0].url).toBe('https://example.com/rss')
+    expect(parsed.subscriptions[0].title).toBe('Test Feed')
   })
 
   it('マウント時にlocalStorageから購読を読み込む', () => {

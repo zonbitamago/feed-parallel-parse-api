@@ -27,16 +27,16 @@ afterAll(() => server.close())
 
 describe('FeedManager', () => {
   it('URL入力欄をレンダリングする', () => {
-    const onAdd = vi.fn()
+    const onAdd = vi.fn().mockResolvedValue({ success: true, shouldClearInput: true })
     render(<FeedManager onAddFeed={onAdd} subscriptions={[]} />)
-    
+
     expect(screen.getByPlaceholderText(/URL/i)).toBeInTheDocument()
   })
 
   it('URL入力を検証する', async () => {
     // 準備
     const user = userEvent.setup()
-    const onAdd = vi.fn()
+    const onAdd = vi.fn().mockResolvedValue({ success: true, shouldClearInput: true })
     render(<FeedManager onAddFeed={onAdd} subscriptions={[]} />)
 
     // 実行: 無効なURLを入力
@@ -50,7 +50,7 @@ describe('FeedManager', () => {
   it('有効なURLでonAddFeedを呼び出す', async () => {
     // 準備
     const user = userEvent.setup()
-    const onAdd = vi.fn()
+    const onAdd = vi.fn().mockResolvedValue({ success: true, shouldClearInput: true })
     render(<FeedManager onAddFeed={onAdd} subscriptions={[]} />)
 
     // 実行: 有効なURLを入力して追加ボタンをクリック
@@ -64,7 +64,7 @@ describe('FeedManager', () => {
   })
 
   it('購読数制限の警告を表示する', () => {
-    const onAdd = vi.fn()
+    const onAdd = vi.fn().mockResolvedValue({ success: true, shouldClearInput: true })
     const subscriptions = Array.from({ length: 100 }, (_, i) => ({
       id: `${i}`,
       url: `https://example.com/${i}`,
@@ -82,7 +82,7 @@ describe('FeedManager', () => {
 
   // 購読管理機能のテスト
   it('購読リストを表示する', () => {
-    const onAdd = vi.fn()
+    const onAdd = vi.fn().mockResolvedValue({ success: true, shouldClearInput: true })
     const onRemove = vi.fn()
     const subscriptions = [
       {
@@ -114,7 +114,7 @@ describe('FeedManager', () => {
   it('削除ボタンクリック時にonRemoveFeedを呼び出す', async () => {
     // 準備
     const user = userEvent.setup()
-    const onAdd = vi.fn()
+    const onAdd = vi.fn().mockResolvedValue({ success: true, shouldClearInput: true })
     const onRemove = vi.fn()
     const subscriptions = [
       {
@@ -138,7 +138,7 @@ describe('FeedManager', () => {
   })
 
   it('フィードのステータスを表示する', () => {
-    const onAdd = vi.fn()
+    const onAdd = vi.fn().mockResolvedValue({ success: true, shouldClearInput: true })
     const onRemove = vi.fn()
     const subscriptions = [
       {
@@ -173,7 +173,7 @@ describe('FeedManager', () => {
     it('編集ボタンをクリックすると編集モードに切り替わる', async () => {
       // 準備
       const user = userEvent.setup()
-      const onAdd = vi.fn()
+      const onAdd = vi.fn().mockResolvedValue({ success: true, shouldClearInput: true })
       const onRemove = vi.fn()
       const onUpdateCustomTitle = vi.fn()
       const subscriptions = [
@@ -217,7 +217,7 @@ describe('FeedManager', () => {
     it('編集してタイトルを保存できる', async () => {
       // 準備
       const user = userEvent.setup()
-      const onAdd = vi.fn()
+      const onAdd = vi.fn().mockResolvedValue({ success: true, shouldClearInput: true })
       const onRemove = vi.fn()
       const onUpdateCustomTitle = vi.fn()
       const subscriptions = [
@@ -264,7 +264,7 @@ describe('FeedManager', () => {
     it('空文字での保存はエラーメッセージを表示', async () => {
       // 準備
       const user = userEvent.setup()
-      const onAdd = vi.fn()
+      const onAdd = vi.fn().mockResolvedValue({ success: true, shouldClearInput: true })
       const onRemove = vi.fn()
       const onUpdateCustomTitle = vi.fn()
       const subscriptions = [
@@ -310,7 +310,7 @@ describe('FeedManager', () => {
     it('キャンセルボタンで編集を中止できる', async () => {
       // 準備
       const user = userEvent.setup()
-      const onAdd = vi.fn()
+      const onAdd = vi.fn().mockResolvedValue({ success: true, shouldClearInput: true })
       const onRemove = vi.fn()
       const onUpdateCustomTitle = vi.fn()
       const subscriptions = [
@@ -358,7 +358,7 @@ describe('FeedManager', () => {
     it('Escapeキーで編集をキャンセルできる', async () => {
       // 準備
       const user = userEvent.setup()
-      const onAdd = vi.fn()
+      const onAdd = vi.fn().mockResolvedValue({ success: true, shouldClearInput: true })
       const onRemove = vi.fn()
       const onUpdateCustomTitle = vi.fn()
       const subscriptions = [
@@ -402,7 +402,7 @@ describe('FeedManager', () => {
     it('Enterキーで保存できる', async () => {
       // 準備
       const user = userEvent.setup()
-      const onAdd = vi.fn()
+      const onAdd = vi.fn().mockResolvedValue({ success: true, shouldClearInput: true })
       const onRemove = vi.fn()
       const onUpdateCustomTitle = vi.fn()
       const subscriptions = [
@@ -444,7 +444,7 @@ describe('FeedManager', () => {
     it('URL入力時にフィードタイトルのプレビューが表示される', async () => {
       // 準備
       const user = userEvent.setup()
-      const onAdd = vi.fn()
+      const onAdd = vi.fn().mockResolvedValue({ success: true, shouldClearInput: true })
 
       render(<FeedManager onAddFeed={onAdd} subscriptions={[]} />)
 
@@ -480,7 +480,7 @@ describe('FeedManager', () => {
       )
 
       const user = userEvent.setup()
-      const onAdd = vi.fn()
+      const onAdd = vi.fn().mockResolvedValue({ success: true, shouldClearInput: true })
 
       render(<FeedManager onAddFeed={onAdd} subscriptions={[]} />)
 
@@ -511,7 +511,7 @@ describe('FeedManager', () => {
       )
 
       const user = userEvent.setup()
-      const onAdd = vi.fn()
+      const onAdd = vi.fn().mockResolvedValue({ success: true, shouldClearInput: true })
 
       render(<FeedManager onAddFeed={onAdd} subscriptions={[]} />)
 
@@ -528,7 +528,7 @@ describe('FeedManager', () => {
     it('URL入力をクリアするとプレビューも消える', async () => {
       // 準備
       const user = userEvent.setup()
-      const onAdd = vi.fn()
+      const onAdd = vi.fn().mockResolvedValue({ success: true, shouldClearInput: true })
 
       render(<FeedManager onAddFeed={onAdd} subscriptions={[]} />)
 
