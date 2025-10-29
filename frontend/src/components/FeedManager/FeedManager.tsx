@@ -3,6 +3,7 @@ import { isValidFeedURL, validateSubscriptionCount } from '../../utils/urlValida
 import type { Subscription, AddFeedResult } from '../../types/models'
 import { useFeedTitleEdit } from '../../hooks/useFeedTitleEdit'
 import { useFeedPreview } from '../../hooks/useFeedPreview'
+import { useSubscriptionListCollapse } from '../../hooks/useSubscriptionListCollapse'
 import { FeedSubscriptionItem } from './FeedSubscriptionItem'
 import { URL_ERROR_MESSAGES } from '../../constants/errorMessages'
 
@@ -50,6 +51,9 @@ export function FeedManager({
     fetchPreview,
     clearPreview,
   } = useFeedPreview()
+
+  // 購読リストの折りたたみ状態管理
+  const { isCollapsed, toggle } = useSubscriptionListCollapse()
 
   const maxSubscriptions = 100
   const isAtLimit = subscriptions.length >= maxSubscriptions
@@ -189,32 +193,52 @@ export function FeedManager({
         </p>
       )}
       
+      {/* 購読リスト（折りたたみ可能） */}
       {subscriptions.length > 0 && (
         <div className="mt-4">
-          <p className="text-sm text-gray-600 mb-3">
-            購読中: {subscriptions.length}/{maxSubscriptions}件
-          </p>
-
-          <div className="space-y-2">
-            {subscriptions.map((subscription) => (
-              <FeedSubscriptionItem
-                key={subscription.id}
-                subscription={subscription}
-                isEditing={editingId === subscription.id}
-                editValue={editValue}
-                editError={editError}
-                editInputRef={editInputRef}
-                onStartEdit={() => startEdit(subscription)}
-                onSave={() => saveEdit(subscription.id)}
-                onCancel={cancelEdit}
-                onRemove={() => onRemoveFeed?.(subscription.id)}
-                onChangeValue={changeEditValue}
-                onKeyDown={(e) => handleKeyDown(e, subscription.id)}
-                showEditButton={!!onUpdateCustomTitle}
-                showRemoveButton={!!onRemoveFeed}
-              />
-            ))}
+          {/* 購読件数と折りたたみボタン */}
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-sm text-gray-600">
+              購読中: {subscriptions.length}/{maxSubscriptions}件
+            </p>
+            <button
+              type="button"
+              onClick={toggle}
+              className="text-sm text-blue-600 hover:text-blue-800 transition-colors"
+              aria-expanded={!isCollapsed}
+              aria-controls="subscription-list"
+              aria-label={isCollapsed ? '購読フィードを表示' : '購読フィードを隠す'}
+            >
+              {isCollapsed ? '表示' : '隠す'}
+            </button>
           </div>
+
+          {/* 購読リスト本体（折りたたまれている場合は非表示） */}
+          {!isCollapsed && (
+            <div
+              id="subscription-list"
+              className="space-y-2 transition-all duration-300"
+            >
+              {subscriptions.map((subscription) => (
+                <FeedSubscriptionItem
+                  key={subscription.id}
+                  subscription={subscription}
+                  isEditing={editingId === subscription.id}
+                  editValue={editValue}
+                  editError={editError}
+                  editInputRef={editInputRef}
+                  onStartEdit={() => startEdit(subscription)}
+                  onSave={() => saveEdit(subscription.id)}
+                  onCancel={cancelEdit}
+                  onRemove={() => onRemoveFeed?.(subscription.id)}
+                  onChangeValue={changeEditValue}
+                  onKeyDown={(e) => handleKeyDown(e, subscription.id)}
+                  showEditButton={!!onUpdateCustomTitle}
+                  showRemoveButton={!!onRemoveFeed}
+                />
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>

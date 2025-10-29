@@ -10,6 +10,8 @@ import App from '../../src/App';
 describe('アクセシビリティ統合テスト', () => {
   beforeEach(() => {
     localStorage.clear();
+    // 購読リストをデフォルトで展開状態にする
+    localStorage.setItem('rss_reader_subscriptions_collapsed', 'false');
     vi.clearAllMocks();
 
     // APIモックを設定

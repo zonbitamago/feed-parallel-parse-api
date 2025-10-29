@@ -40,6 +40,8 @@ afterAll(() => server.close())
 describe('フィード登録時のタイトル保存', () => {
   beforeEach(() => {
     localStorage.clear()
+    // 購読リストをデフォルトで展開状態にする
+    localStorage.setItem('rss_reader_subscriptions_collapsed', 'false')
   })
 
   it('フィード登録時にタイトルを取得してlocalStorageに保存する', async () => {
