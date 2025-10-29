@@ -37,7 +37,7 @@ describe('アクセシビリティ統合テスト', () => {
         } as Response);
       }
       return Promise.reject(new Error('Unknown URL'));
-    }) as any;
+    }) as unknown as typeof fetch;
   });
 
   afterEach(() => {

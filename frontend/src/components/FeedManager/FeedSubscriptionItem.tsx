@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import type { Subscription } from '../../types/models'
 import { FeedEditRow } from './FeedEditRow'
 import { FeedDisplayRow } from './FeedDisplayRow'
@@ -22,8 +23,9 @@ interface FeedSubscriptionItemProps {
  * フィード購読アイテムコンポーネント
  *
  * 個別の購読フィードを表示・編集するための統合コンポーネント
+ * React.memoで最適化済み（購読リスト内での不要な再レンダリングを防止）
  */
-export function FeedSubscriptionItem({
+export const FeedSubscriptionItem = memo(function FeedSubscriptionItem({
   subscription,
   isEditing,
   editValue,
@@ -80,4 +82,4 @@ export function FeedSubscriptionItem({
       )}
     </div>
   )
-}
+})

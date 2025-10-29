@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import type { Subscription } from '../../types/models'
 import { getDisplayTitle } from '../../types/models'
 import { FEED_ERROR_MESSAGES } from '../../constants/errorMessages'
@@ -10,8 +11,9 @@ interface FeedDisplayRowProps {
  * フィード表示行コンポーネント
  *
  * フィードのタイトル、URL、ステータスを表示
+ * React.memoで最適化済み（subscriptionが変更されない限り再レンダリングを防止）
  */
-export function FeedDisplayRow({ subscription }: FeedDisplayRowProps) {
+export const FeedDisplayRow = memo(function FeedDisplayRow({ subscription }: FeedDisplayRowProps) {
   const displayTitle = getDisplayTitle(subscription)
 
   return (
@@ -34,4 +36,4 @@ export function FeedDisplayRow({ subscription }: FeedDisplayRowProps) {
       )}
     </>
   )
-}
+})

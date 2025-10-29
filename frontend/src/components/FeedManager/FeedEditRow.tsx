@@ -1,4 +1,4 @@
-import type { RefObject } from 'react'
+import { memo, type RefObject } from 'react'
 
 interface FeedEditRowProps {
   editValue: string
@@ -14,8 +14,9 @@ interface FeedEditRowProps {
  * フィード編集行コンポーネント
  *
  * フィードタイトル編集時の入力フィールドとボタンを表示
+ * React.memoで最適化済み（編集中の値が変更されない限り再レンダリングを防止）
  */
-export function FeedEditRow({
+export const FeedEditRow = memo(function FeedEditRow({
   editValue,
   editError,
   editInputRef,
@@ -58,4 +59,4 @@ export function FeedEditRow({
       </div>
     </div>
   )
-}
+})
