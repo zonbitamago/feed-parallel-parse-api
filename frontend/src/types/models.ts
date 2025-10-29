@@ -32,6 +32,14 @@ export interface FeedError {
 }
 
 /**
+ * フィード追加操作の結果
+ */
+export interface AddFeedResult {
+  success: boolean;
+  shouldClearInput: boolean;
+}
+
+/**
  * 表示用のタイトルを取得する
  * 優先順位: customTitle > title > url
  */

@@ -1,21 +1,33 @@
 import { useState, useEffect } from 'react'
 import { isValidFeedURL, validateSubscriptionCount } from '../../utils/urlValidation'
-import type { Subscription } from '../../types/models'
+import type { Subscription, AddFeedResult } from '../../types/models'
 import { useFeedTitleEdit } from '../../hooks/useFeedTitleEdit'
 import { useFeedPreview } from '../../hooks/useFeedPreview'
 import { FeedSubscriptionItem } from './FeedSubscriptionItem'
 import { URL_ERROR_MESSAGES } from '../../constants/errorMessages'
 
 interface FeedManagerProps {
-  onAddFeed: (url: string) => void | Promise<void>
+  onAddFeed: (url: string) => void | Promise<void> | Promise<AddFeedResult>
   onRemoveFeed?: (id: string) => void
   onUpdateCustomTitle?: (id: string, customTitle: string) => void
   subscriptions: Subscription[]
+  error?: string | null
+  onClearError?: () => void
 }
 
-export function FeedManager({ onAddFeed, onRemoveFeed, onUpdateCustomTitle, subscriptions }: FeedManagerProps) {
+export function FeedManager({
+  onAddFeed,
+  onRemoveFeed,
+  onUpdateCustomTitle,
+  subscriptions,
+  error: externalError,
+  onClearError
+}: FeedManagerProps) {
   const [url, setUrl] = useState('')
   const [error, setError] = useState<string | null>(null)
+
+  // 外部エラーと内部エラーを統合
+  const displayError = externalError || error
 
   // カスタムタイトル編集ロジック（カスタムフックに委譲）
   const {
@@ -44,17 +56,30 @@ export function FeedManager({ onAddFeed, onRemoveFeed, onUpdateCustomTitle, subs
 
   // リアルタイムURL検証とプレビュー取得
   useEffect(() => {
-    if (url && !isValidFeedURL(url)) {
+    // 空の場合はプレビューをクリア（エラーメッセージは保持する）
+    if (!url) {
+      clearPreview()
+      return
+    }
+
+    if (!isValidFeedURL(url)) {
       setError(URL_ERROR_MESSAGES.INVALID_URL_DETAILED)
       clearPreview()
+      // 外部エラーもクリア（無効なURLに変更された場合）
+      if (onClearError) {
+        onClearError()
+      }
     } else {
       setError(null)
       // 有効なURLの場合はプレビューを取得
       fetchPreview(url)
+      // 注意: 外部エラーは、ユーザーがURLを変更して異なる有効なURLになった場合のみクリア
+      // しかし、同じURLを再入力した場合（重複エラー）はエラーを保持する必要がある
+      // この判定は難しいため、外部エラーのクリアはここでは行わない
     }
-  }, [url, fetchPreview, clearPreview])
+  }, [url, fetchPreview, clearPreview, onClearError])
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     if (!url.trim()) {
@@ -72,10 +97,16 @@ export function FeedManager({ onAddFeed, onRemoveFeed, onUpdateCustomTitle, subs
       return
     }
 
-    onAddFeed(url.trim())
-    setUrl('')
-    setError(null)
-    clearPreview()
+    // フィード追加を実行（エラーはFeedContainerから外部エラーとして返される）
+    const result = await onAddFeed(url.trim())
+
+    // 結果に応じて入力をクリアするかどうかを決定
+    const shouldClear = result === undefined || result.shouldClearInput
+    if (shouldClear) {
+      setUrl('')
+      setError(null)
+      clearPreview()
+    }
   }
 
   return (
@@ -95,16 +126,16 @@ export function FeedManager({ onAddFeed, onRemoveFeed, onUpdateCustomTitle, subs
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             disabled={isAtLimit}
             aria-label="フィードURL"
-            aria-invalid={!!error}
-            aria-describedby={error ? "url-error" : undefined}
+            aria-invalid={!!displayError}
+            aria-describedby={displayError ? "url-error" : undefined}
           />
-          {error && (
+          {displayError && (
             <p id="url-error" className="text-red-600 text-sm mt-1" role="alert">
-              {error}
+              {displayError}
             </p>
           )}
           {/* フィードタイトルプレビュー表示UI（ローディング・成功・エラー状態） */}
-          {!error && isLoadingPreview && (
+          {!displayError && isLoadingPreview && (
             <div
               className="flex items-center gap-2 mt-2 px-3 py-2 bg-blue-50 rounded-md border border-blue-200"
               role="status"
@@ -118,7 +149,7 @@ export function FeedManager({ onAddFeed, onRemoveFeed, onUpdateCustomTitle, subs
               <span className="text-sm text-blue-700">フィードタイトルを取得中...</span>
             </div>
           )}
-          {!error && previewTitle && !isLoadingPreview && (
+          {!displayError && previewTitle && !isLoadingPreview && (
             <div
               className="mt-2 px-3 py-2 bg-green-50 rounded-md border border-green-200"
               role="status"
@@ -130,7 +161,7 @@ export function FeedManager({ onAddFeed, onRemoveFeed, onUpdateCustomTitle, subs
               </p>
             </div>
           )}
-          {!error && previewError && !isLoadingPreview && (
+          {!displayError && previewError && !isLoadingPreview && (
             <div
               className="mt-2 px-3 py-2 bg-red-50 rounded-md border border-red-200"
               role="alert"
@@ -145,7 +176,7 @@ export function FeedManager({ onAddFeed, onRemoveFeed, onUpdateCustomTitle, subs
         </div>
         <button
           type="submit"
-          disabled={isAtLimit || !url || !!error}
+          disabled={isAtLimit || !url || !!displayError}
           className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
           aria-label="フィードを追加"
         >

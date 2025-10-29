@@ -132,4 +132,57 @@ describe('フィード登録時のタイトル保存', () => {
     const parsed = JSON.parse(stored)
     expect(parsed.subscriptions[0].title).toBe('https://example.com/feed.xml')
   })
+
+  it('タイトル取得失敗時にエラーメッセージが表示される', async () => {
+    // APIエラーをシミュレート
+    server.use(
+      http.post(`${API_BASE_URL}/api/parse`, () => {
+        return HttpResponse.json(
+          { error: 'Internal Server Error' },
+          { status: 500 }
+        )
+      })
+    )
+
+    render(<App />)
+
+    const input = screen.getByPlaceholderText(/RSS/)
+    const addButton = screen.getByRole('button', { name: /追加|登録/ })
+
+    await userEvent.type(input, 'https://example.com/feed.xml')
+    await userEvent.click(addButton)
+
+    // エラーメッセージが表示されることを確認
+    await waitFor(() => {
+      expect(screen.getByText(/フィードのタイトルを取得できませんでした/i)).toBeInTheDocument()
+    }, { timeout: 3000 })
+
+    // エラーメッセージにURLがフォールバックとして使用されることが明記されている
+    expect(screen.getByText(/URLをタイトルとして使用します/i)).toBeInTheDocument()
+  })
+
+  it('重複フィード登録時にエラーメッセージが表示される', async () => {
+    render(<App />)
+
+    const input = screen.getByPlaceholderText(/RSS/)
+    const addButton = screen.getByRole('button', { name: /追加|登録/ })
+
+    // 1回目の登録
+    await userEvent.type(input, 'https://example.com/feed.xml')
+    await userEvent.click(addButton)
+
+    await waitFor(() => {
+      expect(screen.getAllByText('Example Blog').length).toBeGreaterThan(0)
+    }, { timeout: 3000 })
+
+    // 2回目の登録（重複）
+    await userEvent.clear(input)
+    await userEvent.type(input, 'https://example.com/feed.xml')
+    await userEvent.click(addButton)
+
+    // エラーメッセージが表示されることを確認
+    await waitFor(() => {
+      expect(screen.getByText(/このフィードは既に登録されています/i)).toBeInTheDocument()
+    }, { timeout: 1000 })
+  })
 })

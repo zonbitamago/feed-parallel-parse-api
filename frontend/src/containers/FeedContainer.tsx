@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react'
+import { useEffect, useCallback, useState } from 'react'
 import { useSubscription } from '../contexts/SubscriptionContext'
 import { useArticle } from '../contexts/ArticleContext'
 import { useUI } from '../contexts/UIContext'
@@ -6,7 +6,8 @@ import { useFeedAPI } from '../hooks/useFeedAPI'
 import { loadSubscriptions, saveSubscriptions } from '../services/storage'
 import { fetchFeedTitle } from '../services/feedAPI'
 import { FeedManager } from '../components/FeedManager/FeedManager'
-import type { Subscription } from '../types/models'
+import type { Subscription, AddFeedResult } from '../types/models'
+import { FEED_ERROR_MESSAGES } from '../constants/errorMessages'
 
 interface FeedContainerProps {
   onRefreshReady?: (refresh: () => void) => void
@@ -17,6 +18,7 @@ export function FeedContainer({ onRefreshReady }: FeedContainerProps) {
   const { dispatch: articleDispatch } = useArticle()
   const { dispatch: uiDispatch } = useUI()
   const { articles, errors, isLoading, fetchFeeds, updatedSubscriptions } = useFeedAPI()
+  const [feedError, setFeedError] = useState<string | null>(null)
 
   // マウント時にlocalStorageから購読情報を読み込む
   useEffect(() => {
@@ -96,21 +98,25 @@ export function FeedContainer({ onRefreshReady }: FeedContainerProps) {
     }
   }, [onRefreshReady, handleRefresh])
 
-  const handleAddFeed = async (url: string) => {
+  const handleAddFeed = async (url: string): Promise<AddFeedResult> => {
+    // エラーをクリア
+    setFeedError(null)
+
     // 重複チェック
     if (subState.subscriptions.some(sub => sub.url === url)) {
-      // TODO: エラーメッセージを表示
-      console.error('このフィードは既に登録されています')
-      return
+      setFeedError(FEED_ERROR_MESSAGES.DUPLICATE_FEED)
+      return { success: false, shouldClearInput: false }
     }
 
     let title = url // フォールバック値
+    let hasTitleError = false
 
     // タイトルを取得（タイムアウト10秒）
     try {
       title = await fetchFeedTitle(url)
     } catch (error) {
       console.error('フィードタイトルの取得に失敗しました:', error)
+      hasTitleError = true
       // エラー時はURLをタイトルとして使用（フォールバック）
     }
 
@@ -128,6 +134,14 @@ export function FeedContainer({ onRefreshReady }: FeedContainerProps) {
     subDispatch({ type: 'ADD_SUBSCRIPTION', payload: newSubscription })
     saveSubscriptions(updated)
     uiDispatch({ type: 'SET_WELCOME_SCREEN', payload: false })
+
+    // タイトル取得に失敗した場合、エラーメッセージを表示
+    if (hasTitleError) {
+      setFeedError(FEED_ERROR_MESSAGES.TITLE_FETCH_FAILED)
+      return { success: true, shouldClearInput: true }
+    }
+
+    return { success: true, shouldClearInput: true }
   }
 
   const handleRemoveFeed = (id: string) => {
@@ -166,6 +180,8 @@ export function FeedContainer({ onRefreshReady }: FeedContainerProps) {
       onRemoveFeed={handleRemoveFeed}
       onUpdateCustomTitle={handleUpdateCustomTitle}
       subscriptions={subState.subscriptions}
+      error={feedError}
+      onClearError={() => setFeedError(null)}
     />
   )
 }
