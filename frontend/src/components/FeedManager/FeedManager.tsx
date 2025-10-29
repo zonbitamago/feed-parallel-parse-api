@@ -7,7 +7,7 @@ import { FeedSubscriptionItem } from './FeedSubscriptionItem'
 import { URL_ERROR_MESSAGES } from '../../constants/errorMessages'
 
 interface FeedManagerProps {
-  onAddFeed: (url: string) => void | Promise<void> | Promise<AddFeedResult>
+  onAddFeed: (url: string) => Promise<AddFeedResult>
   onRemoveFeed?: (id: string) => void
   onUpdateCustomTitle?: (id: string, customTitle: string) => void
   subscriptions: Subscription[]
@@ -101,8 +101,7 @@ export function FeedManager({
     const result = await onAddFeed(url.trim())
 
     // 結果に応じて入力をクリアするかどうかを決定
-    const shouldClear = result === undefined || result.shouldClearInput
-    if (shouldClear) {
+    if (result.shouldClearInput) {
       setUrl('')
       setError(null)
       clearPreview()
