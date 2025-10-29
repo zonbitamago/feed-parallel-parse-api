@@ -14,6 +14,8 @@ Auto-generated from all feature plans. Last updated: 2025-10-27
 - TypeScript 5.9.3 + React 19.1.1, Vite 7.1.7 (010-fix-useeffect-deps)
 - TypeScript 5.9.3, React 19.1.1 + Vite 7.1.7（ビルドツール）, vite-plugin-pwa（PWAプラグイン）, Workbox（Service Workerライブラリ） (011-pwa)
 - localStorage（既存のフィード購読データ）, Cache Storage API（Service Workerによるキャッシュ管理） (011-pwa)
+- TypeScript 5.9.3 + React 19.1.1, TailwindCSS 4.x, localStorage (ブラウザAPI) (010-improve-feed-article-access)
+- localStorage（折りたたみ状態の永続化） (010-improve-feed-article-access)
 
 - Go 1.2x + github.com/mmcdole/gofeed, 標準ライブラリ encoding/xml (006-rss-format-support)
 
@@ -33,9 +35,9 @@ tests/
 Go 1.2x: Follow standard conventions
 
 ## Recent Changes
+- 010-improve-feed-article-access: Added TypeScript 5.9.3 + React 19.1.1, TailwindCSS 4.x, localStorage (ブラウザAPI)
 - 011-pwa: Added TypeScript 5.9.3, React 19.1.1 + Vite 7.1.7（ビルドツール）, vite-plugin-pwa（PWAプラグイン）, Workbox（Service Workerライブラリ）
 - 010-fix-useeffect-deps: Added TypeScript 5.9.3 + React 19.1.1, Vite 7.1.7
-- 009-fix-excessive-requests: Added TypeScript 5.9.3 + React 19.1.1 + Vite 7.1.7（ビルド）, date-fns 4.x（日付処理）, TailwindCSS 4.x（スタイリング）
 
 
 <!-- MANUAL ADDITIONS START -->
