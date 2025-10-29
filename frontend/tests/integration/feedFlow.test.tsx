@@ -124,4 +124,92 @@ describe('Feed Flow Integration', () => {
     // リクエスト回数は初回の1回のままであるべき
     expect(requestCount).toBe(initialRequestCount)
   })
+
+  it('フィードが0件の状態でページをリロードした場合、不要なAPIリクエストが発生しない', async () => {
+    // テスト用のリクエストカウンター
+    let requestCount = 0
+
+    // APIリクエストをカウントするハンドラーを設定
+    server.use(
+      http.post('*/api/parse', () => {
+        requestCount++
+        return HttpResponse.json({
+          feeds: [],
+          errors: [],
+        })
+      })
+    )
+
+    // 準備: localStorageが空の状態でアプリをレンダリング
+    localStorage.clear()
+    render(<App />)
+
+    // ウェルカム画面が表示されることを確認
+    await waitFor(() => {
+      expect(screen.getByText(/ウェルカム/i)).toBeInTheDocument()
+    }, { timeout: 1000 })
+
+    // 検証: APIリクエストが発生していないこと
+    expect(requestCount).toBe(0)
+  })
+
+  it('フィード削除時に削除されたフィードへのリクエストが発生しない', async () => {
+    // テスト用のリクエストカウンター
+    let requestCount = 0
+
+    // APIリクエストをカウントするハンドラーを設定
+    server.use(
+      http.post('*/api/parse', () => {
+        requestCount++
+        return HttpResponse.json({
+          feeds: [
+            {
+              title: 'Test Feed',
+              link: 'https://example.com',
+              articles: [
+                {
+                  title: 'Test Article',
+                  link: 'https://example.com/article',
+                  pubDate: '2025-01-01T10:00:00Z',
+                  summary: 'Test summary',
+                },
+              ],
+            },
+          ],
+          errors: [],
+        })
+      })
+    )
+
+    // 準備
+    const user = userEvent.setup()
+    render(<App />)
+
+    // フィードを追加
+    const input = screen.getByPlaceholderText(/URL/i)
+    await user.type(input, 'https://example.com/rss')
+    const addButton = screen.getByRole('button', { name: /追加/i })
+    await user.click(addButton)
+
+    // 記事の読み込みを待つ
+    await waitFor(() => {
+      expect(screen.getByText('Test Article')).toBeInTheDocument()
+    }, { timeout: 3000 })
+
+    // リクエスト回数を記録
+    const countBeforeDelete = requestCount
+    expect(countBeforeDelete).toBeGreaterThan(0)
+
+    // フィードを削除
+    const deleteButton = screen.getByLabelText(/削除/)
+    await user.click(deleteButton)
+
+    // ウェルカム画面が表示されることを確認
+    await waitFor(() => {
+      expect(screen.getByText(/ウェルカム/i)).toBeInTheDocument()
+    }, { timeout: 1000 })
+
+    // 検証: 削除後に新たなAPIリクエストが発生していないこと
+    expect(requestCount).toBe(countBeforeDelete)
+  })
 })
