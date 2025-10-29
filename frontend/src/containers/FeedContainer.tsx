@@ -34,7 +34,7 @@ export function FeedContainer({ onRefreshReady }: FeedContainerProps) {
     if (subState.subscriptions.length > 0) {
       fetchFeeds(subState.subscriptions)
     }
-  }, [subState.subscriptions.length, subState.subscriptions, fetchFeeds])
+  }, [subState.subscriptions.length, fetchFeeds])
 
   // API結果が変更されたら記事Contextを更新
   useEffect(() => {
