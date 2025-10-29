@@ -7,7 +7,7 @@ import { FeedSubscriptionItem } from './FeedSubscriptionItem'
 import { URL_ERROR_MESSAGES } from '../../constants/errorMessages'
 
 interface FeedManagerProps {
-  onAddFeed: (url: string) => void
+  onAddFeed: (url: string) => void | Promise<void>
   onRemoveFeed?: (id: string) => void
   onUpdateCustomTitle?: (id: string, customTitle: string) => void
   subscriptions: Subscription[]

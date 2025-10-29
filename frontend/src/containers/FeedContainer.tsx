@@ -4,6 +4,7 @@ import { useArticle } from '../contexts/ArticleContext'
 import { useUI } from '../contexts/UIContext'
 import { useFeedAPI } from '../hooks/useFeedAPI'
 import { loadSubscriptions, saveSubscriptions } from '../services/storage'
+import { fetchFeedTitle } from '../services/feedAPI'
 import { FeedManager } from '../components/FeedManager/FeedManager'
 import type { Subscription } from '../types/models'
 
@@ -95,14 +96,31 @@ export function FeedContainer({ onRefreshReady }: FeedContainerProps) {
     }
   }, [onRefreshReady, handleRefresh])
 
-  const handleAddFeed = (url: string) => {
+  const handleAddFeed = async (url: string) => {
+    // 重複チェック
+    if (subState.subscriptions.some(sub => sub.url === url)) {
+      // TODO: エラーメッセージを表示
+      console.error('このフィードは既に登録されています')
+      return
+    }
+
+    let title = url // フォールバック値
+
+    // タイトルを取得（タイムアウト10秒）
+    try {
+      title = await fetchFeedTitle(url)
+    } catch (error) {
+      console.error('フィードタイトルの取得に失敗しました:', error)
+      // エラー時はURLをタイトルとして使用（フォールバック）
+    }
+
     const newSubscription: Subscription = {
       id: crypto.randomUUID(),
       url,
-      title: null,
+      title,
       customTitle: null,
       subscribedAt: new Date().toISOString(),
-      lastFetchedAt: null,
+      lastFetchedAt: new Date().toISOString(),
       status: 'active',
     }
 
