@@ -125,7 +125,7 @@ export function FeedContainer({ onRefreshReady }: FeedContainerProps) {
     }
   }
 
-  // T041: カスタムタイトル更新ハンドラー
+  // カスタムタイトル更新ハンドラー
   const handleUpdateCustomTitle = (id: string, customTitle: string) => {
     const subscription = subState.subscriptions.find(sub => sub.id === id)
     if (!subscription) return

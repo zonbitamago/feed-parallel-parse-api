@@ -168,7 +168,7 @@ describe('FeedManager', () => {
     // ステータス表示の確認（実装により表示方法は異なる）
   })
 
-  // User Story 2: カスタムタイトル編集機能のテスト (T037-T039)
+  // カスタムタイトル編集機能のテスト
   describe('カスタムタイトル編集', () => {
     it('編集ボタンをクリックすると編集モードに切り替わる', async () => {
       // 準備
@@ -440,7 +440,7 @@ describe('FeedManager', () => {
     })
   })
 
-  describe('フィードプレビュー (User Story 3)', () => {
+  describe('フィードプレビュー', () => {
     it('URL入力時にフィードタイトルのプレビューが表示される', async () => {
       // 準備
       const user = userEvent.setup()
