@@ -1,13 +1,15 @@
 import { describe, it, expect } from 'vitest'
+import { readFileSync, existsSync } from 'fs'
+import { resolve } from 'path'
 
 describe('PWA Integration', () => {
-  it('should have manifest.json accessible', async () => {
-    // このテストは失敗する可能性がある（Red）
-    // manifest.jsonの存在を確認
-    const response = await fetch('/manifest.json')
-    expect(response.ok).toBe(true)
+  it('should have manifest.json accessible', () => {
+    // manifest.jsonの存在を確認（CI環境対応のためfsを使用）
+    const manifestPath = resolve(__dirname, '../../public/manifest.json')
+    expect(existsSync(manifestPath)).toBe(true)
 
-    const manifest = await response.json()
+    const manifestContent = readFileSync(manifestPath, 'utf-8')
+    const manifest = JSON.parse(manifestContent)
     expect(manifest.name).toBeDefined()
     expect(manifest.short_name).toBeDefined()
     expect(manifest.start_url).toBeDefined()
