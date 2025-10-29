@@ -14,6 +14,8 @@ Auto-generated from all feature plans. Last updated: 2025-10-24
 - localStorage（ブラウザのクライアントサイドストレージ） (008-feed-url-display)
 - TypeScript 5.9.3 + React 19.1.1 + Vite 7.1.7（ビルド）, date-fns 4.x（日付処理）, TailwindCSS 4.x（スタイリング） (009-fix-excessive-requests)
 - TypeScript 5.9.3 + React 19.1.1, Vite 7.1.7 (010-fix-useeffect-deps)
+- TypeScript 5.9.3, React 19.1.1 + Vite 7.1.7（ビルドツール）, vite-plugin-pwa（PWAプラグイン）, Workbox（Service Workerライブラリ） (011-pwa)
+- localStorage（既存のフィード購読データ）, Cache Storage API（Service Workerによるキャッシュ管理） (011-pwa)
 
 - (001-parallel-rss-parse-api)
 
@@ -38,9 +40,9 @@ tests/
 - 指摘・要約・提案も日本語で統一
 
 ## Recent Changes
+- 011-pwa: Added TypeScript 5.9.3, React 19.1.1 + Vite 7.1.7（ビルドツール）, vite-plugin-pwa（PWAプラグイン）, Workbox（Service Workerライブラリ）
 - 010-fix-useeffect-deps: Added TypeScript 5.9.3 + React 19.1.1, Vite 7.1.7
 - 009-fix-excessive-requests: Added TypeScript 5.9.3 + React 19.1.1 + Vite 7.1.7（ビルド）, date-fns 4.x（日付処理）, TailwindCSS 4.x（スタイリング）
-- 008-feed-url-display: Added TypeScript 5.9.3, React 19.1.1 + Vite 7.1.7, TailwindCSS 4.x, date-fns 4.x
 
 
 <!-- MANUAL ADDITIONS START -->
