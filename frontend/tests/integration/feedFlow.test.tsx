@@ -56,4 +56,72 @@ describe('Feed Flow Integration', () => {
     const articleLink = screen.getByRole('link', { name: /Test Article/i })
     expect(articleLink).toHaveAttribute('href', 'https://example.com/article')
   })
+
+  it('タイトル更新時にフィード取得が発生しない', async () => {
+    // テスト用のリクエストカウンター
+    let requestCount = 0
+
+    // APIリクエストをカウントするハンドラーを設定
+    server.use(
+      http.post('*/api/parse', () => {
+        requestCount++
+        return HttpResponse.json({
+          feeds: [
+            {
+              title: 'Original Feed Title',
+              link: 'https://example.com',
+              articles: [
+                {
+                  title: 'Test Article',
+                  link: 'https://example.com/article',
+                  pubDate: '2025-01-01T10:00:00Z',
+                  summary: 'Test summary',
+                },
+              ],
+            },
+          ],
+          errors: [],
+        })
+      })
+    )
+
+    // 準備
+    const user = userEvent.setup()
+    render(<App />)
+
+    // フィードを追加
+    const input = screen.getByPlaceholderText(/URL/i)
+    await user.type(input, 'https://example.com/rss')
+    const addButton = screen.getByRole('button', { name: /追加/i })
+    await user.click(addButton)
+
+    // 記事の読み込みを待つ
+    await waitFor(() => {
+      expect(screen.getByText('Test Article')).toBeInTheDocument()
+    }, { timeout: 3000 })
+
+    // 初回のリクエスト回数を記録（フィード追加時の回数）
+    const initialRequestCount = requestCount
+    expect(initialRequestCount).toBeGreaterThan(0)
+
+    // カスタムタイトルを編集（タイトル更新をトリガー）
+    const editButton = screen.getByLabelText(/編集/)
+    await user.click(editButton)
+
+    const titleInput = screen.getByDisplayValue('Original Feed Title')
+    await user.clear(titleInput)
+    await user.type(titleInput, 'Custom Title')
+
+    const saveButton = screen.getByLabelText(/保存/)
+    await user.click(saveButton)
+
+    // タイトル更新後、少し待機
+    await waitFor(() => {
+      expect(screen.getByText('Custom Title')).toBeInTheDocument()
+    }, { timeout: 1000 })
+
+    // 検証: タイトル更新時にフィード取得が発生していないこと
+    // リクエスト回数は初回の1回のままであるべき
+    expect(requestCount).toBe(initialRequestCount)
+  })
 })
