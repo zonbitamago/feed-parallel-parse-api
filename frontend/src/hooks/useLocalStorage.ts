@@ -20,7 +20,7 @@ export function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T 
   const setValue = (value: T | ((prev: T) => T)) => {
     try {
       // 関数型更新の場合は現在の値を引数に渡して実行
-      const valueToStore = value instanceof Function ? value(storedValue) : value;
+      const valueToStore = typeof value === 'function' ? (value as (prev: T) => T)(storedValue) : value;
       setStoredValue(valueToStore);
       window.localStorage.setItem(key, JSON.stringify(valueToStore));
     } catch (error) {

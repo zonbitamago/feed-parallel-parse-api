@@ -59,6 +59,8 @@ export function FeedManager({
   const isAtLimit = subscriptions.length >= maxSubscriptions
 
   // 購読リストのレンダリングをメモ化（大量データ時のパフォーマンス最適化）
+  // Note: useFeedTitleEditの関数は全てuseCallbackでメモ化されているため、
+  // useMemoの依存配列には状態とpropsのみを含める
   const subscriptionListItems = useMemo(() => {
     return subscriptions.map((subscription) => (
       <FeedSubscriptionItem
@@ -84,13 +86,13 @@ export function FeedManager({
     editValue,
     editError,
     editInputRef,
+    onRemoveFeed,
+    onUpdateCustomTitle,
     startEdit,
     saveEdit,
     cancelEdit,
-    onRemoveFeed,
     changeEditValue,
     handleKeyDown,
-    onUpdateCustomTitle,
   ])
 
   // リアルタイムURL検証とプレビュー取得
