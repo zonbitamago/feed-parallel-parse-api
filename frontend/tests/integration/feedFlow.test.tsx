@@ -35,6 +35,11 @@ afterEach(() => {
 afterAll(() => server.close())
 
 describe('Feed Flow Integration', () => {
+  beforeEach(() => {
+    // 購読リストをデフォルトで展開状態にする
+    localStorage.setItem('rss_reader_subscriptions_collapsed', 'false')
+  })
+
   it('フィードフロー全体を完了する: フィード追加 → 取得 → 記事表示', async () => {
     // 準備
     const user = userEvent.setup()

@@ -56,6 +56,11 @@ afterEach(() => {
 afterAll(() => server.close())
 
 describe('Feed Title Flow Integration', () => {
+  beforeEach(() => {
+    // 購読リストをデフォルトで展開状態にする
+    localStorage.setItem('rss_reader_subscriptions_collapsed', 'false')
+  })
+
   it('フィード追加時にタイトルが自動取得され表示される', async () => {
     // 準備
     const user = userEvent.setup()
@@ -261,6 +266,11 @@ describe('Feed Title Flow Integration', () => {
  * - キャンセル操作
  */
 describe('Custom Title Edit Flow Integration', () => {
+  beforeEach(() => {
+    // 購読リストをデフォルトで展開状態にする
+    localStorage.setItem('rss_reader_subscriptions_collapsed', 'false')
+  })
+
   it('カスタムタイトルを編集→保存→表示確認の完全なフロー', async () => {
     // 準備: フィードを追加
     const user = userEvent.setup()

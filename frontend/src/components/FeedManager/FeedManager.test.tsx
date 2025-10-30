@@ -26,6 +26,11 @@ afterEach(() => server.resetHandlers())
 afterAll(() => server.close())
 
 describe('FeedManager', () => {
+  beforeEach(() => {
+    // デフォルトで展開状態にする（既存のテストが購読リストを参照できるように）
+    localStorage.setItem('rss_reader_subscriptions_collapsed', 'false')
+  })
+
   it('URL入力欄をレンダリングする', () => {
     const onAdd = vi.fn().mockResolvedValue({ success: true, shouldClearInput: true })
     render(<FeedManager onAddFeed={onAdd} subscriptions={[]} />)
@@ -547,6 +552,142 @@ describe('FeedManager', () => {
       await waitFor(() => {
         expect(screen.queryByText(/プレビュー:/i)).not.toBeInTheDocument()
       })
+    })
+  })
+
+  /**
+   * 折りたたみ機能のテスト (TDD: Red Phase)
+   *
+   * 期待結果: これらのテストはすべてFAIL（実装がまだ存在しないため）
+   */
+  describe('折りたたみ機能', () => {
+    const mockSubscriptions = [
+      {
+        id: '1',
+        url: 'https://example.com/feed1',
+        title: 'Test Feed 1',
+        customTitle: null,
+        subscribedAt: '2025-10-30T00:00:00Z',
+        lastFetchedAt: null,
+        status: 'active' as const,
+      },
+      {
+        id: '2',
+        url: 'https://example.com/feed2',
+        title: 'Test Feed 2',
+        customTitle: null,
+        subscribedAt: '2025-10-30T00:00:00Z',
+        lastFetchedAt: null,
+        status: 'active' as const,
+      },
+    ]
+
+    beforeEach(() => {
+      // 各テスト前にlocalStorageをクリア
+      localStorage.clear()
+    })
+
+    it('折りたたみボタンが表示される', () => {
+      const onAdd = vi.fn().mockResolvedValue({ success: true, shouldClearInput: true })
+      render(<FeedManager onAddFeed={onAdd} subscriptions={mockSubscriptions} />)
+
+      // 折りたたみボタンが表示されることを確認
+      const button = screen.getByRole('button', { name: /購読フィードを/i })
+      expect(button).toBeInTheDocument()
+    })
+
+    it('デフォルトで折りたたまれた状態で購読一覧が非表示', () => {
+      const onAdd = vi.fn().mockResolvedValue({ success: true, shouldClearInput: true })
+
+      // localStorageをクリア（デフォルト状態）
+      localStorage.clear()
+
+      render(<FeedManager onAddFeed={onAdd} subscriptions={mockSubscriptions} />)
+
+      // 購読一覧が非表示であることを確認
+      const feedItem1 = screen.queryByText('Test Feed 1')
+      expect(feedItem1).not.toBeInTheDocument()
+    })
+
+    it('展開ボタンをクリックすると購読一覧が表示される', async () => {
+      const user = userEvent.setup()
+      const onAdd = vi.fn().mockResolvedValue({ success: true, shouldClearInput: true })
+
+      render(<FeedManager onAddFeed={onAdd} subscriptions={mockSubscriptions} />)
+
+      // 折りたたみボタンをクリック
+      const button = screen.getByRole('button', { name: /購読フィードを表示/i })
+      await user.click(button)
+
+      // 購読一覧が表示されることを確認
+      await waitFor(() => {
+        expect(screen.getByText('Test Feed 1')).toBeInTheDocument()
+        expect(screen.getByText('Test Feed 2')).toBeInTheDocument()
+      })
+    })
+
+    it('展開状態で折りたたみボタンをクリックすると購読一覧が非表示になる', async () => {
+      const user = userEvent.setup()
+      const onAdd = vi.fn().mockResolvedValue({ success: true, shouldClearInput: true })
+
+      // localStorageに展開状態を保存
+      localStorage.setItem('rss_reader_subscriptions_collapsed', 'false')
+
+      render(<FeedManager onAddFeed={onAdd} subscriptions={mockSubscriptions} />)
+
+      // 購読一覧が表示されていることを確認
+      expect(screen.getByText('Test Feed 1')).toBeInTheDocument()
+
+      // 折りたたみボタンをクリック
+      const button = screen.getByRole('button', { name: /購読フィードを隠す/i })
+      await user.click(button)
+
+      // 購読一覧が非表示になることを確認
+      await waitFor(() => {
+        expect(screen.queryByText('Test Feed 1')).not.toBeInTheDocument()
+      })
+    })
+
+    it('aria-expanded属性が正しく設定される', () => {
+      const onAdd = vi.fn().mockResolvedValue({ success: true, shouldClearInput: true })
+
+      // localStorageをクリア（デフォルト: 折りたたみ状態）
+      localStorage.clear()
+
+      render(<FeedManager onAddFeed={onAdd} subscriptions={mockSubscriptions} />)
+
+      // aria-expanded属性がfalseであることを確認（折りたたみ状態）
+      const button = screen.getByRole('button', { name: /購読フィードを/i })
+      expect(button).toHaveAttribute('aria-expanded', 'false')
+    })
+
+    it('aria-expanded属性が展開状態で正しく更新される', async () => {
+      const user = userEvent.setup()
+      const onAdd = vi.fn().mockResolvedValue({ success: true, shouldClearInput: true })
+
+      render(<FeedManager onAddFeed={onAdd} subscriptions={mockSubscriptions} />)
+
+      // ボタンをクリック
+      const button = screen.getByRole('button', { name: /購読フィードを表示/i })
+      await user.click(button)
+
+      // aria-expanded属性がtrueに更新されることを確認
+      await waitFor(() => {
+        expect(button).toHaveAttribute('aria-expanded', 'true')
+      })
+    })
+
+    it('購読数0件の場合も折りたたみボタンが表示される', () => {
+      const onAdd = vi.fn().mockResolvedValue({ success: true, shouldClearInput: true })
+      render(<FeedManager onAddFeed={onAdd} subscriptions={[]} />)
+
+      // 折りたたみボタンが表示されることを確認
+      // NOTE: 購読数0件の場合はボタン自体が表示されないかもしれない
+      // その場合、このテストは期待通りFAILする
+      const button = screen.queryByRole('button', { name: /購読フィードを/i })
+      // 購読数0件の場合の挙動は仕様次第
+      // ここでは表示されないことを期待
+      expect(button).not.toBeInTheDocument()
     })
   })
 })

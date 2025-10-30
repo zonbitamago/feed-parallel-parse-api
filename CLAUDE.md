@@ -14,6 +14,8 @@ Auto-generated from all feature plans. Last updated: 2025-10-27
 - TypeScript 5.9.3 + React 19.1.1, Vite 7.1.7 (010-fix-useeffect-deps)
 - TypeScript 5.9.3, React 19.1.1 + Vite 7.1.7（ビルドツール）, vite-plugin-pwa（PWAプラグイン）, Workbox（Service Workerライブラリ） (011-pwa)
 - localStorage（既存のフィード購読データ）, Cache Storage API（Service Workerによるキャッシュ管理） (011-pwa)
+- TypeScript 5.9.3 + React 19.1.1, TailwindCSS 4.x, localStorage (ブラウザAPI) (010-improve-feed-article-access)
+- localStorage（折りたたみ状態の永続化） (010-improve-feed-article-access)
 
 - Go 1.2x + github.com/mmcdole/gofeed, 標準ライブラリ encoding/xml (006-rss-format-support)
 
@@ -33,9 +35,9 @@ tests/
 Go 1.2x: Follow standard conventions
 
 ## Recent Changes
+- 010-improve-feed-article-access: Added TypeScript 5.9.3 + React 19.1.1, TailwindCSS 4.x, localStorage (ブラウザAPI)
 - 011-pwa: Added TypeScript 5.9.3, React 19.1.1 + Vite 7.1.7（ビルドツール）, vite-plugin-pwa（PWAプラグイン）, Workbox（Service Workerライブラリ）
 - 010-fix-useeffect-deps: Added TypeScript 5.9.3 + React 19.1.1, Vite 7.1.7
-- 009-fix-excessive-requests: Added TypeScript 5.9.3 + React 19.1.1 + Vite 7.1.7（ビルド）, date-fns 4.x（日付処理）, TailwindCSS 4.x（スタイリング）
 
 
 <!-- MANUAL ADDITIONS START -->
@@ -48,6 +50,33 @@ Go 1.2x: Follow standard conventions
 - コード内のコメントも日本語で記述
 - 技術用語は英語のままでも可（例：React, TypeScript, API）
 - エラーメッセージの説明は日本語で
+
+## テスト実行ルール（CPU負荷対策）
+
+**実装時のテスト実行では必ずwatchモードを無効化してください。**
+
+### watchモード禁止
+
+このプロジェクトのpackage.jsonは既にCPU負荷対策済みです：
+
+```json
+"scripts": {
+  "test": "vitest run",        // デフォルトで1回限りの実行
+  "test:watch": "vitest"       // watchモードは明示的に分離
+}
+```
+
+- ✅ **推奨**: `npm test` (1回限りの実行、CPU負荷低)
+- ⚠️ **注意**: `npm run test:watch` (watchモード、CPU負荷高)
+- **理由**: watchモードはファイル監視によりCPU負荷が高くなり、開発マシンのパフォーマンスを低下させる
+
+### その他のCPU負荷対策
+
+- **並列実行の制御**: 大規模なテストスイートでは`--maxWorkers`オプションで並列数を制限
+  - 例: `npm test -- --maxWorkers=2`
+- **選択的テスト実行**: 開発中は変更したファイルのテストのみを実行
+  - 例: `npm test FeedManager.test.tsx`
+  - 全テストはコミット前またはCI/CDで実行
 
 ## ドキュメント維持ルール（重要）
 
