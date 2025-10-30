@@ -21,9 +21,15 @@ export async function parseFeeds(urls: string[], options?: { signal?: AbortSigna
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), API_TIMEOUT);
 
+  // 外部からのAbortSignalでキャンセルされたかどうかを追跡
+  let externalAbort = false;
+
   // 外部からのAbortSignalがあれば、それをリスンする
   if (options?.signal) {
-    options.signal.addEventListener('abort', () => controller.abort());
+    options.signal.addEventListener('abort', () => {
+      externalAbort = true;
+      controller.abort();
+    });
   }
 
   try {
@@ -46,6 +52,12 @@ export async function parseFeeds(urls: string[], options?: { signal?: AbortSigna
     return data;
   } catch (error) {
     if (error instanceof Error && error.name === 'AbortError') {
+      // 外部からのキャンセルの場合はAbortErrorをそのまま再スロー
+      // （useFeedPreviewでの意図的なキャンセル処理のため）
+      if (externalAbort) {
+        throw error;
+      }
+      // タイムアウトの場合はFeedAPIErrorでラップ
       throw new FeedAPIError('APIリクエストがタイムアウトしました', error);
     }
     if (error instanceof FeedAPIError) {
