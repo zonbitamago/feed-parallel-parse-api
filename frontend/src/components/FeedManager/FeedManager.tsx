@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { isValidFeedURL, validateSubscriptionCount } from '../../utils/urlValidation'
 import type { Subscription, AddFeedResult } from '../../types/models'
 import { useFeedTitleEdit } from '../../hooks/useFeedTitleEdit'
@@ -57,6 +57,41 @@ export function FeedManager({
 
   const maxSubscriptions = 100
   const isAtLimit = subscriptions.length >= maxSubscriptions
+
+  // 購読リストのレンダリングをメモ化（大量データ時のパフォーマンス最適化）
+  const subscriptionListItems = useMemo(() => {
+    return subscriptions.map((subscription) => (
+      <FeedSubscriptionItem
+        key={subscription.id}
+        subscription={subscription}
+        isEditing={editingId === subscription.id}
+        editValue={editValue}
+        editError={editError}
+        editInputRef={editInputRef}
+        onStartEdit={() => startEdit(subscription)}
+        onSave={() => saveEdit(subscription.id)}
+        onCancel={cancelEdit}
+        onRemove={() => onRemoveFeed?.(subscription.id)}
+        onChangeValue={changeEditValue}
+        onKeyDown={(e) => handleKeyDown(e, subscription.id)}
+        showEditButton={!!onUpdateCustomTitle}
+        showRemoveButton={!!onRemoveFeed}
+      />
+    ))
+  }, [
+    subscriptions,
+    editingId,
+    editValue,
+    editError,
+    editInputRef,
+    startEdit,
+    saveEdit,
+    cancelEdit,
+    onRemoveFeed,
+    changeEditValue,
+    handleKeyDown,
+    onUpdateCustomTitle,
+  ])
 
   // リアルタイムURL検証とプレビュー取得
   useEffect(() => {
@@ -219,24 +254,7 @@ export function FeedManager({
               id="subscription-list"
               className="space-y-2 transition-all duration-300"
             >
-              {subscriptions.map((subscription) => (
-                <FeedSubscriptionItem
-                  key={subscription.id}
-                  subscription={subscription}
-                  isEditing={editingId === subscription.id}
-                  editValue={editValue}
-                  editError={editError}
-                  editInputRef={editInputRef}
-                  onStartEdit={() => startEdit(subscription)}
-                  onSave={() => saveEdit(subscription.id)}
-                  onCancel={cancelEdit}
-                  onRemove={() => onRemoveFeed?.(subscription.id)}
-                  onChangeValue={changeEditValue}
-                  onKeyDown={(e) => handleKeyDown(e, subscription.id)}
-                  showEditButton={!!onUpdateCustomTitle}
-                  showRemoveButton={!!onRemoveFeed}
-                />
-              ))}
+              {subscriptionListItems}
             </div>
           )}
         </div>

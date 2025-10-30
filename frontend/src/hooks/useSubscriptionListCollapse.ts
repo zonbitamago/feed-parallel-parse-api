@@ -49,8 +49,8 @@ export function useSubscriptionListCollapse(): SubscriptionListCollapseState {
    * 折りたたみ状態をトグル（切り替え）
    */
   const toggle = useCallback(() => {
-    setIsCollapsed(!isCollapsed)
-  }, [isCollapsed, setIsCollapsed])
+    setIsCollapsed(prev => !prev)
+  }, [setIsCollapsed])
 
   /**
    * 展開状態にする
