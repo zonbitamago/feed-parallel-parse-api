@@ -24,7 +24,7 @@ export async function parseFeeds(urls: string[], options?: { signal?: AbortSigna
   // 外部からのAbortSignalでキャンセルされたかどうかを追跡
   let externalAbort = false;
 
-  // 外部からのAbortSignalがあれば、それをリスンする
+  // 外部からのAbortSignalがあれば、それを監視する
   if (options?.signal) {
     options.signal.addEventListener('abort', () => {
       externalAbort = true;
