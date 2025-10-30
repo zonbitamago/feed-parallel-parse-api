@@ -35,9 +35,9 @@ tests/
 Go 1.2x: Follow standard conventions
 
 ## Recent Changes
+- 010-fix-feed-preview: Added TypeScript 5.9.3 + React 19.1.1, Vite 7.1.7
 - 010-improve-feed-article-access: Added TypeScript 5.9.3 + React 19.1.1, TailwindCSS 4.x, localStorage (ブラウザAPI)
 - 011-pwa: Added TypeScript 5.9.3, React 19.1.1 + Vite 7.1.7（ビルドツール）, vite-plugin-pwa（PWAプラグイン）, Workbox（Service Workerライブラリ）
-- 010-fix-useeffect-deps: Added TypeScript 5.9.3 + React 19.1.1, Vite 7.1.7
 
 
 <!-- MANUAL ADDITIONS START -->
