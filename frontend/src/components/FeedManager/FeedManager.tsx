@@ -96,6 +96,8 @@ export function FeedManager({
   ])
 
   // リアルタイムURL検証とプレビュー取得
+  // Note: onClearErrorは条件付きで呼ばれるコールバックであり、依存配列に含める必要はない
+  // これにより、2件目以降のフィード追加時にプレビューが正常に表示される（Issue #012）
   useEffect(() => {
     // 空の場合はプレビューをクリア（エラーメッセージは保持する）
     if (!url) {
@@ -118,7 +120,8 @@ export function FeedManager({
       // しかし、同じURLを再入力した場合（重複エラー）はエラーを保持する必要がある
       // この判定は難しいため、外部エラーのクリアはここでは行わない
     }
-  }, [url, fetchPreview, clearPreview, onClearError])
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- onClearErrorは条件付きで呼ばれるコールバック
+  }, [url, fetchPreview, clearPreview])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
