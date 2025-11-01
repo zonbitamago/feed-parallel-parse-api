@@ -1,7 +1,7 @@
 # feed-parallel-parse-api システム仕様書
 
-**最終更新日**: 2025-10-30
-**バージョン**: v1.1
+**最終更新日**: 2025-11-01
+**バージョン**: v1.2
 
 > **重要**: この仕様書は、PR 作成時に必ず更新してください。機能追加・変更があった場合は、該当セクションを修正し、最新の実装状態を反映させることがプロジェクトルールとして定められています。
 
@@ -224,6 +224,65 @@ URL: https://example.com/feed.xml
 
 - フィード取得タイムアウト: 10 秒
 - AbortController を使用したリクエストキャンセル対応
+
+#### URL 正規化によるフィードマッチング
+
+**概要**: 購読リストの URL と API 応答のフィード URL を照合する際、URL 正規化を適用してマッチング精度を向上させます。これにより、末尾スラッシュやプロトコルの違いなどの軽微な差異を吸収し、正しいフィードとタイトルの紐付けを保証します。
+
+**正規化ルール**:
+
+1. **プロトコル統一**: `http://` を `https://` に変換
+2. **ドメイン小文字化**: ドメイン部分を小文字に統一
+3. **www prefix 除去**: `www.` プレフィックスを除去
+4. **末尾スラッシュ除去**: パスの末尾 `/` を削除（ルートパス `/` は除く）
+5. **クエリパラメータ保持**: URL のクエリ文字列は保持
+
+**マッチングアルゴリズム**:
+
+```typescript
+// URL正規化関数（frontend/src/utils/urlNormalizer.ts）
+function normalizeUrl(url: string): string {
+  const urlObj = new URL(url);
+  urlObj.protocol = 'https:';
+  urlObj.hostname = urlObj.hostname.replace(/^www\./, '').toLowerCase();
+  if (urlObj.pathname.endsWith('/') && urlObj.pathname !== '/') {
+    urlObj.pathname = urlObj.pathname.slice(0, -1);
+  }
+  return urlObj.toString();
+}
+
+// フィードマッチング関数（frontend/src/hooks/useFeedAPI.ts）
+function findMatchingFeed(subscription: Subscription, feeds: RSSFeed[]): RSSFeed | undefined {
+  const normalizedSubscriptionUrl = normalizeUrl(subscription.url);
+  const matchedFeed = feeds.find(f => normalizeUrl(f.link) === normalizedSubscriptionUrl);
+
+  if (!matchedFeed) {
+    console.warn(`フィードマッチング失敗: ${subscription.url}`);
+  }
+
+  return matchedFeed;
+}
+```
+
+**重要な設計決定**:
+
+- **インデックスフォールバック削除**: 以前のバグの原因となっていたインデックスベースのフォールバック（`|| feeds[subscriptionIndex]`）を完全に削除
+- **マッチング失敗時の動作**: URL 正規化後も一致しない場合は `undefined` を返し、タイトル更新を行わない
+- **ログ出力**: マッチング失敗時には警告ログを出力し、デバッグを支援
+
+**正規化例**:
+
+| 購読 URL                              | API 応答 URL                          | 正規化後               | マッチング結果 |
+| ------------------------------------- | ------------------------------------- | ---------------------- | -------------- |
+| `http://example.com/feed`             | `https://example.com/feed/`           | `https://example.com/feed` | ✅ 一致       |
+| `https://www.EXAMPLE.COM/feed/`       | `https://example.com/feed`            | `https://example.com/feed` | ✅ 一致       |
+| `http://example.com/feed?page=1`      | `https://example.com/feed/?page=1`    | `https://example.com/feed?page=1` | ✅ 一致 |
+| `https://blog.example.com/rss`        | `https://news.example.com/rss`        | 異なる                 | ❌ 不一致     |
+
+**バグ修正の詳細**:
+
+- **修正前の問題**: 3 件目以降のフィード登録時、API 応答の順序と購読リストの順序が異なる場合、インデックスフォールバックにより誤ったタイトルが表示されていた
+- **修正後の動作**: URL 正規化による厳密なマッチングにより、API 応答の順序に依存せず、常に正しいタイトルが表示される
 
 ### 4.2 統合タイムライン表示
 
