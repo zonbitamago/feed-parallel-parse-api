@@ -74,4 +74,18 @@ describe('normalizeUrl', () => {
       expect(firstPass).toBe('https://example.com/feed')
     })
   })
+
+  describe('エッジケース', () => {
+    it('ポート番号を保持する', () => {
+      const input = 'http://example.com:8080/feed/'
+      const expected = 'https://example.com:8080/feed'
+      expect(normalizeUrl(input)).toBe(expected)
+    })
+
+    it('IPアドレスベースのURLを正規化する', () => {
+      const input = 'http://192.168.1.1/rss'
+      const expected = 'https://192.168.1.1/rss'
+      expect(normalizeUrl(input)).toBe(expected)
+    })
+  })
 })
