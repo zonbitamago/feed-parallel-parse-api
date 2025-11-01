@@ -13,7 +13,13 @@ import (
 )
 
 // feedToRSSFeedはgofeed.Feedをmodels.RSSFeedに変換する共通処理
-func feedToRSSFeed(feed *gofeed.Feed) *models.RSSFeed {
+func feedToRSSFeed(feed *gofeed.Feed, requestedURL string) *models.RSSFeed {
+	// FeedURLの設定（優先順位: feed.FeedLink → requestedURL）
+	feedURL := feed.FeedLink
+	if feedURL == "" {
+		feedURL = requestedURL
+	}
+
 	articles := make([]models.Article, 0, len(feed.Items))
 	for _, item := range feed.Items {
 		articles = append(articles, models.Article{
@@ -26,6 +32,7 @@ func feedToRSSFeed(feed *gofeed.Feed) *models.RSSFeed {
 	return &models.RSSFeed{
 		Title:    feed.Title,
 		Link:     feed.Link,
+		FeedURL:  feedURL, // 追加
 		Articles: articles,
 	}
 }
@@ -43,7 +50,9 @@ func (p *AtomParser) Parse(ctx context.Context, data []byte) (*models.RSSFeed, e
 	if feed.FeedType != "atom" {
 		return nil, nil // 対象外
 	}
-	return feedToRSSFeed(feed), nil
+	// Note: このParser interfaceではrequestURLが渡されないため、空文字列を渡す
+	// 実際のFeedURL設定はParseFeedsで行われる
+	return feedToRSSFeed(feed, ""), nil
 }
 
 // RSS2ParserはRSS2.0用のFeedParser実装
@@ -59,7 +68,8 @@ func (p *RSS2Parser) Parse(ctx context.Context, data []byte) (*models.RSSFeed, e
 	if feed.FeedType != "rss" || feed.FeedVersion != "2.0" {
 		return nil, nil // 対象外
 	}
-	return feedToRSSFeed(feed), nil
+	// Note: このParser interfaceではrequestURLが渡されないため、空文字列を渡す
+	return feedToRSSFeed(feed, ""), nil
 }
 
 // RDFParserはRSS1.0(RDF)用のFeedParser実装
@@ -75,7 +85,8 @@ func (p *RDFParser) Parse(ctx context.Context, data []byte) (*models.RSSFeed, er
 	if feed.FeedType != "rss" || feed.FeedVersion != "1.0" {
 		return nil, nil // 対象外
 	}
-	return feedToRSSFeed(feed), nil
+	// Note: このParser interfaceではrequestURLが渡されないため、空文字列を渡す
+	return feedToRSSFeed(feed, ""), nil
 }
 
 // FeedParser は各RSS/Atom形式のパース共通インターフェース
@@ -196,8 +207,8 @@ func (s *RSSService) ParseFeeds(ctx context.Context, urls []string) ([]models.RS
 				return
 			}
 
-			// RSSFeed変換（既存のロジック）
-			rssFeed := feedToRSSFeed(feed)
+			// RSSFeed変換（feed.FeedLinkまたはrequested URLからFeedURLを設定）
+			rssFeed := feedToRSSFeed(feed, u)
 			ch <- struct {
 				feed *models.RSSFeed
 				err  *models.ErrorInfo
