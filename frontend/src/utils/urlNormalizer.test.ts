@@ -3,6 +3,7 @@
  *
  * TDDサイクル1: httpをhttpsに変換
  * TDDサイクル2: ドメインを小文字化
+ * TDDサイクル3: www prefixを除去
  */
 
 import { describe, it, expect } from 'vitest'
@@ -20,6 +21,12 @@ describe('normalizeUrl', () => {
   describe('ドメイン正規化', () => {
     it('ドメインを小文字化する', () => {
       const input = 'https://EXAMPLE.COM/feed'
+      const expected = 'https://example.com/feed'
+      expect(normalizeUrl(input)).toBe(expected)
+    })
+
+    it('www prefixを除去する', () => {
+      const input = 'https://www.example.com/feed'
       const expected = 'https://example.com/feed'
       expect(normalizeUrl(input)).toBe(expected)
     })
