@@ -1,0 +1,83 @@
+# Docker Compose Configuration
+# Feature: 013-docker-local-env
+# Purpose: Orchestrate backend (Go API) and frontend (React + Vite) for local development
+#
+# Quick Start:
+#   docker-compose up       # Start all services
+#   docker-compose down     # Stop and remove containers
+#   docker-compose down -v  # Stop, remove containers AND volumes (full cleanup)
+#
+# Troubleshooting:
+#   docker-compose logs -f backend   # View backend logs
+#   docker-compose logs -f frontend  # View frontend logs
+#   docker-compose restart backend   # Restart backend only
+
+services:
+  # ============================================
+  # Backend Service - Go API Server
+  # ============================================
+  backend:
+    container_name: feed-api-backend
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    ports:
+      - "8080:8080"  # API endpoint accessible at http://localhost:8080
+    volumes:
+      # Source code hot reload - mount entire repository
+      - ./:/app
+      # Exclude frontend directory to avoid confusion
+      - /app/frontend
+    environment:
+      - PORT=8080
+    command: air -c .air.toml  # Hot reload with Air (~5s rebuild)
+    networks:
+      - feed-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "--request", "OPTIONS", "http://localhost:8080/api/parse"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ============================================
+  # Frontend Service - React + Vite
+  # ============================================
+  frontend:
+    container_name: feed-api-frontend
+    build:
+      context: ./frontend
+      dockerfile: ../Dockerfile.frontend
+    ports:
+      - "5173:5173"  # Vite dev server accessible at http://localhost:5173
+    volumes:
+      # Source code hot reload - mount frontend directory
+      - ./frontend:/app
+      # Preserve container's node_modules (avoid host/container conflicts)
+      - /app/node_modules
+    environment:
+      # Backend API endpoint for browser (host machine's localhost)
+      - VITE_API_BASE_URL=http://localhost:8080
+    command: npm run dev -- --host 0.0.0.0  # Allow access from outside container
+    depends_on:
+      backend:
+        condition: service_healthy  # Wait for backend healthcheck to pass
+    networks:
+      - feed-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+# ============================================
+# Networks
+# ============================================
+networks:
+  feed-network:
+    driver: bridge
