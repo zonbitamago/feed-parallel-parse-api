@@ -17,6 +17,8 @@ Auto-generated from all feature plans. Last updated: 2025-10-27
 - TypeScript 5.9.3 + React 19.1.1, TailwindCSS 4.x, localStorage (ブラウザAPI) (010-improve-feed-article-access)
 - localStorage（折りたたみ状態の永続化） (010-improve-feed-article-access)
 - TypeScript 5.9.3, React 19.1.1 + Vite 7.1.7（ビルド）, date-fns 4.x（日付処理）, TailwindCSS 4.x（スタイリング） (012-fix-second-feed-preview)
+- TypeScript 5.9.3 + React 19.1.1, Vitest 4.0.3, @testing-library/react 16.3.0 (001-fix-feed-url-title-mismatch)
+- localStorage（ブラウザAPI） (001-fix-feed-url-title-mismatch)
 
 - Go 1.2x + github.com/mmcdole/gofeed, 標準ライブラリ encoding/xml (006-rss-format-support)
 
@@ -36,9 +38,9 @@ tests/
 Go 1.2x: Follow standard conventions
 
 ## Recent Changes
+- 001-fix-feed-url-title-mismatch: Added TypeScript 5.9.3 + React 19.1.1, Vitest 4.0.3, @testing-library/react 16.3.0
 - 012-fix-second-feed-preview: Added TypeScript 5.9.3, React 19.1.1 + Vite 7.1.7（ビルド）, date-fns 4.x（日付処理）, TailwindCSS 4.x（スタイリング）
 - 010-fix-feed-preview: Added TypeScript 5.9.3 + React 19.1.1, Vite 7.1.7
-- 010-improve-feed-article-access: Added TypeScript 5.9.3 + React 19.1.1, TailwindCSS 4.x, localStorage (ブラウザAPI)
 
 
 <!-- MANUAL ADDITIONS START -->

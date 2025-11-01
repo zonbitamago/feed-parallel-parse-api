@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react'
 import { parseFeeds } from '../services/feedAPI'
 import { sortArticlesByDate } from '../utils/dateSort'
 import { truncate } from '../utils/truncate'
+import { normalizeUrl } from '../utils/urlNormalizer'
 import type { Subscription } from '../types/models'
 import type { Article, FeedError } from '../types/models'
 import type { RSSFeed, APIArticle, ErrorInfo } from '../types/api'
@@ -15,14 +16,29 @@ const ARTICLE_SUMMARY_MAX_LENGTH = 300
 /**
  * フィードと購読情報を紐付ける
  *
- * URLで一致するフィードを検索し、見つからない場合はインデックスで紐付ける。
+ * URL正規化により、末尾スラッシュ、プロトコル、www prefix、ドメイン大文字小文字の違いを吸収してマッチング。
+ * インデックスフォールバックは削除（誤ったマッチングの原因）。
+ *
+ * @param subscription 購読情報
+ * @param feeds API応答のフィードリスト
+ * @returns マッチしたフィード、またはundefined
  */
 function findMatchingFeed(
   subscription: Subscription,
-  feeds: RSSFeed[],
-  subscriptionIndex: number
+  feeds: RSSFeed[]
 ): RSSFeed | undefined {
-  return feeds.find(f => f.link === subscription.url) || feeds[subscriptionIndex]
+  const normalizedSubscriptionUrl = normalizeUrl(subscription.url)
+  const matchedFeed = feeds.find(f => normalizeUrl(f.link) === normalizedSubscriptionUrl)
+
+  if (!matchedFeed) {
+    console.warn(
+      `フィードマッチング失敗: subscription.url="${subscription.url}" (正規化後: "${normalizedSubscriptionUrl}")`,
+      `利用可能なフィードURL:`,
+      feeds.map(f => f.link)
+    )
+  }
+
+  return matchedFeed
 }
 
 /**
@@ -100,8 +116,8 @@ export function useFeedAPI() {
       const updatedSubs: Subscription[] = []
 
       // 各購読に対してフィードデータを処理
-      subscriptions.forEach((subscription, subIndex) => {
-        const feed = findMatchingFeed(subscription, response.feeds, subIndex)
+      subscriptions.forEach((subscription) => {
+        const feed = findMatchingFeed(subscription, response.feeds)
 
         if (feed) {
           // タイトルを更新したSubscriptionを作成

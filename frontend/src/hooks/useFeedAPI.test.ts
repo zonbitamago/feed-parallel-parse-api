@@ -25,7 +25,7 @@ describe('useFeedAPI', () => {
           feeds: [
             {
               title: 'Test Feed',
-              link: 'https://example.com',
+              link: 'https://example.com/rss',
               articles: [
                 {
                   title: 'Article 1',
@@ -80,5 +80,46 @@ describe('useFeedAPI', () => {
     })
 
     expect(result.current.errors[0].message).toBe('Failed to fetch')
+  })
+
+  describe('URL/タイトルマッチング（バグ修正）', () => {
+    it('3つのフィードを登録した際、API応答順序が逆でもURL正規化により正しく紐付く', async () => {
+      // 購読リスト: 末尾スラッシュなし
+      // API応答: 末尾スラッシュあり、かつ逆順
+      // URL正規化により正しくマッチすることを確認
+      server.use(
+        http.post('*/api/parse', () => {
+          return HttpResponse.json({
+            feeds: [
+              { title: 'Feed C Title', link: 'https://feed-c.com/rss/', articles: [] },
+              { title: 'Feed B Title', link: 'https://feed-b.com/rss/', articles: [] },
+              { title: 'Feed A Title', link: 'https://feed-a.com/rss/', articles: [] },
+            ],
+            errors: [],
+          })
+        })
+      )
+
+      const { result } = renderHook(() => useFeedAPI())
+
+      await result.current.fetchFeeds([
+        { id: 'a', url: 'https://feed-a.com/rss', title: null, customTitle: null, subscribedAt: new Date().toISOString(), lastFetchedAt: null, status: 'active' },
+        { id: 'b', url: 'https://feed-b.com/rss', title: null, customTitle: null, subscribedAt: new Date().toISOString(), lastFetchedAt: null, status: 'active' },
+        { id: 'c', url: 'https://feed-c.com/rss', title: null, customTitle: null, subscribedAt: new Date().toISOString(), lastFetchedAt: null, status: 'active' },
+      ])
+
+      await waitFor(() => {
+        expect(result.current.updatedSubscriptions.length).toBe(3)
+      })
+
+      // 各URLに対応する正しいタイトルが設定されているか確認
+      const subA = result.current.updatedSubscriptions.find(s => s.id === 'a')
+      const subB = result.current.updatedSubscriptions.find(s => s.id === 'b')
+      const subC = result.current.updatedSubscriptions.find(s => s.id === 'c')
+
+      expect(subA?.title).toBe('Feed A Title')
+      expect(subB?.title).toBe('Feed B Title')
+      expect(subC?.title).toBe('Feed C Title')
+    })
   })
 })
