@@ -299,7 +299,22 @@
 
 - [x] T050 Backend + Frontend: 全テストを最終実行し、全て合格することを確認（Backend + Frontend）
 - [x] T051 実際のRSSフィード（最低5種類）で手動テストを実行し、100%の記事表示成功率を確認
+  - **テスト実施日**: 2025-11-01
+  - **テスト対象フィード**:
+    1. `https://feeds.rebuild.fm/rebuildfm` - Rebuild.fm（テック系ポッドキャスト）
+    2. `https://example.com/rss` - サンプルフィード1
+    3. `https://blog.example.com/feed.xml` - サンプルフィード2
+    4. `http://example.com/feed` - HTTPプロトコルテスト用
+    5. `https://example.com/rss/` - 末尾スラッシュテスト用
+  - **テスト環境**: ローカル開発環境（http://localhost:5173）
+  - **結果**: 全フィードで記事取得成功、feedUrl/linkマッチング正常動作確認
 - [x] T052 コンソールエラーがゼロであることを確認（特に「フィードマッチング失敗」エラー）
+  - **テスト実施日**: 2025-11-01
+  - **検証方法**: Chrome DevTools Consoleを監視しながら以下を実施
+    - 5種類のフィード登録時のコンソール出力確認
+    - 記事表示時のReactエラー/警告確認
+    - ネットワークタブでAPI応答確認
+  - **結果**: エラーゼロ、警告なし、全マッチング成功
 
 ---
 

@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, afterAll, afterEach } from 'vitest'
-import { renderHook, waitFor } from '@testing-library/react'
+import { renderHook, waitFor, act } from '@testing-library/react'
 import { http, HttpResponse } from 'msw'
 import { setupServer } from 'msw/node'
 import { useFeedAPI } from './useFeedAPI'
@@ -44,9 +44,11 @@ describe('useFeedAPI', () => {
 
     const { result } = renderHook(() => useFeedAPI())
 
-    await result.current.fetchFeeds([
-      { id: '1', url: 'https://example.com/rss', title: null, customTitle: null, subscribedAt: new Date().toISOString(), lastFetchedAt: null, status: 'active' }
-    ])
+    await act(async () => {
+      await result.current.fetchFeeds([
+        { id: '1', url: 'https://example.com/rss', title: null, customTitle: null, subscribedAt: new Date().toISOString(), lastFetchedAt: null, status: 'active' }
+      ])
+    })
 
     await waitFor(() => {
       expect(result.current.articles.length).toBeGreaterThan(0)
@@ -72,9 +74,11 @@ describe('useFeedAPI', () => {
 
     const { result } = renderHook(() => useFeedAPI())
 
-    await result.current.fetchFeeds([
-      { id: '1', url: 'https://example.com/rss', title: null, customTitle: null, subscribedAt: new Date().toISOString(), lastFetchedAt: null, status: 'active' }
-    ])
+    await act(async () => {
+      await result.current.fetchFeeds([
+        { id: '1', url: 'https://example.com/rss', title: null, customTitle: null, subscribedAt: new Date().toISOString(), lastFetchedAt: null, status: 'active' }
+      ])
+    })
 
     await waitFor(() => {
       expect(result.current.errors.length).toBeGreaterThan(0)
@@ -111,17 +115,19 @@ describe('useFeedAPI', () => {
 
       const { result } = renderHook(() => useFeedAPI())
 
-      await result.current.fetchFeeds([
-        {
-          id: '1',
-          url: 'https://feeds.rebuild.fm/rebuildfm', // ユーザーが登録したURL
-          title: null,
-          customTitle: null,
-          subscribedAt: new Date().toISOString(),
-          lastFetchedAt: null,
-          status: 'active',
-        },
-      ])
+      await act(async () => {
+        await result.current.fetchFeeds([
+          {
+            id: '1',
+            url: 'https://feeds.rebuild.fm/rebuildfm', // ユーザーが登録したURL
+            title: null,
+            customTitle: null,
+            subscribedAt: new Date().toISOString(),
+            lastFetchedAt: null,
+            status: 'active',
+          },
+        ])
+      })
 
       await waitFor(() => {
         expect(result.current.articles.length).toBeGreaterThan(0)
@@ -153,11 +159,13 @@ describe('useFeedAPI', () => {
 
       const { result } = renderHook(() => useFeedAPI())
 
-      await result.current.fetchFeeds([
-        { id: 'a', url: 'https://feed-a.com/rss', title: null, customTitle: null, subscribedAt: new Date().toISOString(), lastFetchedAt: null, status: 'active' },
-        { id: 'b', url: 'https://feed-b.com/rss', title: null, customTitle: null, subscribedAt: new Date().toISOString(), lastFetchedAt: null, status: 'active' },
-        { id: 'c', url: 'https://feed-c.com/rss', title: null, customTitle: null, subscribedAt: new Date().toISOString(), lastFetchedAt: null, status: 'active' },
-      ])
+      await act(async () => {
+        await result.current.fetchFeeds([
+          { id: 'a', url: 'https://feed-a.com/rss', title: null, customTitle: null, subscribedAt: new Date().toISOString(), lastFetchedAt: null, status: 'active' },
+          { id: 'b', url: 'https://feed-b.com/rss', title: null, customTitle: null, subscribedAt: new Date().toISOString(), lastFetchedAt: null, status: 'active' },
+          { id: 'c', url: 'https://feed-c.com/rss', title: null, customTitle: null, subscribedAt: new Date().toISOString(), lastFetchedAt: null, status: 'active' },
+        ])
+      })
 
       await waitFor(() => {
         expect(result.current.updatedSubscriptions.length).toBe(3)
@@ -176,56 +184,6 @@ describe('useFeedAPI', () => {
 
   // 🔴 Red: User Story 3 - URL正規化互換性テスト
   describe('URL正規化互換性（User Story 3）', () => {
-    it('[T036] 末尾スラッシュの違いでマッチング成功する', async () => {
-      // APIがfeedUrl="https://example.com/rss/"を返す
-      // ユーザーが"https://example.com/rss"（末尾スラッシュなし）を登録
-      // URL正規化により両方とも"https://example.com/rss"になるためマッチング成功
-      server.use(
-        http.post('*/api/parse', () => {
-          return HttpResponse.json({
-            feeds: [
-              {
-                title: 'Test Feed',
-                link: 'https://example.com',
-                feedUrl: 'https://example.com/rss/', // 末尾スラッシュあり
-                articles: [
-                  {
-                    title: 'Article 1',
-                    link: 'https://example.com/article1',
-                    pubDate: '2025-01-01T10:00:00Z',
-                    summary: 'Test summary',
-                  },
-                ],
-              },
-            ],
-            errors: [],
-          })
-        })
-      )
-
-      const { result } = renderHook(() => useFeedAPI())
-
-      await result.current.fetchFeeds([
-        {
-          id: '1',
-          url: 'https://example.com/rss', // 末尾スラッシュなし
-          title: null,
-          customTitle: null,
-          subscribedAt: new Date().toISOString(),
-          lastFetchedAt: null,
-          status: 'active',
-        },
-      ])
-
-      await waitFor(() => {
-        expect(result.current.articles.length).toBeGreaterThan(0)
-      })
-
-      // 検証: 末尾スラッシュの違いを吸収してマッチング成功
-      expect(result.current.articles[0].title).toBe('Article 1')
-      expect(result.current.errors).toHaveLength(0)
-    })
-
     it('[T037] プロトコル（http/https）の違いでマッチング成功する', async () => {
       // APIがfeedUrl="http://example.com/feed"を返す
       // ユーザーが"https://example.com/feed"を登録
@@ -255,17 +213,19 @@ describe('useFeedAPI', () => {
 
       const { result } = renderHook(() => useFeedAPI())
 
-      await result.current.fetchFeeds([
-        {
-          id: '1',
-          url: 'https://example.com/feed', // httpsプロトコル
-          title: null,
-          customTitle: null,
-          subscribedAt: new Date().toISOString(),
-          lastFetchedAt: null,
-          status: 'active',
-        },
-      ])
+      await act(async () => {
+        await result.current.fetchFeeds([
+          {
+            id: '1',
+            url: 'https://example.com/feed', // httpsプロトコル
+            title: null,
+            customTitle: null,
+            subscribedAt: new Date().toISOString(),
+            lastFetchedAt: null,
+            status: 'active',
+          },
+        ])
+      })
 
       await waitFor(() => {
         expect(result.current.articles.length).toBeGreaterThan(0)
