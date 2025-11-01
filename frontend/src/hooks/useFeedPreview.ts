@@ -9,6 +9,18 @@ import { FEED_ERROR_MESSAGES } from '../constants/errorMessages'
 const DEBOUNCE_DELAY = 500
 
 /**
+ * プレビューの状態を表すDiscriminated Union型
+ *
+ * TypeScriptの型推論により、各状態で利用可能なプロパティが自動的に決定され、
+ * 不正な状態遷移をコンパイル時に検出できます。
+ */
+type PreviewState =
+  | { status: 'idle' }
+  | { status: 'loading' }
+  | { status: 'success'; title: string }
+  | { status: 'error'; error: string }
+
+/**
  * フィードプレビュー取得カスタムフック
  *
  * URL入力時にフィードタイトルのプレビューを取得する機能を提供します。
@@ -30,9 +42,7 @@ const DEBOUNCE_DELAY = 500
  * ```
  */
 export function useFeedPreview() {
-  const [previewTitle, setPreviewTitle] = useState<string | null>(null)
-  const [isLoadingPreview, setIsLoadingPreview] = useState(false)
-  const [previewError, setPreviewError] = useState<string | null>(null)
+  const [previewState, setPreviewState] = useState<PreviewState>({ status: 'idle' })
 
   // デバウンス用タイマー（連続入力時に前のタイマーをキャンセル）
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null)
@@ -45,9 +55,7 @@ export function useFeedPreview() {
    * 実行中のAPI呼び出しをキャンセルし、すべての状態をリセットします。
    */
   const clearPreview = useCallback(() => {
-    setPreviewTitle(null)
-    setPreviewError(null)
-    setIsLoadingPreview(false)
+    setPreviewState({ status: 'idle' })
 
     // デバウンスタイマーをクリア
     if (debounceTimerRef.current) {
@@ -96,27 +104,22 @@ export function useFeedPreview() {
       // 新しいAbortControllerを作成
       abortControllerRef.current = new AbortController()
 
-      setIsLoadingPreview(true)
-      setPreviewError(null)
+      setPreviewState({ status: 'loading' })
 
       try {
         const response = await parseFeeds([url], { signal: abortControllerRef.current.signal })
 
         // エラーがある場合
         if (response.errors.length > 0) {
-          setPreviewError(response.errors[0].message)
-          setPreviewTitle(null)
-          setIsLoadingPreview(false)
+          setPreviewState({ status: 'error', error: response.errors[0].message })
           return
         }
 
         // フィードが取得できた場合
         if (response.feeds.length > 0) {
-          setPreviewTitle(response.feeds[0].title)
-          setPreviewError(null)
+          setPreviewState({ status: 'success', title: response.feeds[0].title })
         } else {
-          setPreviewError(FEED_ERROR_MESSAGES.FETCH_FAILED)
-          setPreviewTitle(null)
+          setPreviewState({ status: 'error', error: FEED_ERROR_MESSAGES.FETCH_FAILED })
         }
       } catch (error) {
         // AbortErrorは無視（意図的なキャンセル）
@@ -124,12 +127,11 @@ export function useFeedPreview() {
           return
         }
 
-        setPreviewError(
-          error instanceof Error ? error.message : FEED_ERROR_MESSAGES.FETCH_FAILED
-        )
-        setPreviewTitle(null)
+        setPreviewState({
+          status: 'error',
+          error: error instanceof Error ? error.message : FEED_ERROR_MESSAGES.FETCH_FAILED
+        })
       } finally {
-        setIsLoadingPreview(false)
         abortControllerRef.current = null
       }
     }, DEBOUNCE_DELAY)
@@ -150,9 +152,9 @@ export function useFeedPreview() {
   }, [])
 
   return {
-    previewTitle,
-    isLoadingPreview,
-    previewError,
+    previewTitle: previewState.status === 'success' ? previewState.title : null,
+    isLoadingPreview: previewState.status === 'loading',
+    previewError: previewState.status === 'error' ? previewState.error : null,
     fetchPreview,
     clearPreview,
   }
