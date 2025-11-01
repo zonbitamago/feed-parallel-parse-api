@@ -2,8 +2,9 @@ package models
 
 // RSSFeed represents a single RSS feed and its articles
 type RSSFeed struct {
-	Title   string     `json:"title"`
-	Link    string     `json:"link"`
+	Title    string    `json:"title"`
+	Link     string    `json:"link"`
+	FeedURL  string    `json:"feedUrl"` // 実際のRSSフィードURL（v1.1.0で追加）
 	Articles []Article `json:"articles"`
 }
 
