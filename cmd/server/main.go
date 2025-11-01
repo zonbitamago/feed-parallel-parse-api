@@ -52,13 +52,14 @@ func corsMiddleware(next http.HandlerFunc) http.HandlerFunc {
 
 		// 環境変数が未設定の場合の処理
 		if allowedOrigin == "" {
-			// 開発環境（Docker local）のみデフォルトで全許可
+			// 開発環境（Docker local）またはVercel環境のデフォルト値として"*"を使用
 			if env == "" || env == "development" {
 				allowedOrigin = "*"
 				logger.Printf("CORS: Using default '*' for development environment")
 			} else {
-				// 本番環境では環境変数の設定を必須化
-				logger.Fatalf("CORS_ALLOWED_ORIGINS is not set. Refusing to start in non-development environment (GO_ENV=%s)", env)
+				// 本番環境では警告を出すが、デフォルト"*"で起動を継続
+				logger.Printf("WARNING: CORS_ALLOWED_ORIGINS is not set in non-development environment (GO_ENV=%s). Using default '*'. Please set CORS_ALLOWED_ORIGINS for production.", env)
+				allowedOrigin = "*"
 			}
 		}
 
