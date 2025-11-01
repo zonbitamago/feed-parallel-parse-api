@@ -16,7 +16,7 @@ func TestCORSHeaders(t *testing.T) {
 	rec := httptest.NewRecorder()
 
 	// 実行
-	handler := setupRoutes()
+	handler := SetupRoutes()
 	handler.ServeHTTP(rec, req)
 
 	// 検証
@@ -32,7 +32,7 @@ func TestOPTIONSRequest(t *testing.T) {
 	rec := httptest.NewRecorder()
 
 	// 実行
-	handler := setupRoutes()
+	handler := SetupRoutes()
 	handler.ServeHTTP(rec, req)
 
 	// 検証

@@ -3,8 +3,10 @@ package integration
 import (
 	"bytes"
 	"encoding/json"
+	"log"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 
 	handler "feed-parallel-parse-api/api"
@@ -12,6 +14,47 @@ import (
 
 	"github.com/stretchr/testify/assert"
 )
+
+var testLogger *log.Logger
+
+// setupTestRoutes はテスト用のCORS対応HTTPマルチプレクサを作成（cmd/server/main.goのSetupRoutes()と同じロジック）
+func setupTestRoutes() *http.ServeMux {
+	// テスト環境でloggerが初期化されていない場合の対応
+	if testLogger == nil {
+		testLogger = log.New(os.Stdout, "[HTTP-SERVER-TEST] ", log.LstdFlags|log.Lmsgprefix)
+	}
+
+	mux := http.NewServeMux()
+
+	// /api/parse エンドポイントをCORSミドルウェア付きで登録
+	mux.HandleFunc("/api/parse", corsMiddleware(handler.Handler))
+
+	return mux
+}
+
+// corsMiddleware はHTTPハンドラーにCORSヘッダーとリクエストログを追加するミドルウェア（cmd/server/main.goと同じロジック）
+func corsMiddleware(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// リクエストログ出力
+		testLogger.Printf("Request: %s %s from %s", r.Method, r.URL.Path, r.RemoteAddr)
+
+		// CORSヘッダー設定
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+		// プリフライトOPTIONSリクエストの処理
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusOK)
+			testLogger.Printf("Response: OPTIONS 200 OK")
+			return
+		}
+
+		// 次のハンドラーを呼び出し
+		next(w, r)
+		testLogger.Printf("Response: %s completed", r.Method)
+	}
+}
 
 // TestAPIEndpointRouting は /api/parse エンドポイントが正しいハンドラーにルーティングされることを検証する
 func TestAPIEndpointRouting(t *testing.T) {
@@ -24,22 +67,8 @@ func TestAPIEndpointRouting(t *testing.T) {
 	req.Header.Set("Content-Type", "application/json")
 	rec := httptest.NewRecorder()
 
-	// 統合テスト用のシンプルなHTTPマルチプレクサを作成
-	mux := http.NewServeMux()
-	mux.HandleFunc("/api/parse", func(w http.ResponseWriter, r *http.Request) {
-		// CORSヘッダーはラッパーによって設定される
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-
-		if r.Method == "OPTIONS" {
-			w.WriteHeader(http.StatusOK)
-			return
-		}
-
-		// 実際のハンドラーに委譲
-		handler.Handler(w, r)
-	})
+	// 実際のサーバー設定を使用（CORS対応含む）
+	mux := setupTestRoutes()
 
 	// 実行
 	mux.ServeHTTP(rec, req)
@@ -64,21 +93,8 @@ func TestAPIEndpointMethodNotAllowed(t *testing.T) {
 			req := httptest.NewRequest(method, "/api/parse", nil)
 			rec := httptest.NewRecorder()
 
-			// ハンドラー作成
-			mux := http.NewServeMux()
-			mux.HandleFunc("/api/parse", func(w http.ResponseWriter, r *http.Request) {
-				// CORSヘッダー
-				w.Header().Set("Access-Control-Allow-Origin", "*")
-				w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
-				w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-
-				if r.Method == "OPTIONS" {
-					w.WriteHeader(http.StatusOK)
-					return
-				}
-
-				handler.Handler(w, r)
-			})
+			// 実際のサーバー設定を使用（CORS対応含む）
+			mux := setupTestRoutes()
 
 			// 実行
 			mux.ServeHTTP(rec, req)

@@ -15,7 +15,7 @@ func main() {
 	logger = log.New(os.Stdout, "[HTTP-SERVER] ", log.LstdFlags|log.Lmsgprefix)
 
 	// ルートの設定
-	mux := setupRoutes()
+	mux := SetupRoutes()
 
 	// サーバー起動
 	port := ":8080"
@@ -28,8 +28,8 @@ func main() {
 	}
 }
 
-// setupRoutes はCORS対応のHTTPマルチプレクサを作成・設定する
-func setupRoutes() *http.ServeMux {
+// SetupRoutes はCORS対応のHTTPマルチプレクサを作成・設定する
+func SetupRoutes() *http.ServeMux {
 	// テスト環境でloggerが初期化されていない場合の対応
 	if logger == nil {
 		logger = log.New(os.Stdout, "[HTTP-SERVER] ", log.LstdFlags|log.Lmsgprefix)
