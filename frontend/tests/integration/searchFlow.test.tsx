@@ -12,7 +12,7 @@ const server = setupServer(
       feeds: [
         {
           title: 'Tech Blog',
-          link: 'https://example.com',
+          link: 'https://example.com/rss',
           articles: [
             {
               title: 'React Tutorial',

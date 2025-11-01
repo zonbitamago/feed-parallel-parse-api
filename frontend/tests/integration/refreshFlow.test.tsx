@@ -13,7 +13,7 @@ const server = setupServer(
       feeds: [
         {
           title: 'Test Feed',
-          link: 'https://example.com',
+          link: 'https://example.com/rss',
           articles: [
             {
               title: 'Test Article',
@@ -50,7 +50,7 @@ describe('Refresh Flow Integration', () => {
           feeds: [
             {
               title: 'Test Feed',
-              link: 'https://example.com',
+              link: 'https://example.com/rss',
               articles: [
                 {
                   title: 'Test Article',
