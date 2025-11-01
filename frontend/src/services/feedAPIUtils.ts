@@ -25,19 +25,16 @@ export async function createFeedAPIRequest(
   urls: string[],
   options?: { signal?: AbortSignal }
 ): Promise<ParseResponse> {
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), API_TIMEOUT);
+  // タイムアウト用のAbortController
+  const timeoutController = new AbortController();
+  const timeoutId = setTimeout(() => timeoutController.abort(), API_TIMEOUT);
 
-  // 外部からのAbortSignalでキャンセルされたかどうかを追跡
-  let externalAbort = false;
-
-  // 外部からのAbortSignalがあれば、それを監視する
+  // 外部のsignalとタイムアウトsignalを結合（AbortSignal.any()を使用）
+  const signals = [timeoutController.signal];
   if (options?.signal) {
-    options.signal.addEventListener('abort', () => {
-      externalAbort = true;
-      controller.abort();
-    });
+    signals.push(options.signal);
   }
+  const combinedSignal = AbortSignal.any(signals);
 
   try {
     const request: ParseRequest = { urls };
@@ -48,7 +45,7 @@ export async function createFeedAPIRequest(
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(request),
-      signal: controller.signal,
+      signal: combinedSignal,
     });
 
     if (!response.ok) {
@@ -63,9 +60,10 @@ export async function createFeedAPIRequest(
     return data;
   } catch (error) {
     if (error instanceof Error && error.name === 'AbortError') {
-      // 外部からのキャンセルの場合はAbortErrorをそのまま再スロー
-      // （useFeedPreviewでの意図的なキャンセル処理のため）
-      if (externalAbort) {
+      // 外部からのキャンセルかどうかを判定
+      if (options?.signal?.aborted) {
+        // 外部からのキャンセルの場合はAbortErrorをそのまま再スロー
+        // （useFeedPreviewでの意図的なキャンセル処理のため）
         throw error;
       }
       // タイムアウトの場合はFeedAPIErrorでラップ

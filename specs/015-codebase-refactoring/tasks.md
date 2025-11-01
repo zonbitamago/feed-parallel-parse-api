@@ -515,7 +515,7 @@ git add [変更ファイル]
 git commit -m "refactor([scope]): [US#] [リファクタリング内容]（Refactor）"
 
 # 例
-git commit -m "refactor(api): [US1] API呼び出しロジックをcre ateFeedAPIRequest()に集約（Refactor）"
+git commit -m "refactor(api): [US1] API呼び出しロジックをcreateFeedAPIRequest()に集約（Refactor）"
 git commit -m "refactor(state): [US2] PreviewStateをDiscriminated Unionに変更（Refactor）"
 git commit -m "refactor(hooks): [US3] 8個のuseEffectをuseFeedSync()に集約（Refactor）"
 ```
