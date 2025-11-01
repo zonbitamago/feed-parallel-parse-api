@@ -14,11 +14,11 @@ const server = setupServer(
     const feeds = body.urls.map(url => {
       // URLに基づいて異なるタイトルを返す
       if (url.includes('rss1')) {
-        return { title: 'Feed 1', link: url, articles: [] }
+        return { title: 'Feed 1', link: url, feedUrl: url, articles: [] }
       } else if (url.includes('rss2')) {
-        return { title: 'Feed 2', link: url, articles: [] }
+        return { title: 'Feed 2', link: url, feedUrl: url, articles: [] }
       } else {
-        return { title: 'Test Feed', link: url, articles: [] }
+        return { title: 'Test Feed', link: url, feedUrl: url, articles: [] }
       }
     })
 
