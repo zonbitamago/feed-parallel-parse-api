@@ -24,3 +24,33 @@ func TestRSSFeedModel_仕様テスト(t *testing.T) {
 		})
 	}
 }
+
+// 🔴 Red: User Story 1 - RSSFeedモデルにFeedURLフィールド追加のテスト
+func TestRSSFeedModel_FeedURLフィールド存在確認(t *testing.T) {
+	// Arrange: FeedURLフィールドを持つRSSFeedを作成
+	feed := models.RSSFeed{
+		Title:    "テストフィード",
+		Link:     "https://example.com",
+		FeedURL:  "https://example.com/rss", // ← まだ存在しないフィールド（これが失敗の原因）
+		Articles: []models.Article{},
+	}
+
+	// Assert: FeedURLフィールドが期待値と一致する
+	assert.Equal(t, "https://example.com/rss", feed.FeedURL)
+}
+
+// 🔴 Red: User Story 1 - FeedURLとLinkが異なる値を持てることを確認
+func TestRSSFeedModel_FeedURLとLinkは異なる値(t *testing.T) {
+	// Arrange: Rebuild.fmの実際のデータ構造をシミュレート
+	feed := models.RSSFeed{
+		Title:    "Rebuild",
+		Link:     "https://rebuild.fm",                    // ホームページURL
+		FeedURL:  "https://feeds.rebuild.fm/rebuildfm",  // 実際のRSSフィードURL
+		Articles: []models.Article{},
+	}
+
+	// Assert: LinkとFeedURLが異なることを確認
+	assert.NotEqual(t, feed.Link, feed.FeedURL, "LinkとFeedURLは異なる値を持つべき")
+	assert.Equal(t, "https://rebuild.fm", feed.Link)
+	assert.Equal(t, "https://feeds.rebuild.fm/rebuildfm", feed.FeedURL)
+}
