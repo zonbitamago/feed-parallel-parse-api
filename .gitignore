@@ -3,6 +3,7 @@
 *.test
 *.out
 vendor/
+tmp/
 
 # Universal
 .DS_Store
