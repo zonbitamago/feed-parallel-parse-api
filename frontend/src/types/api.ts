@@ -13,7 +13,8 @@ export interface ParseResponse {
 
 export interface RSSFeed {
   title: string;
-  link: string;
+  link: string; // ホームページURL（既存）
+  feedUrl: string; // 実際のRSSフィードURL（v1.1.0で追加）
   articles: APIArticle[];
 }
 
