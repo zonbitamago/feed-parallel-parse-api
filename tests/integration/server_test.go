@@ -17,7 +17,8 @@ import (
 
 var testLogger *log.Logger
 
-// setupTestRoutes はテスト用のCORS対応HTTPマルチプレクサを作成（cmd/server/main.goのSetupRoutes()と同じロジック）
+// setupTestRoutes は、統合テストで本番コードと同じルーティング設定を使用するため、
+// cmd/server/main.goのSetupRoutes()と同じロジックを実装してテスト用のCORS対応HTTPマルチプレクサを作成する
 func setupTestRoutes() *http.ServeMux {
 	// テスト環境でloggerが初期化されていない場合の対応
 	if testLogger == nil {
@@ -33,6 +34,7 @@ func setupTestRoutes() *http.ServeMux {
 }
 
 // corsMiddleware はHTTPハンドラーにCORSヘッダーとリクエストログを追加するミドルウェア（cmd/server/main.goと同じロジック）
+// 注意: cmd/server/main.goと重複しているため、将来的にはinternal/serverパッケージなどに共通化することを推奨
 func corsMiddleware(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// リクエストログ出力
