@@ -4,6 +4,7 @@
  * TDDサイクル1: httpをhttpsに変換
  * TDDサイクル2: ドメインを小文字化
  * TDDサイクル3: www prefixを除去
+ * TDDサイクル4: 末尾スラッシュを除去
  */
 
 import { describe, it, expect } from 'vitest'
@@ -27,6 +28,14 @@ describe('normalizeUrl', () => {
 
     it('www prefixを除去する', () => {
       const input = 'https://www.example.com/feed'
+      const expected = 'https://example.com/feed'
+      expect(normalizeUrl(input)).toBe(expected)
+    })
+  })
+
+  describe('パス正規化', () => {
+    it('末尾スラッシュを除去する', () => {
+      const input = 'https://example.com/feed/'
       const expected = 'https://example.com/feed'
       expect(normalizeUrl(input)).toBe(expected)
     })
