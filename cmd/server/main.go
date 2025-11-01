@@ -10,10 +10,12 @@ import (
 
 var logger *log.Logger
 
-func main() {
-	// 構造化ログの設定
+// init はプログラム起動時に自動的に実行され、loggerを初期化する
+func init() {
 	logger = log.New(os.Stdout, "[HTTP-SERVER] ", log.LstdFlags|log.Lmsgprefix)
+}
 
+func main() {
 	// ルートの設定
 	mux := SetupRoutes()
 
@@ -30,11 +32,6 @@ func main() {
 
 // SetupRoutes はCORS対応のHTTPマルチプレクサを作成・設定する
 func SetupRoutes() *http.ServeMux {
-	// テスト環境でloggerが初期化されていない場合の対応
-	if logger == nil {
-		logger = log.New(os.Stdout, "[HTTP-SERVER] ", log.LstdFlags|log.Lmsgprefix)
-	}
-
 	mux := http.NewServeMux()
 
 	// /api/parse エンドポイントをCORSミドルウェア付きで登録
@@ -49,8 +46,25 @@ func corsMiddleware(next http.HandlerFunc) http.HandlerFunc {
 		// リクエストログ出力
 		logger.Printf("Request: %s %s from %s", r.Method, r.URL.Path, r.RemoteAddr)
 
+		// CORS Originを環境変数から取得
+		allowedOrigin := os.Getenv("CORS_ALLOWED_ORIGINS")
+		env := os.Getenv("GO_ENV")
+
+		// 環境変数が未設定の場合の処理
+		if allowedOrigin == "" {
+			// 開発環境（Docker local）またはVercel環境のデフォルト値として"*"を使用
+			if env == "" || env == "development" {
+				allowedOrigin = "*"
+				logger.Printf("CORS: Using default '*' for development environment")
+			} else {
+				// 本番環境では警告を出すが、デフォルト"*"で起動を継続
+				logger.Printf("WARNING: CORS_ALLOWED_ORIGINS is not set in non-development environment (GO_ENV=%s). Using default '*'. Please set CORS_ALLOWED_ORIGINS for production.", env)
+				allowedOrigin = "*"
+			}
+		}
+
 		// CORSヘッダー設定
-		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Origin", allowedOrigin)
 		w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 

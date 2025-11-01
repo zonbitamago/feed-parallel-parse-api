@@ -59,8 +59,8 @@ export function FeedManager({
   const isAtLimit = subscriptions.length >= maxSubscriptions
 
   // 購読リストのレンダリングをメモ化（大量データ時のパフォーマンス最適化）
-  // Note: useFeedTitleEditの関数は全てuseCallbackでメモ化されているため、
-  // useMemoの依存配列には状態とpropsのみを含める
+  // Note: useFeedTitleEditの関数とeditInputRefは全てuseCallbackでメモ化/useRefで安定しているため、
+  // 依存配列には状態（編集関連）とpropsのみを含め、メモ化された関数とrefは除外
   const subscriptionListItems = useMemo(() => {
     return subscriptions.map((subscription) => (
       <FeedSubscriptionItem
@@ -80,19 +80,14 @@ export function FeedManager({
         showRemoveButton={!!onRemoveFeed}
       />
     ))
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- useFeedTitleEditの関数は全てメモ化済み
   }, [
     subscriptions,
     editingId,
     editValue,
     editError,
-    editInputRef,
     onRemoveFeed,
     onUpdateCustomTitle,
-    startEdit,
-    saveEdit,
-    cancelEdit,
-    changeEditValue,
-    handleKeyDown,
   ])
 
   // リアルタイムURL検証とプレビュー取得
