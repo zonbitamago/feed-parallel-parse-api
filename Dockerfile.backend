@@ -1,0 +1,51 @@
+# Dockerfile.backend
+# Feature: 013-docker-local-env
+# Purpose: Backend container with Go 1.25.1 and Air for hot reload
+
+# ============================================
+# Build Stage
+# ============================================
+FROM golang:1.25.1-alpine AS builder
+
+WORKDIR /app
+
+# Dependencies caching layer (optimize rebuild time)
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Install Air for hot reload
+RUN go install github.com/air-verse/air@latest
+
+# Source code
+COPY . .
+
+# Build binary (for production-like testing)
+RUN CGO_ENABLED=0 GOOS=linux go build -o /server cmd/server/main.go
+
+# ============================================
+# Runtime Stage (Development)
+# ============================================
+FROM golang:1.25.1-alpine
+
+WORKDIR /app
+
+# Install tools for healthcheck and debugging
+RUN apk add --no-cache ca-certificates curl
+
+# Copy Air from builder
+COPY --from=builder /go/bin/air /usr/local/bin/air
+
+# Copy go modules cache to speed up hot reload builds
+COPY --from=builder /go/pkg/mod /go/pkg/mod
+
+# Expose API port
+EXPOSE 8080
+
+# Health check - verifies server is ready to accept requests
+# Note: Using OPTIONS method to avoid triggering actual API logic
+HEALTHCHECK --interval=10s --timeout=5s --start-period=10s --retries=3 \
+  CMD curl -f --request OPTIONS http://localhost:8080/api/parse || exit 1
+
+# Default command (air will watch for changes and rebuild automatically)
+# docker-compose.yml can override this command if needed
+CMD ["air", "-c", ".air.toml"]

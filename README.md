@@ -98,6 +98,64 @@ cd feed-parallel-parse-api
 go mod tidy
 ```
 
+## Dockerローカル開発
+
+**最速セットアップ** - バックエンドとフロントエンドを1コマンドで起動：
+
+```sh
+docker-compose up
+```
+
+### 前提条件
+
+- Docker Desktop 20.10+ ([インストール](https://www.docker.com/products/docker-desktop/))
+- Git
+
+### クイックスタート
+
+```sh
+# 1. リポジトリクローン
+git clone https://github.com/zonbitamago/feed-parallel-parse-api.git
+cd feed-parallel-parse-api
+
+# 2. Docker環境起動（初回は5分程度）
+docker-compose up
+
+# アクセス確認
+# バックエンド: http://localhost:8080/api/parse
+# フロントエンド: http://localhost:5173
+```
+
+### 開発ワークフロー
+
+ホットリロード対応（コード変更を自動検出）：
+
+- **バックエンド**（Go）: ~5秒で自動再起動
+- **フロントエンド**（React）: ~1秒でブラウザ更新
+
+```sh
+# ログ確認
+docker-compose logs -f backend   # バックエンドログ
+docker-compose logs -f frontend  # フロントエンドログ
+
+# 停止
+docker-compose down              # コンテナとネットワーク削除
+docker-compose down -v           # + ボリューム削除（完全クリーンアップ）
+```
+
+### トラブルシューティング
+
+**ポート競合エラー**:
+```sh
+# ポート8080または5173が使用中の場合
+lsof -ti:8080 | xargs kill -9  # macOS/Linux
+```
+
+**Docker Desktop未起動**:
+- Docker Desktopアプリケーションを起動してください
+
+詳細は [specs/013-docker-local-env/quickstart.md](specs/013-docker-local-env/quickstart.md) を参照してください。
+
 ### バックエンドテスト
 
 ```sh

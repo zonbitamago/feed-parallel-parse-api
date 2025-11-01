@@ -1,0 +1,52 @@
+# Air Configuration for Go Hot Reload
+# Feature: 013-docker-local-env
+# Purpose: Automatically rebuild and restart backend server on code changes
+
+root = "."
+tmp_dir = "tmp"
+
+[build]
+  # Build command
+  cmd = "go build -o ./tmp/main cmd/server/main.go"
+
+  # Binary output
+  bin = "tmp/main"
+
+  # Include file extensions
+  include_ext = ["go", "tpl", "tmpl", "html"]
+
+  # Include directories
+  include_dir = ["cmd", "pkg", "api"]
+
+  # Exclude directories
+  exclude_dir = ["frontend", "tmp", "vendor", "tests", "specs", ".git"]
+
+  # Exclude files
+  exclude_file = []
+
+  # Delay before rebuild (milliseconds)
+  delay = 1000
+
+  # Stop running old binary before building new one
+  stop_on_error = true
+
+  # Send Interrupt signal before killing process
+  send_interrupt = false
+
+  # Kill process after delay (milliseconds)
+  kill_delay = 500
+
+[log]
+  # Show log time
+  time = true
+
+[color]
+  # Customize output colors
+  main = "magenta"
+  watcher = "cyan"
+  build = "yellow"
+  runner = "green"
+
+[misc]
+  # Delete tmp directory on exit
+  clean_on_exit = true
