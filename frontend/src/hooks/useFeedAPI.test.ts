@@ -173,4 +173,107 @@ describe('useFeedAPI', () => {
       expect(subC?.title).toBe('Feed C Title')
     })
   })
+
+  // 🔴 Red: User Story 3 - URL正規化互換性テスト
+  describe('URL正規化互換性（User Story 3）', () => {
+    it('[T036] 末尾スラッシュの違いでマッチング成功する', async () => {
+      // APIがfeedUrl="https://example.com/rss/"を返す
+      // ユーザーが"https://example.com/rss"（末尾スラッシュなし）を登録
+      // URL正規化により両方とも"https://example.com/rss"になるためマッチング成功
+      server.use(
+        http.post('*/api/parse', () => {
+          return HttpResponse.json({
+            feeds: [
+              {
+                title: 'Test Feed',
+                link: 'https://example.com',
+                feedUrl: 'https://example.com/rss/', // 末尾スラッシュあり
+                articles: [
+                  {
+                    title: 'Article 1',
+                    link: 'https://example.com/article1',
+                    pubDate: '2025-01-01T10:00:00Z',
+                    summary: 'Test summary',
+                  },
+                ],
+              },
+            ],
+            errors: [],
+          })
+        })
+      )
+
+      const { result } = renderHook(() => useFeedAPI())
+
+      await result.current.fetchFeeds([
+        {
+          id: '1',
+          url: 'https://example.com/rss', // 末尾スラッシュなし
+          title: null,
+          customTitle: null,
+          subscribedAt: new Date().toISOString(),
+          lastFetchedAt: null,
+          status: 'active',
+        },
+      ])
+
+      await waitFor(() => {
+        expect(result.current.articles.length).toBeGreaterThan(0)
+      })
+
+      // 検証: 末尾スラッシュの違いを吸収してマッチング成功
+      expect(result.current.articles[0].title).toBe('Article 1')
+      expect(result.current.errors).toHaveLength(0)
+    })
+
+    it('[T037] プロトコル（http/https）の違いでマッチング成功する', async () => {
+      // APIがfeedUrl="http://example.com/feed"を返す
+      // ユーザーが"https://example.com/feed"を登録
+      // URL正規化により両方とも"https://example.com/feed"になるためマッチング成功
+      server.use(
+        http.post('*/api/parse', () => {
+          return HttpResponse.json({
+            feeds: [
+              {
+                title: 'HTTP Feed',
+                link: 'http://example.com',
+                feedUrl: 'http://example.com/feed', // httpプロトコル
+                articles: [
+                  {
+                    title: 'HTTP Article',
+                    link: 'http://example.com/article',
+                    pubDate: '2025-01-01T10:00:00Z',
+                    summary: 'HTTP test',
+                  },
+                ],
+              },
+            ],
+            errors: [],
+          })
+        })
+      )
+
+      const { result } = renderHook(() => useFeedAPI())
+
+      await result.current.fetchFeeds([
+        {
+          id: '1',
+          url: 'https://example.com/feed', // httpsプロトコル
+          title: null,
+          customTitle: null,
+          subscribedAt: new Date().toISOString(),
+          lastFetchedAt: null,
+          status: 'active',
+        },
+      ])
+
+      await waitFor(() => {
+        expect(result.current.articles.length).toBeGreaterThan(0)
+      })
+
+      // 検証: プロトコルの違いを吸収してマッチング成功
+      expect(result.current.articles[0].title).toBe('HTTP Article')
+      expect(result.current.errors).toHaveLength(0)
+    })
+  })
 })
