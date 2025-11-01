@@ -72,9 +72,9 @@
 
 **Purpose**: 環境確認と既存テストの実行
 
-- [ ] T001 既存のBackendテストを実行し、全テストが合格することを確認: `go test ./tests/unit/... -v`
-- [ ] T002 [P] 既存のFrontendテストを実行し、全テストが合格することを確認: `cd frontend && npm test`
-- [ ] T003 [P] ブランチ`001-fix-feedurl-api-mismatch`にチェックアウト済みであることを確認
+- [x] T001 既存のBackendテストを実行し、全テストが合格することを確認: `go test ./tests/unit/... -v`
+- [x] T002 [P] 既存のFrontendテストを実行し、全テストが合格することを確認: `cd frontend && npm test`
+- [x] T003 [P] ブランチ`001-fix-feedurl-api-mismatch`にチェックアウト済みであることを確認
 
 ---
 
@@ -109,11 +109,11 @@
 - テストを先に書くことで、「あるべき姿」を明確にする
 - 失敗を確認することで、テスト自体が正しいことを検証
 
-- [ ] T004 [P] [US1] Backend: RSSFeedモデルにFeedURLフィールドが存在することをテスト `tests/unit/rss_model_test.go`（Red - コンパイルエラーを期待）
-- [ ] T005 [P] [US1] Backend: feedToRSSFeed関数がfeed.FeedLinkからFeedURLを設定することをテスト `tests/unit/rss_service_test.go`（Red - フィールド不在エラーを期待）
-- [ ] T006 [P] [US1] Backend: feed.FeedLinkが空の場合、リクエストURLにフォールバックすることをテスト `tests/unit/rss_service_test.go`（Red - ロジック未実装エラーを期待）
-- [ ] T007 [P] [US1] Frontend: RSSFeed型にfeedUrlフィールドが存在することをテスト `frontend/src/types/api.test.ts`（新規作成、Red - TypeScriptコンパイルエラーを期待）
-- [ ] T008 [P] [US1] Frontend: useFeedAPIフックがfeedUrlを使用してマッチングすることをテスト `frontend/src/hooks/useFeedAPI.test.ts`（Red - マッチング失敗を期待）
+- [x] T004 [P] [US1] Backend: RSSFeedモデルにFeedURLフィールドが存在することをテスト `tests/unit/rss_model_test.go`（Red - コンパイルエラーを期待）
+- [x] T005 [P] [US1] Backend: feedToRSSFeed関数がfeed.FeedLinkからFeedURLを設定することをテスト `tests/unit/rss_service_test.go`（Red - フィールド不在エラーを期待）
+- [x] T006 [P] [US1] Backend: feed.FeedLinkが空の場合、リクエストURLにフォールバックすることをテスト `tests/unit/rss_service_test.go`（Red - ロジック未実装エラーを期待）
+- [x] T007 [P] [US1] Frontend: RSSFeed型にfeedUrlフィールドが存在することをテスト `frontend/src/types/api.test.ts`（新規作成、Red - TypeScriptコンパイルエラーを期待）
+- [x] T008 [P] [US1] Frontend: useFeedAPIフックがfeedUrlを使用してマッチングすることをテスト `frontend/src/hooks/useFeedAPI.test.ts`（Red - マッチング失敗を期待）
 
 **Checkpoint**: 全テストが期待通り失敗することを確認（Red完了）
 - ✅ コンパイルエラーまたはアサーション失敗を確認
@@ -148,17 +148,17 @@
 
 #### Backend実装
 
-- [ ] T009 [US1] Backend: `pkg/models/rss.go`にFeedURLフィールド追加（`FeedURL string \`json:"feedUrl"\``）→ T004テスト合格を確認【明白な実装】
-- [ ] T010 [US1] Backend: `pkg/services/rss_service.go`のfeedToRSSFeed関数でfeed.FeedLinkからFeedURLを設定 → T005テスト合格を確認【明白な実装】
-- [ ] T011 [US1] Backend: `pkg/services/rss_service.go`でfeed.FeedLinkが空の場合のフォールバックロジック実装 → T006テスト合格を確認【明白な実装】
-- [ ] T012 [US1] Backend: 全Unit Testsを実行し、既存テスト含め全て合格することを確認: `go test ./tests/unit/... -v`
+- [x] T009 [US1] Backend: `pkg/models/rss.go`にFeedURLフィールド追加（`FeedURL string \`json:"feedUrl"\``）→ T004テスト合格を確認【明白な実装】
+- [x] T010 [US1] Backend: `pkg/services/rss_service.go`のfeedToRSSFeed関数でfeed.FeedLinkからFeedURLを設定 → T005テスト合格を確認【明白な実装】
+- [x] T011 [US1] Backend: `pkg/services/rss_service.go`でfeed.FeedLinkが空の場合のフォールバックロジック実装 → T006テスト合格を確認【明白な実装】
+- [x] T012 [US1] Backend: 全Unit Testsを実行し、既存テスト含め全て合格することを確認: `go test ./tests/unit/... -v`
 
 #### Frontend実装
 
-- [ ] T013 [P] [US1] Frontend: `frontend/src/types/api.ts`のRSSFeedインターフェースにfeedUrlフィールド追加 → T007テスト合格を確認【明白な実装】
-- [ ] T014 [US1] Frontend: `frontend/src/hooks/useFeedAPI.ts`のfindMatchingFeed関数で`f.link`を`f.feedUrl`に変更 → T008テスト合格を確認【明白な実装】
-- [ ] T015 [US1] Frontend: `frontend/src/hooks/useFeedAPI.ts`のconsole.warnメッセージを更新（`feeds.map(f => f.feedUrl)`）
-- [ ] T016 [US1] Frontend: 全Unit Testsを実行し、既存テスト含め全て合格することを確認: `cd frontend && npm test`
+- [x] T013 [P] [US1] Frontend: `frontend/src/types/api.ts`のRSSFeedインターフェースにfeedUrlフィールド追加 → T007テスト合格を確認【明白な実装】
+- [x] T014 [US1] Frontend: `frontend/src/hooks/useFeedAPI.ts`のfindMatchingFeed関数で`f.link`を`f.feedUrl`に変更 → T008テスト合格を確認【明白な実装】
+- [x] T015 [US1] Frontend: `frontend/src/hooks/useFeedAPI.ts`のconsole.warnメッセージを更新（`feeds.map(f => f.feedUrl)`）
+- [x] T016 [US1] Frontend: 全Unit Testsを実行し、既存テスト含め全て合格することを確認: `cd frontend && npm test`
 
 **Checkpoint**: 全テストが合格（Green完了）
 
@@ -187,11 +187,11 @@
 4. **型安全性（Frontend）**: `any`型を使っていないか
 5. **エラーハンドリング（Backend）**: エラーが適切に処理されているか
 
-- [ ] T017 [P] [US1] Backend: コードレビュー - 重複コード、変数名、エラーハンドリングを確認
-- [ ] T018 [P] [US1] Frontend: コードレビュー - 重複コード、変数名、型安全性を確認
-- [ ] T019 [US1] Backend: 必要に応じてリファクタリング（テストを通したまま）
-- [ ] T020 [US1] Frontend: 必要に応じてリファクタリング（テストを通したまま）
-- [ ] T021 [US1] Backend + Frontend: 全テスト実行し、リファクタリング後も全て合格することを確認
+- [x] T017 [P] [US1] Backend: コードレビュー - 重複コード、変数名、エラーハンドリングを確認
+- [x] T018 [P] [US1] Frontend: コードレビュー - 重複コード、変数名、型安全性を確認
+- [x] T019 [US1] Backend: 必要に応じてリファクタリング（テストを通したまま）
+- [x] T020 [US1] Frontend: 必要に応じてリファクタリング（テストを通したまま）
+- [x] T021 [US1] Backend + Frontend: 全テスト実行し、リファクタリング後も全て合格することを確認
 
 **Checkpoint**: Refactor完了 - User Story 1のコア機能完成
 
@@ -203,10 +203,10 @@
 
 ### 📋 Integration Tests for User Story 1
 
-- [ ] T022 [P] [US1] Frontend: `frontend/tests/integration/searchFlow.test.tsx`のMSWモックに`feedUrl`フィールド追加
-- [ ] T023 [US1] Frontend: 統合テストを実行し、フィードマッチングが成功することを確認: `cd frontend && npm test searchFlow.test.tsx`
-- [ ] T024 [P] [US1] Backend: API契約テスト `tests/contract/parse_api_test.go`でfeedUrlフィールドの存在を検証（新規テストケース追加）
-- [ ] T025 [US1] Backend: 契約テストを実行: `go test ./tests/contract/... -v`
+- [x] T022 [P] [US1] Frontend: `frontend/tests/integration/searchFlow.test.tsx`のMSWモックに`feedUrl`フィールド追加
+- [x] T023 [US1] Frontend: 統合テストを実行し、フィードマッチングが成功することを確認: `cd frontend && npm test searchFlow.test.tsx`
+- [x] T024 [P] [US1] Backend: API契約テスト `tests/contract/parse_api_test.go`でfeedUrlフィールドの存在を検証（新規テストケース追加）
+- [x] T025 [US1] Backend: 契約テストを実行: `go test ./tests/contract/... -v`
 
 **Checkpoint**: User Story 1の統合テスト完了
 
@@ -281,9 +281,9 @@
 
 ### Code Quality
 
-- [ ] T043 [P] Backend: Linter実行（存在する場合）: `golint ./pkg/...`
-- [ ] T044 [P] Frontend: Linter実行: `cd frontend && npm run lint`
-- [ ] T045 [P] Frontend: 型チェック: `cd frontend && npm run build`（TypeScriptコンパイルエラーがないことを確認）
+- [x] T043 [P] Backend: Linter実行（存在する場合）: `golint ./pkg/...`
+- [x] T044 [P] Frontend: Linter実行: `cd frontend && npm run lint`
+- [x] T045 [P] Frontend: 型チェック: `cd frontend && npm run build`（TypeScriptコンパイルエラーがないことを確認）
 
 ### Test Coverage
 
@@ -297,7 +297,7 @@
 
 ### Final Validation
 
-- [ ] T050 Backend + Frontend: 全テストを最終実行し、全て合格することを確認（Backend + Frontend）
+- [x] T050 Backend + Frontend: 全テストを最終実行し、全て合格することを確認（Backend + Frontend）
 - [ ] T051 実際のRSSフィード（最低5種類）で手動テストを実行し、100%の記事表示成功率を確認
 - [ ] T052 コンソールエラーがゼロであることを確認（特に「フィードマッチング失敗」エラー）
 
