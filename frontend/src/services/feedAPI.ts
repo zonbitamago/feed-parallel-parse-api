@@ -2,18 +2,20 @@
  * feed-parallel-parse-api用のAPIサービス
  */
 
-import type { ParseRequest, ParseResponse } from '../types/api';
+import type { ParseResponse } from '../types/api';
 import { createFeedAPIRequest } from './feedAPIUtils';
 
 /**
  * FeedAPIエラーの種別
  */
-export enum FeedAPIErrorType {
-  TIMEOUT = 'timeout',
-  NETWORK = 'network',
-  PARSE = 'parse',
-  ABORT = 'abort'
-}
+export const FeedAPIErrorType = {
+  TIMEOUT: 'timeout',
+  NETWORK: 'network',
+  PARSE: 'parse',
+  ABORT: 'abort'
+} as const;
+
+export type FeedAPIErrorType = typeof FeedAPIErrorType[keyof typeof FeedAPIErrorType];
 
 export class FeedAPIError extends Error {
   public readonly cause?: unknown;
