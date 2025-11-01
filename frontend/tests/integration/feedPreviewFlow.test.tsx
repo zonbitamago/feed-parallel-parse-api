@@ -19,6 +19,7 @@ const server = setupServer(
         {
           title: 'Tech Blog',
           link: 'https://example.com/feed',
+          feedUrl: 'https://example.com/feed',
           articles: [
             {
               title: 'First Article',
@@ -155,6 +156,7 @@ describe('フィードプレビューフロー統合テスト', () => {
             {
               title: 'Debounced Tech Blog',
               link: 'https://example.com/feed',
+              feedUrl: 'https://example.com/feed',
               articles: [],
             },
           ],

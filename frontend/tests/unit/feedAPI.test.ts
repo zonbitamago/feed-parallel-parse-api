@@ -13,6 +13,7 @@ const server = setupServer(
         {
           title: 'Example Blog',
           link: 'https://example.com/feed.xml',
+          feedUrl: 'https://example.com/feed.xml',
           articles: [],
         },
       ],

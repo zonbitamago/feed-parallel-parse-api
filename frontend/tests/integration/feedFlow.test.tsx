@@ -12,6 +12,7 @@ const server = setupServer(
         {
           title: 'Test Feed',
           link: 'https://example.com/rss',
+          feedUrl: 'https://example.com/rss',
           articles: [
             {
               title: 'Test Article',
@@ -75,6 +76,7 @@ describe('Feed Flow Integration', () => {
             {
               title: 'Original Feed Title',
               link: 'https://example.com/rss',
+              feedUrl: 'https://example.com/rss',
               articles: [
                 {
                   title: 'Test Article',
@@ -171,6 +173,7 @@ describe('Feed Flow Integration', () => {
             {
               title: 'Test Feed',
               link: 'https://example.com/rss',
+              feedUrl: 'https://example.com/rss',
               articles: [
                 {
                   title: 'Test Article',

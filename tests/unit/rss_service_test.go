@@ -290,3 +290,68 @@ func TestRSSService_RedirectLimit(t *testing.T) {
 	assert.NotEmpty(t, errors, "エラー情報が返される")
 	assert.Contains(t, errors[0].Message, "HTTP取得失敗", "HTTPエラーメッセージが含まれる")
 }
+
+// 🔴 Red: User Story 1 - feed.FeedLinkからFeedURLを設定するテスト
+func TestRSSService_FeedLinkからFeedURL設定(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/xml")
+		w.WriteHeader(http.StatusOK)
+		// 注: gofeedはRSS2.0の<atom:link>タグからFeedLinkを抽出する
+		w.Write([]byte(`<?xml version="1.0"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Rebuild</title>
+    <link>https://rebuild.fm</link>
+    <atom:link href="https://feeds.rebuild.fm/rebuildfm" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Episode 400</title>
+      <link>https://rebuild.fm/400/</link>
+      <description>Test episode</description>
+    </item>
+  </channel>
+</rss>`))
+	}))
+	defer server.Close()
+
+	service := services.NewRSSService()
+	feeds, errors := service.ParseFeeds(context.Background(), []string{server.URL})
+
+	// Assert: FeedURLが正しく設定されている
+	assert.Len(t, feeds, 1)
+	assert.Equal(t, "Rebuild", feeds[0].Title)
+	assert.Equal(t, "https://rebuild.fm", feeds[0].Link)
+	assert.Equal(t, "https://feeds.rebuild.fm/rebuildfm", feeds[0].FeedURL) // ← feed.FeedLinkから設定される
+	assert.Len(t, errors, 0)
+}
+
+// 🔴 Red: User Story 1 - feed.FeedLinkが空の場合、requestedURLにフォールバックするテスト
+func TestRSSService_FeedLinkが空の場合のフォールバック(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/xml")
+		w.WriteHeader(http.StatusOK)
+		// atom:linkタグを含まないRSS2.0（feed.FeedLinkが空になる）
+		w.Write([]byte(`<?xml version="1.0"?>
+<rss version="2.0">
+  <channel>
+    <title>Test Feed</title>
+    <link>https://example.com</link>
+    <item>
+      <title>Test Article</title>
+      <link>https://example.com/article</link>
+      <description>Test description</description>
+    </item>
+  </channel>
+</rss>`))
+	}))
+	defer server.Close()
+
+	service := services.NewRSSService()
+	feeds, errors := service.ParseFeeds(context.Background(), []string{server.URL})
+
+	// Assert: feed.FeedLinkが空なので、リクエストされたURLにフォールバック
+	assert.Len(t, feeds, 1)
+	assert.Equal(t, "Test Feed", feeds[0].Title)
+	assert.Equal(t, "https://example.com", feeds[0].Link)
+	assert.Equal(t, server.URL, feeds[0].FeedURL) // ← requestedURLにフォールバック
+	assert.Len(t, errors, 0)
+}

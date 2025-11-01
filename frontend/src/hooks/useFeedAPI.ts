@@ -28,13 +28,13 @@ function findMatchingFeed(
   feeds: RSSFeed[]
 ): RSSFeed | undefined {
   const normalizedSubscriptionUrl = normalizeUrl(subscription.url)
-  const matchedFeed = feeds.find(f => normalizeUrl(f.link) === normalizedSubscriptionUrl)
+  const matchedFeed = feeds.find(f => normalizeUrl(f.feedUrl) === normalizedSubscriptionUrl)
 
   if (!matchedFeed) {
     console.warn(
       `フィードマッチング失敗: subscription.url="${subscription.url}" (正規化後: "${normalizedSubscriptionUrl}")`,
       `利用可能なフィードURL:`,
-      feeds.map(f => f.link)
+      feeds.map(f => f.feedUrl)
     )
   }
 

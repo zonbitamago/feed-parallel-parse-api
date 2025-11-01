@@ -1,0 +1,268 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "feed-parallel-parse-api",
+    "description": "RSS/Atomフィード並列パースAPI - feedUrlフィールド追加版",
+    "version": "1.1.0",
+    "contact": {
+      "name": "feed-parallel-parse-api",
+      "url": "https://github.com/zonbitamago/feed-parallel-parse-api"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://feed-parallel-parse-api.vercel.app",
+      "description": "Production"
+    },
+    {
+      "url": "http://localhost:3000",
+      "description": "Local development"
+    }
+  ],
+  "paths": {
+    "/api/parse": {
+      "post": {
+        "summary": "複数のRSSフィードを並列パース",
+        "description": "指定されたURLリストからRSSフィードを並列で取得・パースし、記事リストとエラー情報を返す",
+        "operationId": "parseFeeds",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ParseRequest"
+              },
+              "examples": {
+                "singleFeed": {
+                  "summary": "単一フィード",
+                  "value": {
+                    "urls": ["https://feeds.rebuild.fm/rebuildfm"]
+                  }
+                },
+                "multipleFeeds": {
+                  "summary": "複数フィード",
+                  "value": {
+                    "urls": [
+                      "https://feeds.rebuild.fm/rebuildfm",
+                      "https://example.com/rss",
+                      "https://blog.example.com/feed.xml"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "パース成功（一部失敗も含む）",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ParseResponse"
+                },
+                "examples": {
+                  "success": {
+                    "summary": "全フィード成功",
+                    "value": {
+                      "feeds": [
+                        {
+                          "title": "Rebuild",
+                          "link": "https://rebuild.fm",
+                          "feedUrl": "https://feeds.rebuild.fm/rebuildfm",
+                          "articles": [
+                            {
+                              "title": "Episode 400: The Future of Web (N)",
+                              "link": "https://rebuild.fm/400/",
+                              "pubDate": "2025-01-15T10:00:00Z",
+                              "summary": "We discuss the future of web technologies..."
+                            }
+                          ]
+                        }
+                      ],
+                      "errors": []
+                    }
+                  },
+                  "partialSuccess": {
+                    "summary": "一部フィード失敗",
+                    "value": {
+                      "feeds": [
+                        {
+                          "title": "Tech Blog",
+                          "link": "https://example.com",
+                          "feedUrl": "https://example.com/rss",
+                          "articles": []
+                        }
+                      ],
+                      "errors": [
+                        {
+                          "url": "https://invalid-url.com/rss",
+                          "message": "failed to fetch feed: connection timeout"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "リクエストが不正",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ParseResponse"
+                },
+                "examples": {
+                  "invalidRequest": {
+                    "summary": "不正なリクエスト形式",
+                    "value": {
+                      "feeds": null,
+                      "errors": [
+                        {
+                          "url": "",
+                          "message": "invalid request"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "許可されていないHTTPメソッド",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "Method Not Allowed"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ParseRequest": {
+        "type": "object",
+        "required": ["urls"],
+        "properties": {
+          "urls": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uri",
+              "description": "パース対象のRSSフィードURL"
+            },
+            "minItems": 1,
+            "maxItems": 100,
+            "description": "RSSフィードURLのリスト（1〜100件）",
+            "example": [
+              "https://feeds.rebuild.fm/rebuildfm",
+              "https://example.com/rss"
+            ]
+          }
+        }
+      },
+      "ParseResponse": {
+        "type": "object",
+        "required": ["feeds", "errors"],
+        "properties": {
+          "feeds": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RSSFeed"
+            },
+            "description": "パース成功したフィードリスト"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ErrorInfo"
+            },
+            "description": "パース失敗したフィードのエラー情報"
+          }
+        }
+      },
+      "RSSFeed": {
+        "type": "object",
+        "required": ["title", "link", "feedUrl", "articles"],
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "フィードのタイトル（RSSメタデータから取得）",
+            "example": "Rebuild"
+          },
+          "link": {
+            "type": "string",
+            "format": "uri",
+            "description": "ホームページURL（RSSの<link>要素から取得）",
+            "example": "https://rebuild.fm"
+          },
+          "feedUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "実際のRSSフィードURL（gofeedのfeed.FeedLinkまたはリクエストURLから取得）- v1.1.0で追加",
+            "example": "https://feeds.rebuild.fm/rebuildfm"
+          },
+          "articles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Article"
+            },
+            "description": "フィードに含まれる記事のリスト"
+          }
+        },
+        "description": "パースされたRSSフィード（v1.1.0でfeedUrlフィールド追加）"
+      },
+      "Article": {
+        "type": "object",
+        "required": ["title", "link", "pubDate", "summary"],
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "記事タイトル",
+            "example": "Episode 400: The Future of Web (N)"
+          },
+          "link": {
+            "type": "string",
+            "format": "uri",
+            "description": "記事URL",
+            "example": "https://rebuild.fm/400/"
+          },
+          "pubDate": {
+            "type": "string",
+            "format": "date-time",
+            "description": "公開日時（ISO 8601形式）",
+            "example": "2025-01-15T10:00:00Z"
+          },
+          "summary": {
+            "type": "string",
+            "description": "記事要約",
+            "example": "We discuss the future of web technologies..."
+          }
+        }
+      },
+      "ErrorInfo": {
+        "type": "object",
+        "required": ["url", "message"],
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "エラーが発生したフィードURL",
+            "example": "https://invalid-url.com/rss"
+          },
+          "message": {
+            "type": "string",
+            "description": "エラーメッセージ",
+            "example": "failed to fetch feed: connection timeout"
+          }
+        }
+      }
+    }
+  }
+}

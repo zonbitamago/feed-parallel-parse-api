@@ -24,6 +24,7 @@ const server = setupServer(
         return {
           title: 'Tech News Blog',
           link: url,
+          feedUrl: url,
           articles: [
             {
               title: 'Breaking News',
@@ -37,6 +38,7 @@ const server = setupServer(
       return {
         title: 'Unknown Feed',
         link: url,
+        feedUrl: url,
         articles: [],
       }
     })
@@ -129,6 +131,7 @@ describe('Feed Title Flow Integration', () => {
             {
               title: 'Tech &amp; News &lt;Blog&gt;',
               link: 'https://example.com/feed',
+              feedUrl: 'https://example.com/feed',
               articles: [
                 {
                   title: 'Article with &quot;quotes&quot;',
@@ -177,6 +180,7 @@ describe('Feed Title Flow Integration', () => {
               {
                 title: 'First Blog',
                 link: 'https://first.com/feed',
+                feedUrl: 'https://first.com/feed',
                 articles: [
                   {
                     title: 'First Article',
@@ -195,6 +199,7 @@ describe('Feed Title Flow Integration', () => {
               {
                 title: 'First Blog',
                 link: 'https://first.com/feed',
+                feedUrl: 'https://first.com/feed',
                 articles: [
                   {
                     title: 'First Article',
@@ -207,6 +212,7 @@ describe('Feed Title Flow Integration', () => {
               {
                 title: 'Second Blog',
                 link: 'https://second.com/feed',
+                feedUrl: 'https://second.com/feed',
                 articles: [
                   {
                     title: 'Second Article',

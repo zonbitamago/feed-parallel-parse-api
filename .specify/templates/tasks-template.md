@@ -5,14 +5,61 @@ description: "Task list template for feature implementation"
 
 # Tasks: [FEATURE NAME]
 
+**Feature**: [###-feature-name]
 **Input**: Design documents from `/specs/[###-feature-name]/`
 **Prerequisites**: plan.md (required), spec.md (required for user stories), research.md, data-model.md, contracts/
 
-**Tests**: The examples below include test tasks. Tests are OPTIONAL - only include them if explicitly requested in the feature specification.
+**Tests**: ✅ **TDD必須** - [Constitution（憲法）](../../.specify/memory/constitution.md)によりTest-Driven Developmentが絶対遵守
 
 **Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.
 
-## Format: `[ID] [P?] [Story] Description`
+---
+
+## 🎯 t-wada式TDD原則（必読）
+
+このタスクリストは**t-wada式Test-Driven Development**に完全準拠します。
+
+### テスト駆動開発の本質
+
+> **テストが仕様**: テストコードが要求仕様の実行可能なドキュメントとなる
+>
+> **1行のプロダクションコードも、失敗するテストなしには書かない**
+
+### Red-Green-Refactorサイクル（絶対遵守）
+
+1. **🔴 Red（失敗するテストを書く）**
+   - 新しい機能のテストを書く
+   - テストが失敗することを確認する（正しく失敗することを確認）
+   - コンパイルエラーも「Red」に含まれる
+
+2. **✅ Green（テストを通す）**
+   - 最小限のコードでテストを通す
+   - 3つの手法から選択:
+     - **仮実装（Fake It）**: まず定数を返す → 徐々に変数化（不安なとき）
+     - **明白な実装（Obvious Implementation）**: シンプルな操作はそのまま実装（自信があるとき）
+     - **三角測量（Triangulation）**: 2つ以上のテストから一般化（抽象化の方向性が不明なとき）
+   - 品質は問わない、まず動かす
+
+3. **♻️ Refactor（リファクタリング）**
+   - テストを通したまま、コードの品質を向上させる
+   - 重複を排除、意図を明確にする
+   - テストコードもリファクタリング対象
+
+### ベイビーステップ（小さく確実に進む）
+
+- **5-10分で完了するサイクル**を回す
+- **頻繁なコミット**: Red→Green→Refactor の各フェーズでコミット
+- **TODOリスト**: このtasks.mdがTODOリスト - 次にやることを1つずつ消化
+
+### 参考資料
+
+- 和田卓人『テスト駆動開発』（オーム社）
+- Kent Beck『Test Driven Development: By Example』
+- [Constitution（憲法）](../../.specify/memory/constitution.md) - プロジェクト全体のTDD原則
+
+---
+
+## Format: `- [ ] [ID] [P?] [Story?] Description`
 
 - **[P]**: Can run in parallel (different files, no dependencies)
 - **[Story]**: Which user story this task belongs to (e.g., US1, US2, US3)
@@ -79,23 +126,97 @@ Examples of foundational tasks (adjust based on your project):
 
 **Independent Test**: [How to verify this story works on its own]
 
-### Tests for User Story 1 (OPTIONAL - only if tests requested) ⚠️
+**TDD Strategy**: Red-Green-Refactor サイクルを厳守（Constitution要件）
 
-> **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
+### 🔴 Red Phase: Tests for User Story 1（失敗するテストを先に書く）
 
-- [ ] T010 [P] [US1] Contract test for [endpoint] in tests/contract/test_[name].py
-- [ ] T011 [P] [US1] Integration test for [user journey] in tests/integration/test_[name].py
+> **テストが仕様**: これらのテストコードが要求仕様の実行可能なドキュメントとなる
 
-### Implementation for User Story 1
+**CRITICAL**: これらのテストは実装前に書き、失敗することを確認する
 
-- [ ] T012 [P] [US1] Create [Entity1] model in src/models/[entity1].py
-- [ ] T013 [P] [US1] Create [Entity2] model in src/models/[entity2].py
-- [ ] T014 [US1] Implement [Service] in src/services/[service].py (depends on T012, T013)
-- [ ] T015 [US1] Implement [endpoint/feature] in src/[location]/[file].py
-- [ ] T016 [US1] Add validation and error handling
-- [ ] T017 [US1] Add logging for user story 1 operations
+- 1行のプロダクションコードも、失敗するテストなしには書かない
+- テストが失敗することを確認 = 正しく失敗することを確認（コンパイルエラーも「Red」）
 
-**Checkpoint**: At this point, User Story 1 should be fully functional and testable independently
+**Red Phase の意義**:
+
+- テストがない状態で実装すると、テストが実装に引きずられる
+- テストを先に書くことで、「あるべき姿」を明確にする
+- 失敗を確認することで、テスト自体が正しいことを検証
+
+- [ ] T010 [P] [US1] [テスト内容] in tests/[path]（Red - [期待する失敗]を期待）
+- [ ] T011 [P] [US1] [テスト内容] in tests/[path]（Red - [期待する失敗]を期待）
+
+**Checkpoint**: 全テストが期待通り失敗することを確認（Red完了）
+
+- ✅ コンパイルエラーまたはアサーション失敗を確認
+- ✅ テストが正しく失敗することで、テスト自体の正当性を検証
+- ❌ テストが通ってしまった場合、テストが間違っている
+
+---
+
+### ✅ Green Phase: Implementation for User Story 1（最小限の実装でテストを通す）
+
+> **品質は問わない、まず動かす**: 最小限のコードでテストを通す。リファクタリングは次のフェーズで。
+
+**CRITICAL**: 各実装後に対応するテストが通ることを確認
+
+**実装手法の選択（t-wada式TDD）**:
+
+1. **仮実装（Fake It）** - 不安なとき
+   - まず定数を返す
+   - テストを追加しながら徐々に変数化・一般化
+   - つまずいたらこの手法に戻る
+
+2. **明白な実装（Obvious Implementation）** - 自信があるとき ⭐️ 推奨
+   - シンプルな操作はそのまま実装
+   - 単純なCRUD、フィールド追加、マッピングはこれで十分
+
+3. **三角測量（Triangulation）** - 抽象化の方向性が不明なとき
+   - 2つ以上のテストから一般化を導く
+   - 複雑なビジネスロジックで使用
+
+**今回の推奨**: [推奨手法を明記]
+
+- [ ] T012 [P] [US1] [実装内容] in src/[path] → T010テスト合格を確認【[推奨手法]】
+- [ ] T013 [US1] [実装内容] in src/[path] → T011テスト合格を確認【[推奨手法]】
+- [ ] T014 [US1] 全テストを実行し、既存テスト含め全て合格することを確認
+
+**Checkpoint**: 全テストが合格（Green完了）
+
+- ✅ 全テストが合格することを確認
+- ✅ コードの品質は問わない（次のRefactorフェーズで改善）
+- ⚠️ つまずいた場合は「仮実装」に切り替える
+
+---
+
+### ♻️ Refactor Phase: Code Quality Improvement（コード品質向上）
+
+> **テストを通したまま、コードの品質を向上させる**: リファクタリングは動作を変えずに構造を改善
+
+**Refactor Phase の原則**:
+
+- **重複を排除**: DRY（Don't Repeat Yourself）原則
+- **意図を明確にする**: 変数名、関数名を改善
+- **テストコードもリファクタリング対象**: テストの可読性も重要
+- **小さく頻繁に**: 大きな変更は避け、小さく改善を繰り返す
+
+**チェック項目**:
+
+1. **重複コード**: 同じロジックが複数箇所にないか
+2. **命名**: 変数名・関数名が意図を明確に表現しているか
+3. **複雑度**: 関数が大きすぎないか（1関数1責務）
+4. **型安全性**: `any`型を使っていないか
+5. **エラーハンドリング**: エラーが適切に処理されているか
+
+- [ ] T015 [P] [US1] コードレビュー - 重複コード、変数名、エラーハンドリングを確認
+- [ ] T016 [US1] 必要に応じてリファクタリング（テストを通したまま）
+- [ ] T017 [US1] 全テスト実行し、リファクタリング後も全て合格することを確認
+
+**Checkpoint**: Refactor完了 - User Story 1のコア機能完成
+
+- ✅ テストが全て合格したまま品質が向上
+- ✅ コードの意図が明確になり、保守性が向上
+- ⚠️ テストが失敗した場合、リファクタリングを巻き戻す
 
 ---
 
@@ -242,10 +363,49 @@ With multiple developers:
 
 ## Notes
 
-- [P] tasks = different files, no dependencies
-- [Story] label maps task to specific user story for traceability
+### TDD実践のポイント
+
+- **TDD必須**: [Constitution（憲法）](../../.specify/memory/constitution.md)により、Red-Green-Refactorサイクルを絶対遵守
+- **ベイビーステップ**: 5-10分で完了するサイクルを回す（タスクは細分化済み）
+- **TODOリスト運用**: このtasks.mdがTODOリスト - チェックボックスを順に消化
+- **watchモード禁止**: `npm test`（1回限り実行）を使用し、CPU負荷を抑える
+
+### タスク管理
+
+- **[P] tasks**: Different files, no dependencies - can run in parallel
+- **[Story] label**: Maps task to specific user story for traceability
+- **Stop at any checkpoint**: 各チェックポイントで独立検証可能
 - Each user story should be independently completable and testable
 - Verify tests fail before implementing
-- Commit after each task or logical group
-- Stop at any checkpoint to validate story independently
-- Avoid: vague tasks, same file conflicts, cross-story dependencies that break independence
+
+### コミット戦略（頻繁なコミット）
+
+**Red-Green-Refactor の各フェーズでコミット**:
+
+```bash
+# Red Phase（失敗するテストを書く）
+git add tests/[path]
+git commit -m "test([scope]): [US#] [テスト内容]（Red）"
+
+# Green Phase（最小限の実装でテストを通す）
+git add src/[path]
+git commit -m "feat([scope]): [US#] [実装内容]（Green）"
+
+# Refactor Phase（コード品質を向上）
+git add src/[path]
+git commit -m "refactor([scope]): [US#] [リファクタリング内容]（Refactor）"
+```
+
+**コミットメッセージの形式**:
+
+- `test:` - Red Phase（テスト追加）
+- `feat:` - Green Phase（機能実装）
+- `refactor:` - Refactor Phase（品質向上）
+- `[US1]`, `[US2]`, `[US3]` - User Story識別子
+- `（Red）`, `（Green）`, `（Refactor）` - TDDフェーズ明記
+
+**参考文献**:
+
+- 和田卓人『テスト駆動開発』（オーム社）第1章「仮実装」
+- Kent Beck『Test Driven Development: By Example』
+- [Constitution（憲法）](../../.specify/memory/constitution.md) - プロジェクトTDD原則
