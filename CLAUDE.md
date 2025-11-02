@@ -3,30 +3,16 @@
 Auto-generated from all feature plans. Last updated: 2025-10-27
 
 ## Active Technologies
-- React 18.x + TypeScript 5.x + Vite 5.x（ビルドツール）, react-window 1.8.x（仮想スクロール）, date-fns 3.x（日付処理）, TailwindCSS 3.x（スタイリング） (001-rss-reader)
-- ブラウザのlocalStorage（フィード購読の永続化） (001-rss-reader)
-- Go 1.25.1 (007-real-http-fetch)
-- N/A（この機能はストレージを使用しない） (007-real-http-fetch)
-- TypeScript 5.9.3 (Frontend), GitHub Actions YAML (CI設定) + React 19.1.1, Vite 7.1.7, Vitest 4.0.3, @testing-library/react 16.3.0 (001-frontend-ci-tests)
-- TypeScript 5.9.3, React 19.1.1 + Vite 7.1.7, TailwindCSS 4.x, date-fns 4.x (008-feed-url-display)
-- localStorage（ブラウザのクライアントサイドストレージ） (008-feed-url-display)
-- TypeScript 5.9.3 + React 19.1.1 + Vite 7.1.7（ビルド）, date-fns 4.x（日付処理）, TailwindCSS 4.x（スタイリング） (009-fix-excessive-requests)
-- TypeScript 5.9.3 + React 19.1.1, Vite 7.1.7 (010-fix-useeffect-deps)
-- TypeScript 5.9.3, React 19.1.1 + Vite 7.1.7（ビルドツール）, vite-plugin-pwa（PWAプラグイン）, Workbox（Service Workerライブラリ） (011-pwa)
-- localStorage（既存のフィード購読データ）, Cache Storage API（Service Workerによるキャッシュ管理） (011-pwa)
-- TypeScript 5.9.3 + React 19.1.1, TailwindCSS 4.x, localStorage (ブラウザAPI) (010-improve-feed-article-access)
-- localStorage（折りたたみ状態の永続化） (010-improve-feed-article-access)
-- TypeScript 5.9.3, React 19.1.1 + Vite 7.1.7（ビルド）, date-fns 4.x（日付処理）, TailwindCSS 4.x（スタイリング） (012-fix-second-feed-preview)
-- TypeScript 5.9.3 + React 19.1.1, Vitest 4.0.3, @testing-library/react 16.3.0 (001-fix-feed-url-title-mismatch)
-- localStorage（ブラウザAPI） (001-fix-feed-url-title-mismatch)
-- N/A (このfeatureは環境構築のみ、データストレージは不要) (013-docker-local-env)
-- Go 1.25.1 + 標準ライブラリ `net/http`, `encoding/json`（既存） (014-vercel-cors-support)
-- N/A（CORS設定はステートレス） (014-vercel-cors-support)
-- localStorage（フロントエンド）, ファイルシステム（バックエンドログ） (015-codebase-refactoring)
-- TypeScript 5.9.3 + React 19.1.1, Vite 7.1.7, TailwindCSS 4.1.16, date-fns 4.1.0 (014-feed-import-export)
-- localStorage（ブラウザAPI、キー: `rss_reader_subscriptions`） (014-feed-import-export)
 
-- Go 1.2x + github.com/mmcdole/gofeed, 標準ライブラリ encoding/xml (006-rss-format-support)
+技術スタックの詳細は [SPECIFICATION.md](SPECIFICATION.md) のセクション2を参照してください。
+
+### 主要技術
+- **フロントエンド**: React 19.1.1, TypeScript 5.9.3, Vite 7.1.7, TailwindCSS 4.1.16
+- **バックエンド**: Go 1.25.1, github.com/mmcdole/gofeed
+- **PWA**: vite-plugin-pwa 1.1.0, workbox-window
+- **テスト**: Vitest 4.0.3, @testing-library/react 16.3.0
+- **ストレージ**: localStorage, Cache Storage API
+- **開発環境**: Docker Compose
 
 ## Project Structure
 
@@ -44,9 +30,10 @@ tests/
 Go 1.2x: Follow standard conventions
 
 ## Recent Changes
-- 014-feed-import-export: Added TypeScript 5.9.3 + React 19.1.1, Vite 7.1.7, TailwindCSS 4.1.16, date-fns 4.1.0
-- 015-codebase-refactoring: Added localStorage（フロントエンド）, ファイルシステム（バックエンドログ）
-- 014-vercel-cors-support: Added Go 1.25.1 + 標準ライブラリ `net/http`, `encoding/json`（既存）
+- 2025-11-03: ドキュメントを最新の実装状態に同期（SPECIFICATION.md v1.5）
+- 2025-11-02: 015-codebase-refactoring実装完了（PR #21）
+- 2025-11-02: 014-feed-import-export実装完了（インポート/エクスポート機能）
+- 2025-11-02: 014-vercel-cors-support実装完了（Vercel CORS対応）
 
 
 <!-- MANUAL ADDITIONS START -->
