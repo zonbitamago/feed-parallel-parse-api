@@ -690,4 +690,50 @@ describe('FeedManager', () => {
       expect(button).not.toBeInTheDocument()
     })
   })
+
+  describe('インポート/エクスポート機能', () => {
+    it('購読リストが展開されている場合、エクスポートボタンとインポートボタンが表示される', () => {
+      const onAdd = vi.fn().mockResolvedValue({ success: true, shouldClearInput: true })
+      const subscriptions: Subscription[] = [
+        {
+          id: '1',
+          url: 'https://example.com/feed',
+          title: 'Test Feed',
+          customTitle: null,
+          subscribedAt: '2025-01-01T00:00:00.000Z',
+          lastFetchedAt: null,
+          status: 'active',
+        },
+      ]
+      render(<FeedManager onAddFeed={onAdd} subscriptions={subscriptions} />)
+
+      expect(screen.getByRole('button', { name: /エクスポート/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /インポート/i })).toBeInTheDocument()
+    })
+
+    it('購読リストが折りたたまれている場合、エクスポートボタンとインポートボタンは表示されない', async () => {
+      const user = userEvent.setup()
+      const onAdd = vi.fn().mockResolvedValue({ success: true, shouldClearInput: true })
+      const subscriptions: Subscription[] = [
+        {
+          id: '1',
+          url: 'https://example.com/feed',
+          title: 'Test Feed',
+          customTitle: null,
+          subscribedAt: '2025-01-01T00:00:00.000Z',
+          lastFetchedAt: null,
+          status: 'active',
+        },
+      ]
+      render(<FeedManager onAddFeed={onAdd} subscriptions={subscriptions} />)
+
+      // 購読リストを折りたたむ
+      const toggleButton = screen.getByRole('button', { name: /購読フィードを隠す/i })
+      await user.click(toggleButton)
+
+      // ボタンが表示されないことを確認
+      expect(screen.queryByRole('button', { name: /エクスポート/i })).not.toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: /インポート/i })).not.toBeInTheDocument()
+    })
+  })
 })
