@@ -78,10 +78,10 @@ description: "フィード自動ポーリング機能の実装タスクリスト
 
 **独立テスト**: すべてのテストが既にパスしていることを確認（既存機能に影響なし）
 
-- [ ] T001 既存のプロジェクト構造がplan.mdと一致することを確認（frontend/src/）
-- [ ] T002 TypeScript 5.9.3とReact 19.1.1がインストールされていることを確認
-- [ ] T003 [P] 既存テストを実行してベースラインを確立（npm test）
-- [ ] T004 [P] Vitest 4.0.3がvi.useFakeTimers()をサポートしていることを確認
+- [x] T001 既存のプロジェクト構造がplan.mdと一致することを確認（frontend/src/）
+- [x] T002 TypeScript 5.9.3とReact 19.1.1がインストールされていることを確認
+- [x] T003 [P] 既存テストを実行してベースラインを確立（npm test）
+- [x] T004 [P] Vitest 4.0.3がvi.useFakeTimers()をサポートしていることを確認
 
 **完了基準**: 既存テストがすべてパス、開発環境が正常動作
 
@@ -95,23 +95,23 @@ description: "フィード自動ポーリング機能の実装タスクリスト
 
 ### T005-T010: 記事マージユーティリティ（US1, US2で使用）
 
-- [ ] T005 [P] 🔴 Red: frontend/src/utils/articleMerge.test.ts にfindNewArticlesのテストケースを作成
-- [ ] T006 [P] ✅ Green: frontend/src/utils/articleMerge.ts にfindNewArticles(latestArticles, currentArticles)を実装
-- [ ] T007 [P] ♻️ Refactor: findNewArticlesをSet.has()でO(n+m)複雑度に最適化
-- [ ] T008 [P] 🔴 Red: articleMerge.test.ts にmergeArticlesのテストケースを追加
-- [ ] T009 [P] ✅ Green: sortArticlesByDateを使用してmergeArticles(currentArticles, newArticles)を実装
-- [ ] T010 [P] ♻️ Refactor: 重複ロジックを抽出、JSDocコメントを追加
+- [x] T005 [P] 🔴 Red: frontend/src/utils/articleMerge.test.ts にfindNewArticlesのテストケースを作成
+- [x] T006 [P] ✅ Green: frontend/src/utils/articleMerge.ts にfindNewArticles(latestArticles, currentArticles)を実装
+- [x] T007 [P] ♻️ Refactor: findNewArticlesをSet.has()でO(n+m)複雑度に最適化
+- [x] T008 [P] 🔴 Red: articleMerge.test.ts にmergeArticlesのテストケースを追加
+- [x] T009 [P] ✅ Green: sortArticlesByDateを使用してmergeArticles(currentArticles, newArticles)を実装
+- [x] T010 [P] ♻️ Refactor: 重複ロジックを抽出、JSDocコメントを追加
 
 **独立テスト**: `npm test articleMerge.test.ts` がすべてパス
 
 ### T011-T016: localStorage管理（US1で使用）
 
-- [ ] T011 [P] 🔴 Red: frontend/src/services/pollingStorage.test.ts にloadPollingConfigのテストケースを作成
-- [ ] T012 [P] ✅ Green: frontend/src/services/pollingStorage.ts にデフォルト設定を返すloadPollingConfig()を実装
-- [ ] T013 [P] ♻️ Refactor: loadPollingConfigにJSONパースとエラーハンドリングを追加
-- [ ] T014 [P] 🔴 Red: pollingStorage.test.ts にsavePollingConfigのテストケースを追加
-- [ ] T015 [P] ✅ Green: localStorage.setItemを使用してsavePollingConfig(config)を実装
-- [ ] T016 [P] ♻️ Refactor: localStorageエラー用のtry-catchを追加、STORAGE_KEY定数を抽出
+- [x] T011 [P] 🔴 Red: frontend/src/services/pollingStorage.test.ts にloadPollingConfigのテストケースを作成
+- [x] T012 [P] ✅ Green: frontend/src/services/pollingStorage.ts にデフォルト設定を返すloadPollingConfig()を実装
+- [x] T013 [P] ♻️ Refactor: loadPollingConfigにJSONパースとエラーハンドリングを追加
+- [x] T014 [P] 🔴 Red: pollingStorage.test.ts にsavePollingConfigのテストケースを追加
+- [x] T015 [P] ✅ Green: localStorage.setItemを使用してsavePollingConfig(config)を実装
+- [x] T016 [P] ♻️ Refactor: localStorageエラー用のtry-catchを追加、STORAGE_KEY定数を抽出
 
 **独立テスト**: `npm test pollingStorage.test.ts` がすべてパス
 
@@ -133,15 +133,15 @@ description: "フィード自動ポーリング機能の実装タスクリスト
 
 ### T017-T025: ArticleContext拡張（状態管理）
 
-- [ ] T017 [US1] 🔴 Red: frontend/src/contexts/ArticleContext.test.tsx にSET_PENDING_ARTICLESアクションのテストを追加
-- [ ] T018 [US1] ✅ Green: frontend/src/contexts/ArticleContext.tsx のArticleStateにpendingArticles, hasNewArticles, newArticlesCount, lastPolledAtを追加
-- [ ] T019 [US1] ✅ Green: SET_PENDING_ARTICLESリデューサーケースを実装
-- [ ] T020 [US1] ♻️ Refactor: 状態更新ロジックをヘルパー関数に抽出
-- [ ] T021 [US1] 🔴 Red: APPLY_PENDING_ARTICLESアクションのテストを追加
-- [ ] T022 [US1] ✅ Green: mergeArticlesを使用してAPPLY_PENDING_ARTICLESリデューサーケースを実装
-- [ ] T023 [US1] ♻️ Refactor: リデューサー内の重複コードを排除
-- [ ] T024 [US1] 🔴 Red: SET_LAST_POLLED_ATアクションのテストを追加
-- [ ] T025 [US1] ✅ Green: SET_LAST_POLLED_ATリデューサーケースを実装
+- [x] T017 [US1] 🔴 Red: frontend/src/contexts/ArticleContext.test.tsx にSET_PENDING_ARTICLESアクションのテストを追加
+- [x] T018 [US1] ✅ Green: frontend/src/contexts/ArticleContext.tsx のArticleStateにpendingArticles, hasNewArticles, newArticlesCount, lastPolledAtを追加
+- [x] T019 [US1] ✅ Green: SET_PENDING_ARTICLESリデューサーケースを実装
+- [x] T020 [US1] ♻️ Refactor: 状態更新ロジックをヘルパー関数に抽出
+- [x] T021 [US1] 🔴 Red: APPLY_PENDING_ARTICLESアクションのテストを追加
+- [x] T022 [US1] ✅ Green: mergeArticlesを使用してAPPLY_PENDING_ARTICLESリデューサーケースを実装
+- [x] T023 [US1] ♻️ Refactor: リデューサー内の重複コードを排除
+- [x] T024 [US1] 🔴 Red: SET_LAST_POLLED_ATアクションのテストを追加
+- [x] T025 [US1] ✅ Green: SET_LAST_POLLED_ATリデューサーケースを実装
 
 **独立テスト**: `npm test ArticleContext.test.tsx` がすべてパス、新規アクションが正常動作
 
