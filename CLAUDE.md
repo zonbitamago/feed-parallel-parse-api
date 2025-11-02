@@ -20,6 +20,11 @@ Auto-generated from all feature plans. Last updated: 2025-10-27
 - TypeScript 5.9.3 + React 19.1.1, Vitest 4.0.3, @testing-library/react 16.3.0 (001-fix-feed-url-title-mismatch)
 - localStorage（ブラウザAPI） (001-fix-feed-url-title-mismatch)
 - N/A (このfeatureは環境構築のみ、データストレージは不要) (013-docker-local-env)
+- Go 1.25.1 + 標準ライブラリ `net/http`, `encoding/json`（既存） (014-vercel-cors-support)
+- N/A（CORS設定はステートレス） (014-vercel-cors-support)
+- localStorage（フロントエンド）, ファイルシステム（バックエンドログ） (015-codebase-refactoring)
+- TypeScript 5.9.3 + React 19.1.1, Vite 7.1.7, TailwindCSS 4.1.16, date-fns 4.1.0 (014-feed-import-export)
+- localStorage（ブラウザAPI、キー: `rss_reader_subscriptions`） (014-feed-import-export)
 
 - Go 1.2x + github.com/mmcdole/gofeed, 標準ライブラリ encoding/xml (006-rss-format-support)
 
@@ -39,9 +44,9 @@ tests/
 Go 1.2x: Follow standard conventions
 
 ## Recent Changes
-- 013-docker-local-env: Added N/A (このfeatureは環境構築のみ、データストレージは不要)
-- 001-fix-feed-url-title-mismatch: Added TypeScript 5.9.3 + React 19.1.1, Vitest 4.0.3, @testing-library/react 16.3.0
-- 012-fix-second-feed-preview: Added TypeScript 5.9.3, React 19.1.1 + Vite 7.1.7（ビルド）, date-fns 4.x（日付処理）, TailwindCSS 4.x（スタイリング）
+- 014-feed-import-export: Added TypeScript 5.9.3 + React 19.1.1, Vite 7.1.7, TailwindCSS 4.1.16, date-fns 4.1.0
+- 015-codebase-refactoring: Added localStorage（フロントエンド）, ファイルシステム（バックエンドログ）
+- 014-vercel-cors-support: Added Go 1.25.1 + 標準ライブラリ `net/http`, `encoding/json`（既存）
 
 
 <!-- MANUAL ADDITIONS START -->
