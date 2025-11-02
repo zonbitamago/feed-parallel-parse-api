@@ -2,7 +2,12 @@
  * インポートデータのバリデーション関数群
  */
 
-import type { ExportData, ImportValidationError, ImportErrorCode } from '../types/models'
+import type {
+  ExportData,
+  ImportValidationError,
+  ImportErrorCode,
+  Subscription,
+} from '../types/models'
 
 /**
  * バリデーションエラーを生成するヘルパー関数
@@ -76,4 +81,22 @@ export function validateExportData(data: ExportData): {
   return {
     valid: true,
   }
+}
+
+/**
+ * 個別のSubscriptionオブジェクトをバリデーション
+ */
+export function validateSubscription(
+  subscription: Subscription,
+  index: number
+): {
+  valid: boolean
+  error?: ImportValidationError
+} {
+  // 仮実装: 常に失敗を返す
+  return createValidationError(
+    'INVALID_SCHEMA',
+    '未実装',
+    `Subscription at index ${index} is invalid`
+  )
 }
