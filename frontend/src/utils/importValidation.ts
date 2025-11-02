@@ -8,6 +8,7 @@ import type {
   ImportErrorCode,
   Subscription,
 } from '../types/models'
+import { IMPORT_EXPORT_ERROR_MESSAGES } from '../constants/errorMessages'
 
 /**
  * バリデーションエラーを生成するヘルパー関数
@@ -159,19 +160,19 @@ export async function readFileAsText(file: File): Promise<{
   text?: string
   error?: ImportValidationError
 }> {
-  // Step 1: ファイルサイズチェック（1MB = 1048576バイト）
+  // ファイルサイズチェック（1MB = 1048576バイト）
   const MAX_FILE_SIZE = 1048576
   if (file.size > MAX_FILE_SIZE) {
     return {
       success: false,
       error: {
         code: 'FILE_TOO_LARGE',
-        message: 'ファイルサイズが大きすぎます（最大1MB）',
+        message: IMPORT_EXPORT_ERROR_MESSAGES.FILE_TOO_LARGE,
       },
     }
   }
 
-  // Step 2: ファイルタイプチェック（拡張子またはMIMEタイプ）
+  // ファイルタイプチェック（拡張子またはMIMEタイプ）
   const isJsonFile =
     file.name.endsWith('.json') || file.type === 'application/json'
 
@@ -180,12 +181,12 @@ export async function readFileAsText(file: File): Promise<{
       success: false,
       error: {
         code: 'INVALID_FILE_TYPE',
-        message: 'JSONファイルを選択してください',
+        message: IMPORT_EXPORT_ERROR_MESSAGES.INVALID_FILE_TYPE,
       },
     }
   }
 
-  // Step 3: FileReaderで読み込み
+  // FileReaderで読み込み
   return new Promise((resolve) => {
     const reader = new FileReader()
 
@@ -202,7 +203,7 @@ export async function readFileAsText(file: File): Promise<{
         success: false,
         error: {
           code: 'FILE_READ_ERROR',
-          message: 'ファイルの読み込みに失敗しました',
+          message: IMPORT_EXPORT_ERROR_MESSAGES.FILE_READ_ERROR,
         },
       })
     })
