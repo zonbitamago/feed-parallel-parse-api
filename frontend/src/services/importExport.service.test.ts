@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { exportSubscriptions, mergeSubscriptions } from './importExport.service'
+import { exportSubscriptions, mergeSubscriptions, importSubscriptions } from './importExport.service'
 import * as storage from './storage'
 import type { Subscription } from '../types/models'
 
@@ -422,6 +422,198 @@ describe('importExport.service', () => {
       // Assert: lastFetchedAtとstatusがリセットされている
       expect(result.added[0].lastFetchedAt).toBeNull()
       expect(result.added[0].status).toBe('active')
+    })
+  })
+
+  describe('importSubscriptions', () => {
+    beforeEach(() => {
+      // localStorageのモック
+      vi.spyOn(storage, 'loadSubscriptions').mockReturnValue([])
+      vi.spyOn(storage, 'saveSubscriptions').mockImplementation(() => {})
+    })
+
+    afterEach(() => {
+      vi.restoreAllMocks()
+    })
+
+    it('有効なJSONファイルをインポートし、重複しないフィードを追加する', async () => {
+      // Arrange: 既存フィード2件
+      const existingSubscriptions: Subscription[] = [
+        {
+          id: '1',
+          url: 'https://example.com/feed1',
+          title: 'Feed 1',
+          customTitle: null,
+          subscribedAt: '2025-01-01T00:00:00.000Z',
+          lastFetchedAt: null,
+          status: 'active',
+        },
+        {
+          id: '2',
+          url: 'https://example.com/feed2',
+          title: 'Feed 2',
+          customTitle: null,
+          subscribedAt: '2025-01-02T00:00:00.000Z',
+          lastFetchedAt: null,
+          status: 'active',
+        },
+      ]
+      vi.spyOn(storage, 'loadSubscriptions').mockReturnValue(existingSubscriptions)
+
+      // Arrange: インポートファイル（3件、うち1件は重複）
+      const importData = {
+        version: '1.0.0',
+        exportedAt: '2025-11-02T00:00:00.000Z',
+        subscriptions: [
+          {
+            id: 'old-1',
+            url: 'https://example.com/feed1', // 重複
+            title: 'Feed 1',
+            customTitle: null,
+            subscribedAt: '2025-01-01T00:00:00.000Z',
+            lastFetchedAt: null,
+            status: 'active',
+          },
+          {
+            id: 'new-3',
+            url: 'https://example.com/feed3', // 新規
+            title: 'Feed 3',
+            customTitle: null,
+            subscribedAt: '2025-01-03T00:00:00.000Z',
+            lastFetchedAt: null,
+            status: 'active',
+          },
+          {
+            id: 'new-4',
+            url: 'https://example.com/feed4', // 新規
+            title: 'Feed 4',
+            customTitle: null,
+            subscribedAt: '2025-01-04T00:00:00.000Z',
+            lastFetchedAt: null,
+            status: 'active',
+          },
+        ],
+      }
+      const file = new File([JSON.stringify(importData)], 'import.json', {
+        type: 'application/json',
+      })
+
+      // Act
+      const result = await importSubscriptions(file)
+
+      // Assert
+      expect(result.success).toBe(true)
+      expect(result.addedCount).toBe(2)
+      expect(result.skippedCount).toBe(1)
+      expect(result.message).toContain('2件')
+      expect(result.message).toContain('1件')
+      expect(storage.saveSubscriptions).toHaveBeenCalledTimes(1)
+    })
+
+    it('ファイルサイズが1MBを超える場合、エラーを返す', async () => {
+      // Arrange: 1MBを超えるファイル
+      const largeContent = 'a'.repeat(1048577)
+      const file = new File([largeContent], 'large.json', { type: 'application/json' })
+
+      // Act
+      const result = await importSubscriptions(file)
+
+      // Assert
+      expect(result.success).toBe(false)
+      expect(result.error).toContain('1MB')
+      expect(storage.saveSubscriptions).not.toHaveBeenCalled()
+    })
+
+    it('不正なJSON形式の場合、エラーを返す', async () => {
+      // Arrange: 不正なJSON
+      const file = new File(['{ invalid json }'], 'invalid.json', {
+        type: 'application/json',
+      })
+
+      // Act
+      const result = await importSubscriptions(file)
+
+      // Assert
+      expect(result.success).toBe(false)
+      expect(result.error).toBeDefined()
+      expect(storage.saveSubscriptions).not.toHaveBeenCalled()
+    })
+
+    it('スキーマ不一致の場合、エラーを返す', async () => {
+      // Arrange: versionフィールドが欠けているデータ
+      const invalidData = {
+        exportedAt: '2025-11-02T00:00:00.000Z',
+        subscriptions: [],
+      }
+      const file = new File([JSON.stringify(invalidData)], 'invalid.json', {
+        type: 'application/json',
+      })
+
+      // Act
+      const result = await importSubscriptions(file)
+
+      // Assert
+      expect(result.success).toBe(false)
+      expect(result.error).toBeDefined()
+      expect(storage.saveSubscriptions).not.toHaveBeenCalled()
+    })
+
+    it('JSONファイル以外を選択した場合、エラーを返す', async () => {
+      // Arrange: テキストファイル
+      const file = new File(['plain text'], 'test.txt', { type: 'text/plain' })
+
+      // Act
+      const result = await importSubscriptions(file)
+
+      // Assert
+      expect(result.success).toBe(false)
+      expect(result.error).toContain('JSON')
+      expect(storage.saveSubscriptions).not.toHaveBeenCalled()
+    })
+
+    it('全フィードが重複している場合、0件追加される', async () => {
+      // Arrange: 既存フィード2件
+      const existingSubscriptions: Subscription[] = [
+        {
+          id: '1',
+          url: 'https://example.com/feed1',
+          title: 'Feed 1',
+          customTitle: null,
+          subscribedAt: '2025-01-01T00:00:00.000Z',
+          lastFetchedAt: null,
+          status: 'active',
+        },
+        {
+          id: '2',
+          url: 'https://example.com/feed2',
+          title: 'Feed 2',
+          customTitle: null,
+          subscribedAt: '2025-01-02T00:00:00.000Z',
+          lastFetchedAt: null,
+          status: 'active',
+        },
+      ]
+      vi.spyOn(storage, 'loadSubscriptions').mockReturnValue(existingSubscriptions)
+
+      // Arrange: インポートファイル（全て重複）
+      const importData = {
+        version: '1.0.0',
+        exportedAt: '2025-11-02T00:00:00.000Z',
+        subscriptions: existingSubscriptions,
+      }
+      const file = new File([JSON.stringify(importData)], 'import.json', {
+        type: 'application/json',
+      })
+
+      // Act
+      const result = await importSubscriptions(file)
+
+      // Assert
+      expect(result.success).toBe(true)
+      expect(result.addedCount).toBe(0)
+      expect(result.skippedCount).toBe(2)
+      expect(result.message).toContain('0件')
+      expect(result.message).toContain('2件')
     })
   })
 })

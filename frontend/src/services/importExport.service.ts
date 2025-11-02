@@ -3,9 +3,10 @@
  */
 
 import { format } from 'date-fns'
-import { loadSubscriptions } from './storage'
-import type { ExportData, Subscription } from '../types/models'
+import { loadSubscriptions, saveSubscriptions } from './storage'
+import type { ExportData, Subscription, ImportResult } from '../types/models'
 import { IMPORT_EXPORT_ERROR_MESSAGES } from '../constants/errorMessages'
+import { validateExportData, readFileAsText } from '../utils/importValidation'
 
 /**
  * 購読フィードをJSONファイルとしてエクスポート（ダウンロード）
@@ -94,5 +95,20 @@ export function mergeSubscriptions(
   return {
     added,
     skipped,
+  }
+}
+
+/**
+ * JSONファイルから購読フィードをインポート
+ * 既存データとマージし、結果を返す
+ */
+export async function importSubscriptions(file: File): Promise<ImportResult> {
+  // 仮実装: 常に失敗を返す
+  return {
+    success: false,
+    addedCount: 0,
+    skippedCount: 0,
+    message: '未実装',
+    error: '未実装',
   }
 }
