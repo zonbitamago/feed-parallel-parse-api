@@ -147,16 +147,16 @@ description: "フィード自動ポーリング機能の実装タスクリスト
 
 ### T026-T035: useFeedPolling Hook（ポーリングロジック）
 
-- [ ] T026 [US1] 🔴 Red: frontend/src/hooks/useFeedPolling.test.ts に基本的なポーリングテストを作成
-- [ ] T027 [US1] ✅ Green: frontend/src/hooks/useFeedPolling.ts に空のPollingStateを返すuseFeedPollingフックのスケルトンを作成
-- [ ] T028 [US1] 🔴 Red: 10分間隔のポーリングテストを追加（vi.advanceTimersByTime）
-- [ ] T029 [US1] ✅ Green: fetchFeedsを呼び出す10分間隔のsetIntervalを実装
-- [ ] T030 [US1] ♻️ Refactor: ポーリングロジックを別関数に抽出
-- [ ] T031 [US1] 🔴 Red: オフライン検出のテストを追加（useNetworkStatus統合）
-- [ ] T032 [US1] ✅ Green: オフライン時にポーリングを停止するuseNetworkStatusチェックを追加
-- [ ] T033 [US1] ♻️ Refactor: useEffectクリーンアップでclearIntervalを確実に実行（メモリリーク防止）
-- [ ] T034 [US1] 🔴 Red: 新着記事検出のテストを追加（findNewArticles統合）
-- [ ] T035 [US1] ✅ Green: findNewArticlesを呼び出し、新着記事が見つかった時にPollingStateを更新
+- [x] T026 [US1] 🔴 Red: frontend/src/hooks/useFeedPolling.test.ts に基本的なポーリングテストを作成
+- [x] T027 [US1] ✅ Green: frontend/src/hooks/useFeedPolling.ts に空のPollingStateを返すuseFeedPollingフックのスケルトンを作成
+- [x] T028 [US1] 🔴 Red: 10分間隔のポーリングテストを追加（vi.advanceTimersByTime）
+- [x] T029 [US1] ✅ Green: fetchFeedsを呼び出す10分間隔のsetIntervalを実装
+- [x] T030 [US1] ♻️ Refactor: ポーリングロジックを別関数に抽出
+- [x] T031 [US1] 🔴 Red: オフライン検出のテストを追加（useNetworkStatus統合）
+- [x] T032 [US1] ✅ Green: オフライン時にポーリングを停止するuseNetworkStatusチェックを追加
+- [x] T033 [US1] ♻️ Refactor: useEffectクリーンアップでclearIntervalを確実に実行（メモリリーク防止）
+- [x] T034 [US1] 🔴 Red: 新着記事検出のテストを追加（findNewArticles統合）
+- [x] T035 [US1] ✅ Green: findNewArticlesを呼び出し、新着記事が見つかった時にPollingStateを更新
 
 **独立テスト**: `npm test useFeedPolling.test.ts` がすべてパス、vi.useFakeTimers()でタイマー動作検証
 
