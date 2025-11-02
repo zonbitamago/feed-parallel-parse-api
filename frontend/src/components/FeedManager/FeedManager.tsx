@@ -4,7 +4,9 @@ import type { Subscription, AddFeedResult } from '../../types/models'
 import { useFeedTitleEdit } from '../../hooks/useFeedTitleEdit'
 import { useFeedPreview } from '../../hooks/useFeedPreview'
 import { useSubscriptionListCollapse } from '../../hooks/useSubscriptionListCollapse'
+import { useImportExport } from '../../hooks/useImportExport'
 import { FeedSubscriptionItem } from './FeedSubscriptionItem'
+import { ImportExportButtons } from './ImportExportButtons'
 import { URL_ERROR_MESSAGES } from '../../constants/errorMessages'
 
 interface FeedManagerProps {
@@ -54,6 +56,17 @@ export function FeedManager({
 
   // 購読リストの折りたたみ状態管理
   const { isCollapsed, toggle } = useSubscriptionListCollapse()
+
+  // インポート/エクスポート機能
+  const { handleExport, handleImport } = useImportExport({
+    onSuccess: (message) => {
+      // インポート成功時にページをリロードして反映
+      window.location.reload()
+    },
+    onError: (error) => {
+      setError(error)
+    },
+  })
 
   const maxSubscriptions = 100
   const isAtLimit = subscriptions.length >= maxSubscriptions
@@ -149,6 +162,7 @@ export function FeedManager({
 
   return (
     <div className="bg-white rounded-lg shadow p-4 mb-6">
+      <ImportExportButtons onExport={handleExport} onImport={handleImport} />
       <form onSubmit={handleSubmit} className="flex gap-2">
         <div className="flex-1">
           <input
