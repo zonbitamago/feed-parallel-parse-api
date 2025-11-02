@@ -120,5 +120,40 @@ describe('importExport.service', () => {
       expect(createObjectURLMock).toHaveBeenCalledTimes(1)
       expect(clickMock).toHaveBeenCalledTimes(1)
     })
+
+    it('ファイル名が「subscriptions_YYYY-MM-DD.json」形式である', () => {
+      // Arrange
+      vi.spyOn(storage, 'loadSubscriptions').mockReturnValue([])
+      const mockDate = new Date('2025-11-02T12:00:00.000Z')
+      vi.useFakeTimers()
+      vi.setSystemTime(mockDate)
+
+      let capturedFilename = ''
+      vi.spyOn(document, 'createElement').mockImplementation((tagName: string) => {
+        if (tagName === 'a') {
+          return {
+            set download(value: string) {
+              capturedFilename = value
+            },
+            get download() {
+              return capturedFilename
+            },
+            href: '',
+            click: vi.fn(),
+            style: {},
+          } as unknown as HTMLAnchorElement
+        }
+        return document.createElement(tagName)
+      })
+
+      // Act: エクスポート実行
+      exportSubscriptions()
+
+      // Assert: ファイル名が正しい形式であることを確認
+      expect(capturedFilename).toBe('subscriptions_2025-11-02.json')
+
+      // Cleanup
+      vi.useRealTimers()
+    })
   })
 })
