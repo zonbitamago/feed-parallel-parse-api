@@ -103,12 +103,63 @@ export function mergeSubscriptions(
  * 既存データとマージし、結果を返す
  */
 export async function importSubscriptions(file: File): Promise<ImportResult> {
-  // 仮実装: 常に失敗を返す
+  // Step 1: ファイルをテキストとして読み込み
+  const readResult = await readFileAsText(file)
+  if (!readResult.success) {
+    return {
+      success: false,
+      addedCount: 0,
+      skippedCount: 0,
+      message: '',
+      error: readResult.error?.message,
+    }
+  }
+
+  // Step 2: JSONパース
+  let parsedData: ExportData
+  try {
+    parsedData = JSON.parse(readResult.text!)
+  } catch (e) {
+    return {
+      success: false,
+      addedCount: 0,
+      skippedCount: 0,
+      message: '',
+      error: IMPORT_EXPORT_ERROR_MESSAGES.INVALID_JSON,
+    }
+  }
+
+  // Step 3: スキーマバリデーション
+  const validationResult = validateExportData(parsedData)
+  if (!validationResult.valid) {
+    return {
+      success: false,
+      addedCount: 0,
+      skippedCount: 0,
+      message: '',
+      error: validationResult.error?.message,
+    }
+  }
+
+  // Step 4: 既存の購読フィードを読み込み
+  const existingSubscriptions = loadSubscriptions()
+
+  // Step 5: マージ処理（重複チェック）
+  const { added, skipped } = mergeSubscriptions(
+    existingSubscriptions,
+    parsedData.subscriptions
+  )
+
+  // Step 6: マージ結果を保存
+  const updatedSubscriptions = [...existingSubscriptions, ...added]
+  saveSubscriptions(updatedSubscriptions)
+
+  // Step 7: 結果を返す
+  const message = `${added.length}件のフィードを追加しました（${skipped}件はスキップ）`
   return {
-    success: false,
-    addedCount: 0,
-    skippedCount: 0,
-    message: '未実装',
-    error: '未実装',
+    success: true,
+    addedCount: added.length,
+    skippedCount: skipped,
+    message,
   }
 }
