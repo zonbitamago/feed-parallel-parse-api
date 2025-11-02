@@ -2,6 +2,7 @@
  * フィード購読のインポート/エクスポート機能
  */
 
+import { format } from 'date-fns'
 import { loadSubscriptions } from './storage'
 import type { ExportData } from '../types/models'
 import { IMPORT_EXPORT_ERROR_MESSAGES } from '../constants/errorMessages'
@@ -42,6 +43,6 @@ export function exportSubscriptions(): void {
  * 形式: subscriptions_YYYY-MM-DD.json
  */
 function generateFilename(): string {
-  const date = new Date().toISOString().split('T')[0]
+  const date = format(new Date(), 'yyyy-MM-dd')
   return `subscriptions_${date}.json`
 }
