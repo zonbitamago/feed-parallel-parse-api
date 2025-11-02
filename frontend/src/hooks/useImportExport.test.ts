@@ -65,13 +65,22 @@ describe('useImportExport', () => {
 
     // ファイル選択をシミュレート
     const input = document.querySelector('input[type="file"]') as HTMLInputElement
-    const event = new Event('change', { bubbles: true })
+    const fileList = {
+      0: mockFile,
+      length: 1,
+      item: () => mockFile,
+    } as unknown as FileList
+
+    // 既存のfilesプロパティを削除してから再定義
+    delete (input as any).files
     Object.defineProperty(input, 'files', {
-      value: [mockFile],
-      writable: false,
+      value: fileList,
+      writable: true,
+      configurable: true,
     })
 
     await act(async () => {
+      const event = new Event('change', { bubbles: true })
       input.dispatchEvent(event)
     })
 
@@ -98,13 +107,21 @@ describe('useImportExport', () => {
     })
 
     const input = document.querySelector('input[type="file"]') as HTMLInputElement
-    const event = new Event('change', { bubbles: true })
+    const fileList = {
+      0: mockFile,
+      length: 1,
+      item: () => mockFile,
+    } as unknown as FileList
+
+    delete (input as any).files
     Object.defineProperty(input, 'files', {
-      value: [mockFile],
-      writable: false,
+      value: fileList,
+      writable: true,
+      configurable: true,
     })
 
     await act(async () => {
+      const event = new Event('change', { bubbles: true })
       input.dispatchEvent(event)
     })
 
@@ -132,13 +149,21 @@ describe('useImportExport', () => {
     })
 
     const input = document.querySelector('input[type="file"]') as HTMLInputElement
-    const event = new Event('change', { bubbles: true })
+    const fileList = {
+      0: mockFile,
+      length: 1,
+      item: () => mockFile,
+    } as unknown as FileList
+
+    delete (input as any).files
     Object.defineProperty(input, 'files', {
-      value: [mockFile],
-      writable: false,
+      value: fileList,
+      writable: true,
+      configurable: true,
     })
 
     await act(async () => {
+      const event = new Event('change', { bubbles: true })
       input.dispatchEvent(event)
     })
 
