@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest'
-import { validateExportData, validateSubscription } from './importValidation'
+import { describe, it, expect, vi } from 'vitest'
+import { validateExportData, validateSubscription, readFileAsText } from './importValidation'
 import type { ExportData, Subscription } from '../types/models'
 
 describe('importValidation', () => {
@@ -299,6 +299,88 @@ describe('importValidation', () => {
       // Assert
       expect(result1.valid).toBe(true)
       expect(result2.valid).toBe(true)
+    })
+  })
+
+  describe('readFileAsText', () => {
+    it('有効なJSONファイルを読み込み、テキスト内容を返す', async () => {
+      // Arrange: モックJSONファイル
+      const jsonContent = JSON.stringify({ version: '1.0.0' })
+      const file = new File([jsonContent], 'test.json', { type: 'application/json' })
+
+      // Act
+      const result = await readFileAsText(file)
+
+      // Assert
+      expect(result.success).toBe(true)
+      expect(result.text).toBe(jsonContent)
+      expect(result.error).toBeUndefined()
+    })
+
+    it('ファイルサイズが1MBを超える場合、FILE_TOO_LARGEエラーを返す', async () => {
+      // Arrange: 1MBを超えるファイル（1MB = 1048576バイト）
+      const largeContent = 'a'.repeat(1048577)
+      const file = new File([largeContent], 'large.json', { type: 'application/json' })
+
+      // Act
+      const result = await readFileAsText(file)
+
+      // Assert
+      expect(result.success).toBe(false)
+      expect(result.error?.code).toBe('FILE_TOO_LARGE')
+    })
+
+    it('JSONファイル以外を選択した場合、INVALID_FILE_TYPEエラーを返す', async () => {
+      // Arrange: テキストファイル
+      const file = new File(['plain text'], 'test.txt', { type: 'text/plain' })
+
+      // Act
+      const result = await readFileAsText(file)
+
+      // Assert
+      expect(result.success).toBe(false)
+      expect(result.error?.code).toBe('INVALID_FILE_TYPE')
+    })
+
+    it('ファイル拡張子が.jsonの場合、MIMEタイプに関わらず読み込む', async () => {
+      // Arrange: MIMEタイプがtext/plainだが拡張子は.json
+      const jsonContent = JSON.stringify({ test: 'data' })
+      const file = new File([jsonContent], 'test.json', { type: 'text/plain' })
+
+      // Act
+      const result = await readFileAsText(file)
+
+      // Assert
+      expect(result.success).toBe(true)
+      expect(result.text).toBe(jsonContent)
+    })
+
+    it('FileReaderエラー発生時、FILE_READ_ERRORエラーを返す', async () => {
+      // Arrange: FileReader.readAsTextをモックしてエラーを発生させる
+      const file = new File(['test'], 'test.json', { type: 'application/json' })
+
+      const mockFileReader = {
+        readAsText: vi.fn(),
+        addEventListener: vi.fn((event: string, handler: EventListener) => {
+          if (event === 'error') {
+            // エラーハンドラを即座に呼び出す
+            setTimeout(() => handler(new Event('error')), 0)
+          }
+        }),
+        error: new Error('FileReader error'),
+      }
+
+      vi.spyOn(global, 'FileReader').mockImplementation(() => mockFileReader as unknown as FileReader)
+
+      // Act
+      const result = await readFileAsText(file)
+
+      // Assert
+      expect(result.success).toBe(false)
+      expect(result.error?.code).toBe('FILE_READ_ERROR')
+
+      // Cleanup
+      vi.restoreAllMocks()
     })
   })
 })

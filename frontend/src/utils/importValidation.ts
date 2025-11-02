@@ -150,3 +150,21 @@ export function validateSubscription(
     valid: true,
   }
 }
+
+/**
+ * ファイルをテキストとして読み込む
+ */
+export async function readFileAsText(file: File): Promise<{
+  success: boolean
+  text?: string
+  error?: ImportValidationError
+}> {
+  // 仮実装: 常に失敗を返す
+  return {
+    success: false,
+    error: {
+      code: 'FILE_READ_ERROR',
+      message: '未実装',
+    },
+  }
+}
