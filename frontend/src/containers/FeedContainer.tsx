@@ -3,6 +3,8 @@ import { useSubscription } from '../contexts/SubscriptionContext'
 import { useArticle } from '../contexts/ArticleContext'
 import { useUI } from '../contexts/UIContext'
 import { useFeedAPI } from '../hooks/useFeedAPI'
+import { useFeedPolling } from '../hooks/useFeedPolling'
+import { useNetworkStatus } from '../hooks/useNetworkStatus'
 import { loadSubscriptions, saveSubscriptions } from '../services/storage'
 import { fetchFeedTitle } from '../services/feedAPI'
 import { FeedManager } from '../components/FeedManager/FeedManager'
@@ -19,6 +21,39 @@ export function FeedContainer({ onRefreshReady }: FeedContainerProps) {
   const { dispatch: uiDispatch } = useUI()
   const { articles, errors, isLoading, fetchFeeds, updatedSubscriptions } = useFeedAPI()
   const [feedError, setFeedError] = useState<string | null>(null)
+  const { isOnline } = useNetworkStatus()
+
+  // ポーリング機能（US1: 新着記事の自動検出）
+  const handlePoll = useCallback(() => {
+    if (subState.subscriptions.length > 0) {
+      fetchFeeds(subState.subscriptions)
+    }
+  }, [subState.subscriptions, fetchFeeds])
+
+  const pollingState = useFeedPolling({
+    subscriptions: subState.subscriptions,
+    onPoll: handlePoll,
+    isOnline,
+  })
+
+  // ポーリング状態をArticleContextに同期（T038-T039）
+  useEffect(() => {
+    if (pollingState.hasNewArticles && pollingState.pendingArticles.length > 0) {
+      articleDispatch({
+        type: 'SET_PENDING_ARTICLES',
+        payload: pollingState.pendingArticles,
+      })
+    }
+  }, [pollingState.hasNewArticles, pollingState.pendingArticles, articleDispatch])
+
+  useEffect(() => {
+    if (pollingState.lastPolledAt !== null) {
+      articleDispatch({
+        type: 'SET_LAST_POLLED_AT',
+        payload: pollingState.lastPolledAt,
+      })
+    }
+  }, [pollingState.lastPolledAt, articleDispatch])
 
   // マウント時にlocalStorageから購読情報を読み込む
   useEffect(() => {

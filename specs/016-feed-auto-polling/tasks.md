@@ -162,12 +162,12 @@ description: "フィード自動ポーリング機能の実装タスクリスト
 
 ### T036-T041: FeedContainer統合
 
-- [ ] T036 [US1] 🔴 Red: frontend/src/containers/FeedContainer.test.tsx にFeedContainer + useFeedPollingの統合テストを追加
-- [ ] T037 [US1] ✅ Green: FeedContainer.tsx でuseFeedPollingをインポートして呼び出す
-- [ ] T038 [US1] ✅ Green: pollingState.hasNewArticlesがtrueの時にSET_PENDING_ARTICLESをディスパッチ
-- [ ] T039 [US1] ✅ Green: ポーリング完了後にSET_LAST_POLLED_ATをディスパッチ
-- [ ] T040 [US1] ♻️ Refactor: ポーリング状態の同期をuseEffectに抽出
-- [ ] T041 [US1] ♻️ Refactor: ポーリング失敗のエラーハンドリングを追加（ログのみ、ユーザー通知なし）
+- [x] T036 [US1] 🔴 Red: frontend/src/containers/FeedContainer.test.tsx にFeedContainer + useFeedPollingの統合テストを追加
+- [x] T037 [US1] ✅ Green: FeedContainer.tsx でuseFeedPollingをインポートして呼び出す
+- [x] T038 [US1] ✅ Green: pollingState.hasNewArticlesがtrueの時にSET_PENDING_ARTICLESをディスパッチ
+- [x] T039 [US1] ✅ Green: ポーリング完了後にSET_LAST_POLLED_ATをディスパッチ
+- [x] T040 [US1] ♻️ Refactor: ポーリング状態の同期をuseEffectに抽出
+- [x] T041 [US1] ♻️ Refactor: ポーリング失敗のエラーハンドリングを追加（ログのみ、ユーザー通知なし）
 
 **独立テスト**: `npm test FeedContainer.test.tsx` がパス、ポーリング→Context更新のフローが動作
 
