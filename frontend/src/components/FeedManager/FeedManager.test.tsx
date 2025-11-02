@@ -690,4 +690,14 @@ describe('FeedManager', () => {
       expect(button).not.toBeInTheDocument()
     })
   })
+
+  describe('インポート/エクスポート機能', () => {
+    it('エクスポートボタンとインポートボタンが表示される', () => {
+      const onAdd = vi.fn().mockResolvedValue({ success: true, shouldClearInput: true })
+      render(<FeedManager onAddFeed={onAdd} subscriptions={[]} />)
+
+      expect(screen.getByRole('button', { name: /エクスポート/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /インポート/i })).toBeInTheDocument()
+    })
+  })
 })
