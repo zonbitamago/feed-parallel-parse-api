@@ -6,7 +6,7 @@ import { format } from 'date-fns'
 import { loadSubscriptions, saveSubscriptions } from './storage'
 import type { ExportData, Subscription, ImportResult } from '../types/models'
 import { IMPORT_EXPORT_ERROR_MESSAGES } from '../constants/errorMessages'
-import { validateExportData, readFileAsText } from '../utils/importValidation'
+import { validateExportData, validateSubscription, readFileAsText } from '../utils/importValidation'
 
 /**
  * 購読フィードをJSONファイルとしてエクスポート（ダウンロード）
@@ -129,7 +129,7 @@ export async function importSubscriptions(file: File): Promise<ImportResult> {
     }
   }
 
-  // Step 3: スキーマバリデーション
+  // Step 3: スキーマバリデーション（ExportData全体）
   const validationResult = validateExportData(parsedData)
   if (!validationResult.valid) {
     return {
@@ -138,6 +138,20 @@ export async function importSubscriptions(file: File): Promise<ImportResult> {
       skippedCount: 0,
       message: '',
       error: validationResult.error?.message,
+    }
+  }
+
+  // Step 3.5: 個別のSubscriptionバリデーション
+  for (let i = 0; i < parsedData.subscriptions.length; i++) {
+    const subValidation = validateSubscription(parsedData.subscriptions[i], i)
+    if (!subValidation.valid) {
+      return {
+        success: false,
+        addedCount: 0,
+        skippedCount: 0,
+        message: '',
+        error: subValidation.error?.message,
+      }
     }
   }
 
