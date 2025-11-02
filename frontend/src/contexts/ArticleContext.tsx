@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useReducer, type ReactNode } from 'react'
 import type { Article, FeedError } from '../types/models'
+import { mergeArticles } from '../utils/articleMerge'
 
 interface ArticleState {
   articles: Article[]
@@ -8,6 +9,11 @@ interface ArticleState {
   selectedFeedId: string | null
   isLoading: boolean
   errors: FeedError[]
+  // ポーリング状態（US1: 新着記事の自動検出）
+  pendingArticles: Article[]
+  hasNewArticles: boolean
+  newArticlesCount: number
+  lastPolledAt: number | null
 }
 
 type ArticleAction =
@@ -17,6 +23,10 @@ type ArticleAction =
   | { type: 'CLEAR_ERRORS' }
   | { type: 'SET_SEARCH_QUERY'; payload: string }
   | { type: 'SET_SELECTED_FEED'; payload: string | null }
+  // ポーリング関連アクション（US1）
+  | { type: 'SET_PENDING_ARTICLES'; payload: Article[] }
+  | { type: 'APPLY_PENDING_ARTICLES' }
+  | { type: 'SET_LAST_POLLED_AT'; payload: number | null }
 
 const initialState: ArticleState = {
   articles: [],
@@ -25,6 +35,11 @@ const initialState: ArticleState = {
   selectedFeedId: null,
   isLoading: false,
   errors: [],
+  // ポーリング状態の初期値
+  pendingArticles: [],
+  hasNewArticles: false,
+  newArticlesCount: 0,
+  lastPolledAt: null,
 }
 
 function filterArticles(articles: Article[], searchQuery: string, selectedFeedId: string | null): Article[] {
@@ -86,6 +101,35 @@ function articleReducer(state: ArticleState, action: ArticleAction): ArticleStat
         ...state,
         selectedFeedId: action.payload,
         displayedArticles: displayed,
+      }
+    }
+    // ポーリング関連アクション（US1: 新着記事の自動検出）
+    case 'SET_PENDING_ARTICLES': {
+      return {
+        ...state,
+        pendingArticles: action.payload,
+        hasNewArticles: action.payload.length > 0,
+        newArticlesCount: action.payload.length,
+      }
+    }
+    case 'APPLY_PENDING_ARTICLES': {
+      // mergeArticlesを使用して新着記事と既存記事をマージ
+      const merged = mergeArticles(state.articles, state.pendingArticles)
+      const displayed = filterArticles(merged, state.searchQuery, state.selectedFeedId)
+      return {
+        ...state,
+        articles: merged,
+        displayedArticles: displayed,
+        // 適用後はペンディング記事をクリア
+        pendingArticles: [],
+        hasNewArticles: false,
+        newArticlesCount: 0,
+      }
+    }
+    case 'SET_LAST_POLLED_AT': {
+      return {
+        ...state,
+        lastPolledAt: action.payload,
       }
     }
     default:
