@@ -40,6 +40,46 @@ export interface AddFeedResult {
 }
 
 /**
+ * エクスポートデータの形式
+ */
+export interface ExportData {
+  version: string;
+  exportedAt: string;
+  subscriptions: Subscription[];
+}
+
+/**
+ * インポート結果
+ */
+export interface ImportResult {
+  success: boolean;
+  addedCount: number;
+  skippedCount: number;
+  message: string;
+  error?: string;
+}
+
+/**
+ * インポートエラーコード
+ */
+export type ImportErrorCode =
+  | 'INVALID_JSON'
+  | 'INVALID_SCHEMA'
+  | 'FILE_TOO_LARGE'
+  | 'FILE_READ_ERROR'
+  | 'MISSING_REQUIRED_FIELD'
+  | 'INVALID_VERSION';
+
+/**
+ * インポートバリデーションエラー
+ */
+export interface ImportValidationError {
+  code: ImportErrorCode;
+  message: string;
+  details?: string;
+}
+
+/**
  * 表示用のタイトルを取得する
  * 優先順位: customTitle > title > url
  */

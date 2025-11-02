@@ -45,3 +45,21 @@ export const SUBSCRIPTION_ERROR_MESSAGES = {
   /** 購読数上限に達した場合 */
   LIMIT_REACHED: (limit: number) => `購読数が上限（${limit}件）に達しています`,
 } as const
+
+/**
+ * インポート/エクスポート関連のエラーメッセージ
+ */
+export const IMPORT_EXPORT_ERROR_MESSAGES = {
+  /** 不正なJSON形式 */
+  INVALID_JSON: 'ファイル形式が正しくありません。有効なJSONファイルを選択してください。',
+  /** スキーマ不一致 */
+  INVALID_SCHEMA: 'データ形式が正しくありません。エクスポートされたフィードファイルを選択してください。',
+  /** ファイルサイズ超過 */
+  FILE_TOO_LARGE: 'ファイルサイズが大きすぎます（最大1MB）',
+  /** ファイル読み込みエラー */
+  FILE_READ_ERROR: 'ファイルの読み込みに失敗しました',
+  /** エクスポート失敗 */
+  EXPORT_FAILED: 'エクスポートに失敗しました',
+  /** JSONファイル以外を選択 */
+  INVALID_FILE_TYPE: 'JSONファイルを選択してください',
+} as const
