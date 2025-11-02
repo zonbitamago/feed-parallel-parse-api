@@ -1,7 +1,7 @@
 # feed-parallel-parse-api システム仕様書
 
 **最終更新日**: 2025-11-02
-**バージョン**: v1.3
+**バージョン**: v1.4
 
 > **重要**: この仕様書は、PR 作成時に必ず更新してください。機能追加・変更があった場合は、該当セクションを修正し、最新の実装状態を反映させることがプロジェクトルールとして定められています。
 
@@ -16,6 +16,7 @@ feed-parallel-parse-api は、複数の RSS フィードを並列に取得・解
 - 複数 RSS フィードの購読管理（追加・削除・編集）
 - フィードタイトルの自動取得とカスタマイズ
 - 購読一覧の折りたたみ機能（記事へのアクセス最適化）
+- **購読フィードのインポート/エクスポート機能**（JSON形式、URL重複チェック）
 - 並列フィード取得による高速な記事取得
 - 統合タイムラインでの記事表示
 - 仮想スクロールによる高速レンダリング
@@ -206,6 +207,149 @@ URL: https://example.com/feed.xml
 
 - **localStorage 読み込みエラー**: JSON パースエラー時はデフォルト値（折りたたみ）を使用
 - **購読数 0 件の場合**: 折りたたみボタン自体を非表示
+
+### 3.6 購読フィードのインポート/エクスポート機能
+
+#### 概要
+
+購読しているフィードリストを JSON 形式でエクスポート・インポートできる機能。デバイス間でのフィード購読の移行や、バックアップ・リストアに使用する。
+
+#### エクスポート機能
+
+**UI 要素**:
+- **ボタン配置**: FeedManager コンポーネントの上部（URL入力欄の上）
+- **ボタンラベル**: 「エクスポート」
+- **スタイル**: `bg-blue-600 text-white` の青色ボタン
+
+**動作仕様**:
+1. ボタンクリック時、現在の購読フィードを JSON 形式でエクスポート
+2. ファイル名: `subscriptions_YYYY-MM-DD.json` (例: `subscriptions_2025-11-02.json`)
+3. ブラウザのダウンロード機能で自動保存
+
+**エクスポートデータ形式**:
+```json
+{
+  "version": "1.0.0",
+  "exportedAt": "2025-11-02T12:34:56.789Z",
+  "subscriptions": [
+    {
+      "id": "uuid-1234",
+      "url": "https://example.com/feed",
+      "title": "Example Feed",
+      "customTitle": null,
+      "subscribedAt": "2025-11-01T10:00:00.000Z",
+      "lastFetchedAt": "2025-11-02T11:00:00.000Z",
+      "status": "active"
+    }
+  ]
+}
+```
+
+**フィールド説明**:
+- `version`: データ形式のバージョン（将来の互換性のため）
+- `exportedAt`: エクスポート実行日時（ISO 8601形式）
+- `subscriptions`: 購読フィードの配列（全フィールドを含む）
+
+#### インポート機能
+
+**UI 要素**:
+- **ボタン配置**: FeedManager コンポーネントの上部（エクスポートボタンの右隣）
+- **ボタンラベル**: 「インポート」
+- **スタイル**: `bg-green-600 text-white` の緑色ボタン
+
+**動作仕様**:
+1. ボタンクリック時、ファイル選択ダイアログを表示
+2. JSON ファイル選択後、バリデーション実行
+3. 既存購読フィードとマージ（URL 重複チェック）
+4. 成功時: ページリロードで反映
+5. 失敗時: エラーメッセージ表示
+
+**バリデーション仕様**:
+
+| チェック項目 | エラーコード | エラーメッセージ |
+|-------------|-------------|-----------------|
+| ファイルサイズ（1MB以下） | `FILE_TOO_LARGE` | ファイルサイズが大きすぎます（最大1MB） |
+| ファイル形式（.json） | `INVALID_FILE_TYPE` | JSONファイルを選択してください |
+| JSON 解析 | `INVALID_JSON` | ファイル形式が正しくありません。有効なJSONファイルを選択してください。 |
+| スキーマ検証（version, exportedAt, subscriptions） | `INVALID_SCHEMA` | データ形式が正しくありません。エクスポートされたフィードファイルを選択してください。 |
+| バージョン（1.0.0のみ） | `INVALID_VERSION` | サポートされていないバージョンです |
+| 個別フィールド（url, status必須） | `MISSING_REQUIRED_FIELD` | 必須フィールドが不足しています |
+
+**マージ戦略**:
+- **重複判定**: `url` フィールドで一致をチェック
+- **重複時**: スキップ（既存データを優先）
+- **新規時**: 以下のフィールドを初期化して追加
+  - `id`: 新しいUUID（`crypto.randomUUID()`）
+  - `subscribedAt`: インポート実行日時
+  - `lastFetchedAt`: `null`（次回フェッチで更新）
+  - `status`: `active`（強制的にアクティブ化）
+
+**結果通知**:
+```
+成功: "2件のフィードを追加しました（1件はスキップ）"
+失敗: "ファイル形式が正しくありません"
+```
+
+#### 技術実装
+
+**コンポーネント**:
+- `ImportExportButtons.tsx`: ボタンUI（プレゼンテーション層）
+- `useImportExport.ts`: インポート/エクスポートロジック（カスタムフック）
+
+**サービス**:
+- `importExport.service.ts`: ビジネスロジック
+  - `exportSubscriptions()`: エクスポート処理
+  - `importSubscriptions(file: File)`: インポート処理
+  - `mergeSubscriptions()`: マージロジック
+
+**バリデーション**:
+- `importValidation.ts`: バリデーション関数
+  - `validateExportData()`: スキーマ検証
+  - `validateSubscription()`: 個別フィード検証
+  - `readFileAsText()`: ファイル読み込み
+
+**型定義**:
+```typescript
+interface ExportData {
+  version: string
+  exportedAt: string
+  subscriptions: Subscription[]
+}
+
+interface ImportResult {
+  success: boolean
+  addedCount: number
+  skippedCount: number
+  message: string
+  error?: string
+}
+
+type ImportErrorCode =
+  | 'INVALID_JSON'
+  | 'INVALID_SCHEMA'
+  | 'FILE_TOO_LARGE'
+  | 'FILE_READ_ERROR'
+  | 'MISSING_REQUIRED_FIELD'
+  | 'INVALID_VERSION'
+```
+
+#### エラーハンドリング
+
+- **ファイル読み込みエラー**: FileReader API のエラーを適切にキャッチ
+- **JSON パースエラー**: `try-catch` で処理し、ユーザーに明示的なエラーメッセージ
+- **バリデーションエラー**: 各バリデーション段階でエラーを返却
+- **既存データ保護**: インポート失敗時は既存データを一切変更しない
+
+#### テスト
+
+**ユニットテスト**（Vitest）:
+- エクスポート機能: 7 テストケース
+- インポート機能（バリデーション）: 18 テストケース
+- インポート機能（統合）: 6 テストケース
+- マージ機能: 4 テストケース
+- UI コンポーネント: 9 テストケース
+
+**カバレッジ**: 100%（全関数・分岐）
 
 ---
 
