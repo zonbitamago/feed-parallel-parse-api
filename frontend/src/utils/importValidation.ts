@@ -159,12 +159,54 @@ export async function readFileAsText(file: File): Promise<{
   text?: string
   error?: ImportValidationError
 }> {
-  // 仮実装: 常に失敗を返す
-  return {
-    success: false,
-    error: {
-      code: 'FILE_READ_ERROR',
-      message: '未実装',
-    },
+  // Step 1: ファイルサイズチェック（1MB = 1048576バイト）
+  const MAX_FILE_SIZE = 1048576
+  if (file.size > MAX_FILE_SIZE) {
+    return {
+      success: false,
+      error: {
+        code: 'FILE_TOO_LARGE',
+        message: 'ファイルサイズが大きすぎます（最大1MB）',
+      },
+    }
   }
+
+  // Step 2: ファイルタイプチェック（拡張子またはMIMEタイプ）
+  const isJsonFile =
+    file.name.endsWith('.json') || file.type === 'application/json'
+
+  if (!isJsonFile) {
+    return {
+      success: false,
+      error: {
+        code: 'INVALID_FILE_TYPE',
+        message: 'JSONファイルを選択してください',
+      },
+    }
+  }
+
+  // Step 3: FileReaderで読み込み
+  return new Promise((resolve) => {
+    const reader = new FileReader()
+
+    reader.addEventListener('load', () => {
+      const text = reader.result as string
+      resolve({
+        success: true,
+        text,
+      })
+    })
+
+    reader.addEventListener('error', () => {
+      resolve({
+        success: false,
+        error: {
+          code: 'FILE_READ_ERROR',
+          message: 'ファイルの読み込みに失敗しました',
+        },
+      })
+    })
+
+    reader.readAsText(file)
+  })
 }

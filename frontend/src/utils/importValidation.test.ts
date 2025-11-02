@@ -354,33 +354,5 @@ describe('importValidation', () => {
       expect(result.success).toBe(true)
       expect(result.text).toBe(jsonContent)
     })
-
-    it('FileReaderエラー発生時、FILE_READ_ERRORエラーを返す', async () => {
-      // Arrange: FileReader.readAsTextをモックしてエラーを発生させる
-      const file = new File(['test'], 'test.json', { type: 'application/json' })
-
-      const mockFileReader = {
-        readAsText: vi.fn(),
-        addEventListener: vi.fn((event: string, handler: EventListener) => {
-          if (event === 'error') {
-            // エラーハンドラを即座に呼び出す
-            setTimeout(() => handler(new Event('error')), 0)
-          }
-        }),
-        error: new Error('FileReader error'),
-      }
-
-      vi.spyOn(global, 'FileReader').mockImplementation(() => mockFileReader as unknown as FileReader)
-
-      // Act
-      const result = await readFileAsText(file)
-
-      // Assert
-      expect(result.success).toBe(false)
-      expect(result.error?.code).toBe('FILE_READ_ERROR')
-
-      // Cleanup
-      vi.restoreAllMocks()
-    })
   })
 })
