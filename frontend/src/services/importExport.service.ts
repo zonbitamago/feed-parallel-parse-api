@@ -4,38 +4,44 @@
 
 import { loadSubscriptions } from './storage'
 import type { ExportData } from '../types/models'
+import { IMPORT_EXPORT_ERROR_MESSAGES } from '../constants/errorMessages'
 
 /**
  * 購読フィードをJSONファイルとしてエクスポート（ダウンロード）
  *
- * ステップ1: モックデータを返す最小実装 → ステップ2: localStorageから読み込み
- * → ステップ3: ExportData型でラップ → ステップ4: JSON文字列化
- * → ステップ5: Blob作成 → ダウンロード
+ * @throws Error エクスポート処理に失敗した場合
  */
 export function exportSubscriptions(): void {
-  // ステップ2: loadSubscriptions() でlocalStorageから読み込み
-  const subscriptions = loadSubscriptions()
+  try {
+    const subscriptions = loadSubscriptions()
 
-  // ステップ3: ExportData 型でラップ（version: "1.0.0", exportedAt: 固定値）
-  const exportData: ExportData = {
-    version: '1.0.0',
-    exportedAt: new Date().toISOString(),
-    subscriptions,
+    const exportData: ExportData = {
+      version: '1.0.0',
+      exportedAt: new Date().toISOString(),
+      subscriptions,
+    }
+
+    const jsonString = JSON.stringify(exportData, null, 2)
+    const blob = new Blob([jsonString], { type: 'application/json' })
+    const downloadUrl = URL.createObjectURL(blob)
+
+    const link = document.createElement('a')
+    link.href = downloadUrl
+    link.download = generateFilename()
+    link.click()
+
+    URL.revokeObjectURL(downloadUrl)
+  } catch (error) {
+    console.error('Export failed:', error)
+    throw new Error(IMPORT_EXPORT_ERROR_MESSAGES.EXPORT_FAILED)
   }
+}
 
-  // ステップ4: JSON.stringify(data, null, 2) でJSON文字列化
-  const jsonString = JSON.stringify(exportData, null, 2)
-
-  // ステップ5: Blob 作成 → URL.createObjectURL() → ダウンロード
-  const blob = new Blob([jsonString], { type: 'application/json' })
-  const url = URL.createObjectURL(blob)
-
-  // ダウンロードリンクを作成してクリック
-  const link = document.createElement('a')
-  link.href = url
-  link.download = `subscriptions_${new Date().toISOString().split('T')[0]}.json`
-  link.click()
-
-  // メモリ解放
-  URL.revokeObjectURL(url)
+/**
+ * エクスポートファイル名を生成
+ * 形式: subscriptions_YYYY-MM-DD.json
+ */
+function generateFilename(): string {
+  const date = new Date().toISOString().split('T')[0]
+  return `subscriptions_${date}.json`
 }
