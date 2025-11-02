@@ -173,12 +173,12 @@ description: "フィード自動ポーリング機能の実装タスクリスト
 
 ### T042-T047: 統合テスト（User Story 1 完了確認）
 
-- [ ] T042 [US1] 🔴 Red: frontend/tests/integration/polling-flow.test.tsx にUser Story 1のE2Eテストを作成
-- [ ] T043 [US1] 🔴 Red: テストケースを追加: 「10分経過→新着検出→pendingArticles更新」
-- [ ] T044 [US1] ✅ Green: 統合テストですべてのコンポーネントが連携動作することを検証
-- [ ] T045 [US1] 🔴 Red: テストケースを追加: 「オフライン時はポーリング停止」
-- [ ] T046 [US1] ✅ Green: オフライン検出がポーリングを停止することを検証
-- [ ] T047 [US1] ♻️ Refactor: 共通テストセットアップをヘルパー関数に抽出
+- [x] T042 [US1] 🔴 Red: frontend/tests/integration/polling-flow.test.tsx にUser Story 1のE2Eテストを作成
+- [x] T043 [US1] 🔴 Red: テストケースを追加: 「10分経過→新着検出→pendingArticles更新」
+- [x] T044 [US1] ✅ Green: 統合テストですべてのコンポーネントが連携動作することを検証
+- [x] T045 [US1] 🔴 Red: テストケースを追加: 「オフライン時はポーリング停止」
+- [x] T046 [US1] ✅ Green: オフライン検出がポーリングを停止することを検証
+- [x] T047 [US1] ♻️ Refactor: 共通テストセットアップをヘルパー関数に抽出
 
 **独立テスト**: `npm test polling-flow.test.tsx` がパス、User Story 1のAcceptance Scenariosすべてが検証される
 
