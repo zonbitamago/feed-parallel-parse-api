@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { exportSubscriptions } from './importExport.service'
+import { exportSubscriptions, mergeSubscriptions } from './importExport.service'
 import * as storage from './storage'
 import type { Subscription } from '../types/models'
 
@@ -154,6 +154,274 @@ describe('importExport.service', () => {
 
       // Cleanup
       vi.useRealTimers()
+    })
+  })
+
+  describe('mergeSubscriptions', () => {
+    it('URLが重複するフィードをスキップし、新規フィードのみを追加する', () => {
+      // Arrange: 既存フィード2件
+      const existingSubscriptions: Subscription[] = [
+        {
+          id: '1',
+          url: 'https://example.com/feed1',
+          title: 'Feed 1',
+          customTitle: null,
+          subscribedAt: '2025-01-01T00:00:00.000Z',
+          lastFetchedAt: null,
+          status: 'active',
+        },
+        {
+          id: '2',
+          url: 'https://example.com/feed2',
+          title: 'Feed 2',
+          customTitle: null,
+          subscribedAt: '2025-01-02T00:00:00.000Z',
+          lastFetchedAt: null,
+          status: 'active',
+        },
+      ]
+
+      // Arrange: インポートフィード5件（うち2件は既存と重複）
+      const importedSubscriptions: Subscription[] = [
+        {
+          id: 'old-1',
+          url: 'https://example.com/feed1', // 重複
+          title: 'Feed 1 (Imported)',
+          customTitle: null,
+          subscribedAt: '2025-01-01T00:00:00.000Z',
+          lastFetchedAt: null,
+          status: 'active',
+        },
+        {
+          id: 'old-2',
+          url: 'https://example.com/feed2', // 重複
+          title: 'Feed 2 (Imported)',
+          customTitle: null,
+          subscribedAt: '2025-01-02T00:00:00.000Z',
+          lastFetchedAt: null,
+          status: 'active',
+        },
+        {
+          id: 'new-3',
+          url: 'https://example.com/feed3', // 新規
+          title: 'Feed 3',
+          customTitle: null,
+          subscribedAt: '2025-01-03T00:00:00.000Z',
+          lastFetchedAt: null,
+          status: 'active',
+        },
+        {
+          id: 'new-4',
+          url: 'https://example.com/feed4', // 新規
+          title: 'Feed 4',
+          customTitle: null,
+          subscribedAt: '2025-01-04T00:00:00.000Z',
+          lastFetchedAt: null,
+          status: 'active',
+        },
+        {
+          id: 'new-5',
+          url: 'https://example.com/feed5', // 新規
+          title: 'Feed 5',
+          customTitle: null,
+          subscribedAt: '2025-01-05T00:00:00.000Z',
+          lastFetchedAt: null,
+          status: 'active',
+        },
+      ]
+
+      // Act
+      const result = mergeSubscriptions(existingSubscriptions, importedSubscriptions)
+
+      // Assert: 3件追加、2件スキップ
+      expect(result.added.length).toBe(3)
+      expect(result.skipped).toBe(2)
+      expect(result.added[0].url).toBe('https://example.com/feed3')
+      expect(result.added[1].url).toBe('https://example.com/feed4')
+      expect(result.added[2].url).toBe('https://example.com/feed5')
+    })
+
+    it('全フィードが重複している場合、added.length = 0, skipped = 5', () => {
+      // Arrange: 既存フィード5件
+      const existingSubscriptions: Subscription[] = [
+        {
+          id: '1',
+          url: 'https://example.com/feed1',
+          title: 'Feed 1',
+          customTitle: null,
+          subscribedAt: '2025-01-01T00:00:00.000Z',
+          lastFetchedAt: null,
+          status: 'active',
+        },
+        {
+          id: '2',
+          url: 'https://example.com/feed2',
+          title: 'Feed 2',
+          customTitle: null,
+          subscribedAt: '2025-01-02T00:00:00.000Z',
+          lastFetchedAt: null,
+          status: 'active',
+        },
+        {
+          id: '3',
+          url: 'https://example.com/feed3',
+          title: 'Feed 3',
+          customTitle: null,
+          subscribedAt: '2025-01-03T00:00:00.000Z',
+          lastFetchedAt: null,
+          status: 'active',
+        },
+        {
+          id: '4',
+          url: 'https://example.com/feed4',
+          title: 'Feed 4',
+          customTitle: null,
+          subscribedAt: '2025-01-04T00:00:00.000Z',
+          lastFetchedAt: null,
+          status: 'active',
+        },
+        {
+          id: '5',
+          url: 'https://example.com/feed5',
+          title: 'Feed 5',
+          customTitle: null,
+          subscribedAt: '2025-01-05T00:00:00.000Z',
+          lastFetchedAt: null,
+          status: 'active',
+        },
+      ]
+
+      // Arrange: インポートフィード5件（全て重複）
+      const importedSubscriptions: Subscription[] = [
+        {
+          id: 'old-1',
+          url: 'https://example.com/feed1',
+          title: 'Feed 1 (Imported)',
+          customTitle: null,
+          subscribedAt: '2025-01-01T00:00:00.000Z',
+          lastFetchedAt: null,
+          status: 'active',
+        },
+        {
+          id: 'old-2',
+          url: 'https://example.com/feed2',
+          title: 'Feed 2 (Imported)',
+          customTitle: null,
+          subscribedAt: '2025-01-02T00:00:00.000Z',
+          lastFetchedAt: null,
+          status: 'active',
+        },
+        {
+          id: 'old-3',
+          url: 'https://example.com/feed3',
+          title: 'Feed 3 (Imported)',
+          customTitle: null,
+          subscribedAt: '2025-01-03T00:00:00.000Z',
+          lastFetchedAt: null,
+          status: 'active',
+        },
+        {
+          id: 'old-4',
+          url: 'https://example.com/feed4',
+          title: 'Feed 4 (Imported)',
+          customTitle: null,
+          subscribedAt: '2025-01-04T00:00:00.000Z',
+          lastFetchedAt: null,
+          status: 'active',
+        },
+        {
+          id: 'old-5',
+          url: 'https://example.com/feed5',
+          title: 'Feed 5 (Imported)',
+          customTitle: null,
+          subscribedAt: '2025-01-05T00:00:00.000Z',
+          lastFetchedAt: null,
+          status: 'active',
+        },
+      ]
+
+      // Act
+      const result = mergeSubscriptions(existingSubscriptions, importedSubscriptions)
+
+      // Assert: 0件追加、5件スキップ
+      expect(result.added.length).toBe(0)
+      expect(result.skipped).toBe(5)
+    })
+
+    it('既存フィードが0件の場合、全てのインポートフィードを追加する', () => {
+      // Arrange: 既存フィード0件
+      const existingSubscriptions: Subscription[] = []
+
+      // Arrange: インポートフィード3件
+      const importedSubscriptions: Subscription[] = [
+        {
+          id: 'new-1',
+          url: 'https://example.com/feed1',
+          title: 'Feed 1',
+          customTitle: null,
+          subscribedAt: '2025-01-01T00:00:00.000Z',
+          lastFetchedAt: null,
+          status: 'active',
+        },
+        {
+          id: 'new-2',
+          url: 'https://example.com/feed2',
+          title: 'Feed 2',
+          customTitle: null,
+          subscribedAt: '2025-01-02T00:00:00.000Z',
+          lastFetchedAt: null,
+          status: 'active',
+        },
+        {
+          id: 'new-3',
+          url: 'https://example.com/feed3',
+          title: 'Feed 3',
+          customTitle: null,
+          subscribedAt: '2025-01-03T00:00:00.000Z',
+          lastFetchedAt: null,
+          status: 'active',
+        },
+      ]
+
+      // Act
+      const result = mergeSubscriptions(existingSubscriptions, importedSubscriptions)
+
+      // Assert: 3件追加、0件スキップ
+      expect(result.added.length).toBe(3)
+      expect(result.skipped).toBe(0)
+    })
+
+    it('追加されたフィードは新しいIDとsubscribedAtを持つ', () => {
+      // Arrange
+      const existingSubscriptions: Subscription[] = []
+      const importedSubscriptions: Subscription[] = [
+        {
+          id: 'old-id',
+          url: 'https://example.com/feed1',
+          title: 'Feed 1',
+          customTitle: null,
+          subscribedAt: '2020-01-01T00:00:00.000Z', // 古い日付
+          lastFetchedAt: '2020-01-01T01:00:00.000Z',
+          status: 'error',
+        },
+      ]
+
+      // Act
+      const result = mergeSubscriptions(existingSubscriptions, importedSubscriptions)
+
+      // Assert: 新しいIDが生成されている
+      expect(result.added[0].id).not.toBe('old-id')
+      expect(result.added[0].id).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i)
+
+      // Assert: subscribedAtが現在日時に更新されている
+      const now = new Date().toISOString()
+      const subscribedAt = result.added[0].subscribedAt
+      expect(new Date(subscribedAt).getTime()).toBeGreaterThan(new Date('2020-01-01').getTime())
+      expect(new Date(subscribedAt).getTime()).toBeLessThanOrEqual(new Date(now).getTime())
+
+      // Assert: lastFetchedAtとstatusがリセットされている
+      expect(result.added[0].lastFetchedAt).toBeNull()
+      expect(result.added[0].status).toBe('active')
     })
   })
 })

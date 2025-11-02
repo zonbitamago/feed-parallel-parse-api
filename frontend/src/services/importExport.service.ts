@@ -4,7 +4,7 @@
 
 import { format } from 'date-fns'
 import { loadSubscriptions } from './storage'
-import type { ExportData } from '../types/models'
+import type { ExportData, Subscription } from '../types/models'
 import { IMPORT_EXPORT_ERROR_MESSAGES } from '../constants/errorMessages'
 
 /**
@@ -45,4 +45,22 @@ export function exportSubscriptions(): void {
 function generateFilename(): string {
   const date = format(new Date(), 'yyyy-MM-dd')
   return `subscriptions_${date}.json`
+}
+
+/**
+ * 既存フィードとインポートフィードをマージ
+ * URLベースで重複チェックを行い、新規フィードのみを追加
+ */
+export function mergeSubscriptions(
+  existingSubscriptions: Subscription[],
+  importedSubscriptions: Subscription[]
+): {
+  added: Subscription[]
+  skipped: number
+} {
+  // 仮実装: 常に空の結果を返す
+  return {
+    added: [],
+    skipped: 0,
+  }
 }
