@@ -1,17 +1,17 @@
 ---
 
-description: "Task list for Feed Auto Polling feature implementation"
+description: "フィード自動ポーリング機能の実装タスクリスト"
 ---
 
 # Tasks: フィード自動ポーリング機能
 
 **Feature**: 016-feed-auto-polling
-**Input**: Design documents from `/specs/016-feed-auto-polling/`
-**Prerequisites**: plan.md (required), spec.md (required for user stories), research.md, data-model.md, quickstart.md
+**Input**: `/specs/016-feed-auto-polling/` の設計ドキュメント
+**Prerequisites**: plan.md（必須）, spec.md（ユーザーストーリー用、必須）, research.md, data-model.md, quickstart.md
 
 **Tests**: ✅ **TDD必須** - [Constitution（憲法）](../../.specify/memory/constitution.md)によりTest-Driven Developmentが絶対遵守
 
-**Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.
+**Organization**: タスクはユーザーストーリーごとにグループ化され、各ストーリーの独立した実装とテストを可能にします。
 
 ---
 
@@ -59,73 +59,73 @@ description: "Task list for Feed Auto Polling feature implementation"
 
 ---
 
-## Format: `- [ ] [ID] [P?] [Story?] Description`
+## フォーマット: `- [ ] [ID] [P?] [Story?] 説明`
 
-- **[P]**: Can run in parallel (different files, no dependencies)
-- **[Story]**: Which user story this task belongs to (e.g., US1, US2, US3)
-- Include exact file paths in descriptions
+- **[P]**: 並列実行可能（異なるファイル、依存関係なし）
+- **[Story]**: このタスクが属するユーザーストーリー（例: US1, US2, US3）
+- 説明には正確なファイルパスを含める
 
-## Path Conventions
+## パス規則
 
-- **Web app**: `frontend/src/`
-- Paths shown below use frontend structure from plan.md
-
----
-
-## Phase 1: Setup (Shared Infrastructure)
-
-**Purpose**: Project initialization and verify existing infrastructure
-
-**Independent Test**: すべてのテストが既にパスしていることを確認（既存機能に影響なし）
-
-- [ ] T001 Verify existing project structure matches plan.md (frontend/src/)
-- [ ] T002 Verify TypeScript 5.9.3 and React 19.1.1 are installed
-- [ ] T003 [P] Run existing tests to establish baseline (npm test)
-- [ ] T004 [P] Verify Vitest 4.0.3 with vi.useFakeTimers() support
-
-**Completion Criteria**: 既存テストがすべてパス、開発環境が正常動作
+- **Webアプリ**: `frontend/src/`
+- 以下に示すパスはplan.mdのフロントエンド構造を使用
 
 ---
 
-## Phase 2: Foundational (Blocking Prerequisites)
+## Phase 1: セットアップ（共通インフラ）
 
-**Purpose**: 全ユーザーストーリーで共通して使用する基盤機能を実装
+**目的**: プロジェクトの初期化と既存インフラの検証
 
-**Independent Test**: 各ユーティリティ関数が独立してテスト可能
+**独立テスト**: すべてのテストが既にパスしていることを確認（既存機能に影響なし）
+
+- [ ] T001 既存のプロジェクト構造がplan.mdと一致することを確認（frontend/src/）
+- [ ] T002 TypeScript 5.9.3とReact 19.1.1がインストールされていることを確認
+- [ ] T003 [P] 既存テストを実行してベースラインを確立（npm test）
+- [ ] T004 [P] Vitest 4.0.3がvi.useFakeTimers()をサポートしていることを確認
+
+**完了基準**: 既存テストがすべてパス、開発環境が正常動作
+
+---
+
+## Phase 2: 基盤（ブロッキング前提条件）
+
+**目的**: 全ユーザーストーリーで共通して使用する基盤機能を実装
+
+**独立テスト**: 各ユーティリティ関数が独立してテスト可能
 
 ### T005-T010: 記事マージユーティリティ（US1, US2で使用）
 
-- [ ] T005 [P] 🔴 Red: Create articleMerge.test.ts with findNewArticles test cases in frontend/src/utils/articleMerge.test.ts
-- [ ] T006 [P] ✅ Green: Implement findNewArticles(latestArticles, currentArticles) in frontend/src/utils/articleMerge.ts
-- [ ] T007 [P] ♻️ Refactor: Optimize findNewArticles with Set.has() for O(n+m) complexity
-- [ ] T008 [P] 🔴 Red: Add mergeArticles test cases to articleMerge.test.ts
-- [ ] T009 [P] ✅ Green: Implement mergeArticles(currentArticles, newArticles) with sortArticlesByDate
-- [ ] T010 [P] ♻️ Refactor: Extract duplicate logic, add JSDoc comments
+- [ ] T005 [P] 🔴 Red: frontend/src/utils/articleMerge.test.ts にfindNewArticlesのテストケースを作成
+- [ ] T006 [P] ✅ Green: frontend/src/utils/articleMerge.ts にfindNewArticles(latestArticles, currentArticles)を実装
+- [ ] T007 [P] ♻️ Refactor: findNewArticlesをSet.has()でO(n+m)複雑度に最適化
+- [ ] T008 [P] 🔴 Red: articleMerge.test.ts にmergeArticlesのテストケースを追加
+- [ ] T009 [P] ✅ Green: sortArticlesByDateを使用してmergeArticles(currentArticles, newArticles)を実装
+- [ ] T010 [P] ♻️ Refactor: 重複ロジックを抽出、JSDocコメントを追加
 
-**Independent Test**: `npm test articleMerge.test.ts` がすべてパス
+**独立テスト**: `npm test articleMerge.test.ts` がすべてパス
 
 ### T011-T016: localStorage管理（US1で使用）
 
-- [ ] T011 [P] 🔴 Red: Create pollingStorage.test.ts with loadPollingConfig test cases in frontend/src/services/pollingStorage.test.ts
-- [ ] T012 [P] ✅ Green: Implement loadPollingConfig() returning default config in frontend/src/services/pollingStorage.ts
-- [ ] T013 [P] ♻️ Refactor: Add JSON parsing and error handling to loadPollingConfig
-- [ ] T014 [P] 🔴 Red: Add savePollingConfig test cases to pollingStorage.test.ts
-- [ ] T015 [P] ✅ Green: Implement savePollingConfig(config) with localStorage.setItem
-- [ ] T016 [P] ♻️ Refactor: Add try-catch for localStorage errors, extract STORAGE_KEY constant
+- [ ] T011 [P] 🔴 Red: frontend/src/services/pollingStorage.test.ts にloadPollingConfigのテストケースを作成
+- [ ] T012 [P] ✅ Green: frontend/src/services/pollingStorage.ts にデフォルト設定を返すloadPollingConfig()を実装
+- [ ] T013 [P] ♻️ Refactor: loadPollingConfigにJSONパースとエラーハンドリングを追加
+- [ ] T014 [P] 🔴 Red: pollingStorage.test.ts にsavePollingConfigのテストケースを追加
+- [ ] T015 [P] ✅ Green: localStorage.setItemを使用してsavePollingConfig(config)を実装
+- [ ] T016 [P] ♻️ Refactor: localStorageエラー用のtry-catchを追加、STORAGE_KEY定数を抽出
 
-**Independent Test**: `npm test pollingStorage.test.ts` がすべてパス
+**独立テスト**: `npm test pollingStorage.test.ts` がすべてパス
 
-**Completion Criteria**: Foundational層のテストカバレッジ100%、すべてのテストがパス
+**完了基準**: 基盤層のテストカバレッジ100%、すべてのテストがパス
 
 ---
 
 ## Phase 3: User Story 1 - バックグラウンドで新着記事を自動検出 (Priority: P1)
 
-**Goal**: 10分ごとに自動的に新着記事をチェックし、通知を表示する
+**目標**: 10分ごとに自動的に新着記事をチェックし、通知を表示する
 
-**Independent Test**: アプリを開いて10分間放置（vi.advanceTimersByTime使用）し、新着通知が表示される
+**独立テスト**: アプリを開いて10分間放置（vi.advanceTimersByTime使用）し、新着通知が表示される
 
-**Acceptance Criteria**:
+**受け入れ基準**:
 1. 10分ごとに自動的にフィードを取得
 2. 新着記事が検出されたら通知を表示
 3. 新着記事がなければ通知は表示しない
@@ -133,56 +133,56 @@ description: "Task list for Feed Auto Polling feature implementation"
 
 ### T017-T025: ArticleContext拡張（状態管理）
 
-- [ ] T017 [US1] 🔴 Red: Add test for SET_PENDING_ARTICLES action in frontend/src/contexts/ArticleContext.test.tsx
-- [ ] T018 [US1] ✅ Green: Add pendingArticles, hasNewArticles, newArticlesCount, lastPolledAt to ArticleState in frontend/src/contexts/ArticleContext.tsx
-- [ ] T019 [US1] ✅ Green: Implement SET_PENDING_ARTICLES reducer case
-- [ ] T020 [US1] ♻️ Refactor: Extract state update logic to helper function
-- [ ] T021 [US1] 🔴 Red: Add test for APPLY_PENDING_ARTICLES action
-- [ ] T022 [US1] ✅ Green: Implement APPLY_PENDING_ARTICLES reducer case with mergeArticles
-- [ ] T023 [US1] ♻️ Refactor: Ensure no duplicate code in reducer
-- [ ] T024 [US1] 🔴 Red: Add test for SET_LAST_POLLED_AT action
-- [ ] T025 [US1] ✅ Green: Implement SET_LAST_POLLED_AT reducer case
+- [ ] T017 [US1] 🔴 Red: frontend/src/contexts/ArticleContext.test.tsx にSET_PENDING_ARTICLESアクションのテストを追加
+- [ ] T018 [US1] ✅ Green: frontend/src/contexts/ArticleContext.tsx のArticleStateにpendingArticles, hasNewArticles, newArticlesCount, lastPolledAtを追加
+- [ ] T019 [US1] ✅ Green: SET_PENDING_ARTICLESリデューサーケースを実装
+- [ ] T020 [US1] ♻️ Refactor: 状態更新ロジックをヘルパー関数に抽出
+- [ ] T021 [US1] 🔴 Red: APPLY_PENDING_ARTICLESアクションのテストを追加
+- [ ] T022 [US1] ✅ Green: mergeArticlesを使用してAPPLY_PENDING_ARTICLESリデューサーケースを実装
+- [ ] T023 [US1] ♻️ Refactor: リデューサー内の重複コードを排除
+- [ ] T024 [US1] 🔴 Red: SET_LAST_POLLED_ATアクションのテストを追加
+- [ ] T025 [US1] ✅ Green: SET_LAST_POLLED_ATリデューサーケースを実装
 
-**Independent Test**: `npm test ArticleContext.test.tsx` がすべてパス、新規アクションが正常動作
+**独立テスト**: `npm test ArticleContext.test.tsx` がすべてパス、新規アクションが正常動作
 
 ### T026-T035: useFeedPolling Hook（ポーリングロジック）
 
-- [ ] T026 [US1] 🔴 Red: Create useFeedPolling.test.ts with basic polling test in frontend/src/hooks/useFeedPolling.test.ts
-- [ ] T027 [US1] ✅ Green: Create useFeedPolling hook skeleton returning empty PollingState in frontend/src/hooks/useFeedPolling.ts
-- [ ] T028 [US1] 🔴 Red: Add test for 10-minute interval polling (vi.advanceTimersByTime)
-- [ ] T029 [US1] ✅ Green: Implement setInterval with 10-minute interval calling fetchFeeds
-- [ ] T030 [US1] ♻️ Refactor: Extract polling logic to separate function
-- [ ] T031 [US1] 🔴 Red: Add test for offline detection (useNetworkStatus integration)
-- [ ] T032 [US1] ✅ Green: Add useNetworkStatus check to stop polling when offline
-- [ ] T033 [US1] ♻️ Refactor: Ensure clearInterval in useEffect cleanup (memory leak prevention)
-- [ ] T034 [US1] 🔴 Red: Add test for new article detection (findNewArticles integration)
-- [ ] T035 [US1] ✅ Green: Call findNewArticles and update PollingState when new articles found
+- [ ] T026 [US1] 🔴 Red: frontend/src/hooks/useFeedPolling.test.ts に基本的なポーリングテストを作成
+- [ ] T027 [US1] ✅ Green: frontend/src/hooks/useFeedPolling.ts に空のPollingStateを返すuseFeedPollingフックのスケルトンを作成
+- [ ] T028 [US1] 🔴 Red: 10分間隔のポーリングテストを追加（vi.advanceTimersByTime）
+- [ ] T029 [US1] ✅ Green: fetchFeedsを呼び出す10分間隔のsetIntervalを実装
+- [ ] T030 [US1] ♻️ Refactor: ポーリングロジックを別関数に抽出
+- [ ] T031 [US1] 🔴 Red: オフライン検出のテストを追加（useNetworkStatus統合）
+- [ ] T032 [US1] ✅ Green: オフライン時にポーリングを停止するuseNetworkStatusチェックを追加
+- [ ] T033 [US1] ♻️ Refactor: useEffectクリーンアップでclearIntervalを確実に実行（メモリリーク防止）
+- [ ] T034 [US1] 🔴 Red: 新着記事検出のテストを追加（findNewArticles統合）
+- [ ] T035 [US1] ✅ Green: findNewArticlesを呼び出し、新着記事が見つかった時にPollingStateを更新
 
-**Independent Test**: `npm test useFeedPolling.test.ts` がすべてパス、vi.useFakeTimers()でタイマー動作検証
+**独立テスト**: `npm test useFeedPolling.test.ts` がすべてパス、vi.useFakeTimers()でタイマー動作検証
 
 ### T036-T041: FeedContainer統合
 
-- [ ] T036 [US1] 🔴 Red: Add integration test for FeedContainer + useFeedPolling in frontend/src/containers/FeedContainer.test.tsx
-- [ ] T037 [US1] ✅ Green: Import and call useFeedPolling in FeedContainer.tsx
-- [ ] T038 [US1] ✅ Green: Dispatch SET_PENDING_ARTICLES when pollingState.hasNewArticles is true
-- [ ] T039 [US1] ✅ Green: Dispatch SET_LAST_POLLED_AT after polling completes
-- [ ] T040 [US1] ♻️ Refactor: Extract polling state synchronization to useEffect
-- [ ] T041 [US1] ♻️ Refactor: Add error handling for polling failures (log only, no user notification)
+- [ ] T036 [US1] 🔴 Red: frontend/src/containers/FeedContainer.test.tsx にFeedContainer + useFeedPollingの統合テストを追加
+- [ ] T037 [US1] ✅ Green: FeedContainer.tsx でuseFeedPollingをインポートして呼び出す
+- [ ] T038 [US1] ✅ Green: pollingState.hasNewArticlesがtrueの時にSET_PENDING_ARTICLESをディスパッチ
+- [ ] T039 [US1] ✅ Green: ポーリング完了後にSET_LAST_POLLED_ATをディスパッチ
+- [ ] T040 [US1] ♻️ Refactor: ポーリング状態の同期をuseEffectに抽出
+- [ ] T041 [US1] ♻️ Refactor: ポーリング失敗のエラーハンドリングを追加（ログのみ、ユーザー通知なし）
 
-**Independent Test**: `npm test FeedContainer.test.tsx` がパス、ポーリング→Context更新のフローが動作
+**独立テスト**: `npm test FeedContainer.test.tsx` がパス、ポーリング→Context更新のフローが動作
 
 ### T042-T047: 統合テスト（User Story 1 完了確認）
 
-- [ ] T042 [US1] 🔴 Red: Create polling-flow.test.tsx for end-to-end User Story 1 in frontend/tests/integration/polling-flow.test.tsx
-- [ ] T043 [US1] 🔴 Red: Add test case: "10分経過→新着検出→pendingArticles更新"
-- [ ] T044 [US1] ✅ Green: Verify all components work together in integration test
-- [ ] T045 [US1] 🔴 Red: Add test case: "オフライン時はポーリング停止"
-- [ ] T046 [US1] ✅ Green: Verify offline detection stops polling
-- [ ] T047 [US1] ♻️ Refactor: Extract common test setup to helper function
+- [ ] T042 [US1] 🔴 Red: frontend/tests/integration/polling-flow.test.tsx にUser Story 1のE2Eテストを作成
+- [ ] T043 [US1] 🔴 Red: テストケースを追加: 「10分経過→新着検出→pendingArticles更新」
+- [ ] T044 [US1] ✅ Green: 統合テストですべてのコンポーネントが連携動作することを検証
+- [ ] T045 [US1] 🔴 Red: テストケースを追加: 「オフライン時はポーリング停止」
+- [ ] T046 [US1] ✅ Green: オフライン検出がポーリングを停止することを検証
+- [ ] T047 [US1] ♻️ Refactor: 共通テストセットアップをヘルパー関数に抽出
 
-**Independent Test**: `npm test polling-flow.test.tsx` がパス、User Story 1のAcceptance Scenariosすべてが検証される
+**独立テスト**: `npm test polling-flow.test.tsx` がパス、User Story 1のAcceptance Scenariosすべてが検証される
 
-**User Story 1 Completion Criteria**:
+**User Story 1 完了基準**:
 - [x] 10分ごとのポーリングが動作（vi.advanceTimersByTime検証）
 - [x] 新着記事検出時にpendingArticlesが更新される
 - [x] オフライン時にポーリングが停止
@@ -193,11 +193,11 @@ description: "Task list for Feed Auto Polling feature implementation"
 
 ## Phase 4: User Story 2 - 新着記事を手動で反映 (Priority: P1)
 
-**Goal**: 「読み込む」ボタンをクリックして、新着記事を記事一覧に反映する
+**目標**: 「読み込む」ボタンをクリックして、新着記事を記事一覧に反映する
 
-**Independent Test**: ポーリング機能なしでも、手動でpendingArticlesを注入してテスト可能
+**独立テスト**: ポーリング機能なしでも、手動でpendingArticlesを注入してテスト可能
 
-**Acceptance Criteria**:
+**受け入れ基準**:
 1. 新着通知に「読み込む」ボタンが表示される
 2. ボタンクリックで記事一覧の先頭に新着記事が追加される
 3. 通知が自動的に消える
@@ -205,49 +205,49 @@ description: "Task list for Feed Auto Polling feature implementation"
 
 ### T048-T056: NewArticlesNotification Component（通知UI）
 
-- [ ] T048 [P] [US2] 🔴 Red: Create NewArticlesNotification.test.tsx with basic rendering test in frontend/src/components/NewArticlesNotification.test.tsx
-- [ ] T049 [P] [US2] ✅ Green: Create NewArticlesNotification component skeleton in frontend/src/components/NewArticlesNotification.tsx
-- [ ] T050 [P] [US2] 🔴 Red: Add test for "visible=true shows notification, visible=false hides it"
-- [ ] T051 [P] [US2] ✅ Green: Implement conditional rendering based on visible prop
-- [ ] T052 [P] [US2] 🔴 Red: Add test for count display ("新着記事があります (5件)")
-- [ ] T053 [P] [US2] ✅ Green: Display count in notification message
-- [ ] T054 [P] [US2] 🔴 Red: Add test for onLoad callback when button clicked
-- [ ] T055 [P] [US2] ✅ Green: Add "読み込む" button with onClick={onLoad}
-- [ ] T056 [P] [US2] ♻️ Refactor: Add TailwindCSS styling (green theme, consistent with PWA notifications)
+- [ ] T048 [P] [US2] 🔴 Red: frontend/src/components/NewArticlesNotification.test.tsx に基本的なレンダリングテストを作成
+- [ ] T049 [P] [US2] ✅ Green: frontend/src/components/NewArticlesNotification.tsx にNewArticlesNotificationコンポーネントのスケルトンを作成
+- [ ] T050 [P] [US2] 🔴 Red: テストを追加: 「visible=trueで通知表示、visible=falseで非表示」
+- [ ] T051 [P] [US2] ✅ Green: visibleプロップに基づく条件付きレンダリングを実装
+- [ ] T052 [P] [US2] 🔴 Red: テストを追加: count表示（「新着記事があります (5件)」）
+- [ ] T053 [P] [US2] ✅ Green: 通知メッセージにcountを表示
+- [ ] T054 [P] [US2] 🔴 Red: テストを追加: ボタンクリック時のonLoadコールバック
+- [ ] T055 [P] [US2] ✅ Green: onClick={onLoad}で「読み込む」ボタンを追加
+- [ ] T056 [P] [US2] ♻️ Refactor: TailwindCSSスタイリングを追加（緑テーマ、PWA通知と統一）
 
-**Independent Test**: `npm test NewArticlesNotification.test.tsx` がパス、Props変更で表示/非表示が切り替わる
+**独立テスト**: `npm test NewArticlesNotification.test.tsx` がパス、Props変更で表示/非表示が切り替わる
 
 ### T057-T061: アクセシビリティ対応
 
-- [ ] T057 [P] [US2] 🔴 Red: Add test for ARIA attributes (role="status", aria-live="polite")
-- [ ] T058 [P] [US2] ✅ Green: Add role="status" and aria-live="polite" to notification div
-- [ ] T059 [P] [US2] 🔴 Red: Add test for aria-label on button ("新着記事を読み込む")
-- [ ] T060 [P] [US2] ✅ Green: Add aria-label to "読み込む" button
-- [ ] T061 [P] [US2] ♻️ Refactor: Add keyboard navigation test (Tab→Enter for button click)
+- [ ] T057 [P] [US2] 🔴 Red: テストを追加: ARIA属性（role="status", aria-live="polite"）
+- [ ] T058 [P] [US2] ✅ Green: 通知divにrole="status"とaria-live="polite"を追加
+- [ ] T059 [P] [US2] 🔴 Red: テストを追加: ボタンのaria-label（「新着記事を読み込む」）
+- [ ] T060 [P] [US2] ✅ Green: 「読み込む」ボタンにaria-labelを追加
+- [ ] T061 [P] [US2] ♻️ Refactor: キーボードナビゲーションテストを追加（Tab→Enterでボタンクリック）
 
-**Independent Test**: axe-core または React Testing Library accessibility testing
+**独立テスト**: axe-core または React Testing Library アクセシビリティテスト
 
 ### T062-T066: App.tsx統合
 
-- [ ] T062 [US2] 🔴 Red: Add test for NewArticlesNotification rendering in App.test.tsx
-- [ ] T063 [US2] ✅ Green: Import and render NewArticlesNotification in App.tsx
-- [ ] T064 [US2] ✅ Green: Pass articleState.hasNewArticles as visible prop
-- [ ] T065 [US2] ✅ Green: Implement handleLoadNewArticles() dispatching APPLY_PENDING_ARTICLES
-- [ ] T066 [US2] ♻️ Refactor: Extract notification props to useMemo for performance
+- [ ] T062 [US2] 🔴 Red: App.test.tsx にNewArticlesNotificationのレンダリングテストを追加
+- [ ] T063 [US2] ✅ Green: App.tsx でNewArticlesNotificationをインポートしてレンダリング
+- [ ] T064 [US2] ✅ Green: articleState.hasNewArticlesをvisibleプロップとして渡す
+- [ ] T065 [US2] ✅ Green: APPLY_PENDING_ARTICLESをディスパッチするhandleLoadNewArticles()を実装
+- [ ] T066 [US2] ♻️ Refactor: パフォーマンス向上のため通知プロップをuseMemoに抽出
 
-**Independent Test**: `npm test App.test.tsx` がパス、NewArticlesNotificationが表示される
+**独立テスト**: `npm test App.test.tsx` がパス、NewArticlesNotificationが表示される
 
 ### T067-T071: 統合テスト（User Story 2 完了確認）
 
-- [ ] T067 [US2] 🔴 Red: Add test case to polling-flow.test.tsx: "「読み込む」ボタンクリック→記事反映"
-- [ ] T068 [US2] ✅ Green: Verify APPLY_PENDING_ARTICLES merges articles correctly
-- [ ] T069 [US2] 🔴 Red: Add test case: "手動更新ボタン→新着記事も反映"
-- [ ] T070 [US2] ✅ Green: Verify manual refresh button also applies pending articles
-- [ ] T071 [US2] ♻️ Refactor: Extract notification interaction tests to helper
+- [ ] T067 [US2] 🔴 Red: polling-flow.test.tsx にテストケースを追加: 「「読み込む」ボタンクリック→記事反映」
+- [ ] T068 [US2] ✅ Green: APPLY_PENDING_ARTICLESが記事を正しくマージすることを検証
+- [ ] T069 [US2] 🔴 Red: テストケースを追加: 「手動更新ボタン→新着記事も反映」
+- [ ] T070 [US2] ✅ Green: 手動更新ボタンも保留中の記事を適用することを検証
+- [ ] T071 [US2] ♻️ Refactor: 通知インタラクションテストをヘルパーに抽出
 
-**Independent Test**: `npm test polling-flow.test.tsx` がパス、User Story 2のAcceptance Scenariosすべてが検証される
+**独立テスト**: `npm test polling-flow.test.tsx` がパス、User Story 2のAcceptance Scenariosすべてが検証される
 
-**User Story 2 Completion Criteria**:
+**User Story 2 完了基準**:
 - [x] 新着通知が表示される（緑色、画面上部中央）
 - [x] 「読み込む」ボタンで新着記事が記事一覧に反映される
 - [x] 通知が自動的に消える
@@ -258,11 +258,11 @@ description: "Task list for Feed Auto Polling feature implementation"
 
 ## Phase 5: User Story 3 - ポーリング状態の可視化 (Priority: P2)
 
-**Goal**: 最終ポーリング時刻と次回ポーリングまでの残り時間を表示
+**目標**: 最終ポーリング時刻と次回ポーリングまでの残り時間を表示
 
-**Independent Test**: 静的な時刻表示として、ポーリング機能とは切り離してテスト可能
+**独立テスト**: 静的な時刻表示として、ポーリング機能とは切り離してテスト可能
 
-**Acceptance Criteria**:
+**受け入れ基準**:
 1. 「最終取得: 3分前」が表示される
 2. 「次回取得まで: 7分」が表示される
 3. エラー時は「最終取得: エラー」と表示される
@@ -271,65 +271,65 @@ description: "Task list for Feed Auto Polling feature implementation"
 
 ### T072-T078: PollingStatus Component（状態表示UI）
 
-- [ ] T072 [P] [US3] 🔴 Red: Create PollingStatus.test.tsx with lastPolledAt display test in frontend/src/components/PollingStatus.test.tsx
-- [ ] T073 [P] [US3] ✅ Green: Create PollingStatus component displaying lastPolledAt in frontend/src/components/PollingStatus.tsx
-- [ ] T074 [P] [US3] 🔴 Red: Add test for relative time display ("3分前")
-- [ ] T075 [P] [US3] ✅ Green: Use date-fns formatDistanceToNow for relative time
-- [ ] T076 [P] [US3] 🔴 Red: Add test for "次回取得まで: 7分" display
-- [ ] T077 [P] [US3] ✅ Green: Calculate and display time until next poll
-- [ ] T078 [P] [US3] ♻️ Refactor: Extract time calculation to custom hook usePollingTimer
+- [ ] T072 [P] [US3] 🔴 Red: frontend/src/components/PollingStatus.test.tsx にlastPolledAt表示テストを作成
+- [ ] T073 [P] [US3] ✅ Green: frontend/src/components/PollingStatus.tsx にlastPolledAtを表示するPollingStatusコンポーネントを作成
+- [ ] T074 [P] [US3] 🔴 Red: テストを追加: 相対時刻表示（「3分前」）
+- [ ] T075 [P] [US3] ✅ Green: 相対時刻にdate-fnsのformatDistanceToNowを使用
+- [ ] T076 [P] [US3] 🔴 Red: テストを追加: 「次回取得まで: 7分」表示
+- [ ] T077 [P] [US3] ✅ Green: 次回ポーリングまでの時間を計算して表示
+- [ ] T078 [P] [US3] ♻️ Refactor: 時間計算をカスタムフックusePollingTimerに抽出
 
 ### T079-T081: App.tsx統合
 
-- [ ] T079 [US3] ✅ Green: Import and render PollingStatus in App.tsx
-- [ ] T080 [US3] ✅ Green: Pass articleState.lastPolledAt as prop
-- [ ] T081 [US3] ♻️ Refactor: Add CSS positioning (ヘッダー内または通知の下）
+- [ ] T079 [US3] ✅ Green: App.tsx でPollingStatusをインポートしてレンダリング
+- [ ] T080 [US3] ✅ Green: articleState.lastPolledAtをプロップとして渡す
+- [ ] T081 [US3] ♻️ Refactor: CSS配置を追加（ヘッダー内または通知の下）
 
-**Independent Test**: `npm test PollingStatus.test.tsx` がパス、時刻が正しく表示される
+**独立テスト**: `npm test PollingStatus.test.tsx` がパス、時刻が正しく表示される
 
-**User Story 3 Completion Criteria**:
+**User Story 3 完了基準**:
 - [x] 最終ポーリング時刻が表示される
 - [x] 次回ポーリングまでの残り時間が表示される
 - [x] テストカバレッジ100%（PollingStatus）
 
 ---
 
-## Phase 6: Polish & Cross-Cutting Concerns
+## Phase 6: 仕上げ & 横断的関心事
 
-**Purpose**: UI/UXの最終調整、パフォーマンス最適化、ドキュメント更新
+**目的**: UI/UXの最終調整、パフォーマンス最適化、ドキュメント更新
 
 ### T082-T086: アニメーション & スタイリング
 
-- [ ] T082 [P] Add slideDown animation to NewArticlesNotification (Tailwind CSS)
-- [ ] T083 [P] Add fade-out transition when notification closes
-- [ ] T084 [P] Verify notification z-index (z-40, 他の通知より下）
-- [ ] T085 [P] Test responsive design on mobile (Tailwind breakpoints)
-- [ ] T086 [P] Add loading indicator during polling (optional)
+- [ ] T082 [P] NewArticlesNotificationにslideDownアニメーションを追加（Tailwind CSS）
+- [ ] T083 [P] 通知が閉じるときのフェードアウトトランジションを追加
+- [ ] T084 [P] 通知のz-indexを検証（z-40、他の通知より下）
+- [ ] T085 [P] モバイルでレスポンシブデザインをテスト（Tailwindブレークポイント）
+- [ ] T086 [P] ポーリング中のローディングインジケーターを追加（オプション）
 
 ### T087-T090: パフォーマンス最適化
 
-- [ ] T087 [P] Verify findNewArticles performance with 1000 articles (O(n+m))
-- [ ] T088 [P] Add useMemo to expensive calculations in NewArticlesNotification
-- [ ] T089 [P] Verify memory usage after 100 polling cycles (no leaks)
-- [ ] T090 [P] Profile React DevTools for unnecessary re-renders
+- [ ] T087 [P] 1000記事でfindNewArticlesのパフォーマンスを検証（O(n+m)）
+- [ ] T088 [P] NewArticlesNotificationの計算コストが高い処理にuseMemoを追加
+- [ ] T089 [P] 100回のポーリングサイクル後のメモリ使用量を検証（リークなし）
+- [ ] T090 [P] React DevToolsで不要な再レンダリングをプロファイル
 
 ### T091-T095: エラーハンドリング & エッジケース
 
-- [ ] T091 [P] Add test for localStorage quota exceeded error
-- [ ] T092 [P] Add test for API timeout during polling (10秒タイムアウト)
-- [ ] T093 [P] Add test for 100+ new articles (仮想スクロール対応確認)
-- [ ] T094 [P] Add test for duplicate article IDs (重複判定確認)
-- [ ] T095 [P] Add test for browser tab visibility change (document.visibilitychange)
+- [ ] T091 [P] localStorageクォータ超過エラーのテストを追加
+- [ ] T092 [P] ポーリング中のAPIタイムアウトのテストを追加（10秒タイムアウト）
+- [ ] T093 [P] 100件以上の新着記事のテストを追加（仮想スクロール対応確認）
+- [ ] T094 [P] 重複記事IDのテストを追加（重複判定確認）
+- [ ] T095 [P] ブラウザタブ表示切り替えのテストを追加（document.visibilitychange）
 
 ### T096-T100: ドキュメント & 最終確認
 
-- [ ] T096 Update SPECIFICATION.md with polling feature details (section 14 "今後の拡張案"から削除)
-- [ ] T097 Update README.md with polling feature in特徴セクション
-- [ ] T098 Update CLAUDE.md Active Technologies (update-agent-context.sh already run)
-- [ ] T099 Run full test suite (npm test) and verify 100% coverage for new code
-- [ ] T100 Final code review using CLAUDE.md「3. コードレビュー（必須）」セクション（6つの観点: アーキテクチャ、コード品質、セキュリティ、テスト、UI/UX、ドキュメント）
+- [ ] T096 SPECIFICATION.mdをポーリング機能の詳細で更新（セクション14「今後の拡張案」から削除）
+- [ ] T097 README.mdの特徴セクションにポーリング機能を追加
+- [ ] T098 CLAUDE.mdのActive Technologiesを更新（update-agent-context.sh既に実行済み）
+- [ ] T099 完全なテストスイートを実行（npm test）し、新規コードの100%カバレッジを検証
+- [ ] T100 CLAUDE.md「3. コードレビュー（必須）」セクションを使用して最終コードレビュー（6つの観点: アーキテクチャ、コード品質、セキュリティ、テスト、UI/UX、ドキュメント）
 
-**Completion Criteria**:
+**完了基準**:
 - [x] 全テストがパス（既存テスト + 新規テスト）
 - [x] カバレッジ100%（新規コード）
 - [x] SPECIFICATION.md v1.6 更新完了
@@ -338,89 +338,89 @@ description: "Task list for Feed Auto Polling feature implementation"
 
 ---
 
-## 🚀 Implementation Strategy
+## 🚀 実装戦略
 
-### MVP Scope (Minimum Viable Product)
+### MVP範囲（Minimum Viable Product）
 
 **User Story 1 + 2 = MVP**:
 - バックグラウンドポーリング（US1）
 - 新着記事の手動反映（US2）
 
-**Tasks**: T001-T071 (71 tasks)
-**Estimated Time**: 6-8時間（TDDサイクル含む）
+**タスク**: T001-T071（71タスク）
+**推定時間**: 6-8時間（TDDサイクル含む）
 
-### Incremental Delivery
+### 段階的デリバリー
 
-1. **Iteration 1**: User Story 1 (T001-T047)
+1. **イテレーション1**: User Story 1（T001-T047）
    - 独立してデプロイ可能
    - 新着検出のみ（通知なし）
 
-2. **Iteration 2**: User Story 2 (T048-T071)
+2. **イテレーション2**: User Story 2（T048-T071）
    - User Story 1に依存
    - 通知UIと反映機能を追加
 
-3. **Iteration 3**: User Story 3 (T072-T081) - Optional
+3. **イテレーション3**: User Story 3（T072-T081） - オプション
    - User Story 1+2に依存
    - UX向上のための可視化
 
-4. **Iteration 4**: Polish (T082-T100)
+4. **イテレーション4**: 仕上げ（T082-T100）
    - 全ユーザーストーリー完了後
    - 品質向上とドキュメント
 
-### Parallel Execution Opportunities
+### 並列実行の機会
 
-**Phase 2 (Foundational)**: T005-T016すべて並列実行可能（異なるファイル）
+**Phase 2（基盤）**: T005-T016すべて並列実行可能（異なるファイル）
 
 **User Story 1**:
-- T017-T025 (ArticleContext) と T026-T035 (useFeedPolling) を並列実行可能
+- T017-T025（ArticleContext）と T026-T035（useFeedPolling）を並列実行可能
 
 **User Story 2**:
-- T048-T061 (NewArticlesNotification) を独立して実行可能
+- T048-T061（NewArticlesNotification）を独立して実行可能
 
-**Polish**:
+**仕上げ**:
 - T082-T095 すべて並列実行可能
 
 ---
 
-## 📊 Task Summary
+## 📊 タスク集計
 
-**Total Tasks**: 100
+**合計タスク数**: 100
 
-**By Phase**:
-- Phase 1 (Setup): 4 tasks
-- Phase 2 (Foundational): 12 tasks
-- Phase 3 (User Story 1): 31 tasks
-- Phase 4 (User Story 2): 24 tasks
-- Phase 5 (User Story 3): 10 tasks
-- Phase 6 (Polish): 19 tasks
+**フェーズ別**:
+- Phase 1（セットアップ）: 4タスク
+- Phase 2（基盤）: 12タスク
+- Phase 3（User Story 1）: 31タスク
+- Phase 4（User Story 2）: 24タスク
+- Phase 5（User Story 3）: 10タスク
+- Phase 6（仕上げ）: 19タスク
 
-**By User Story**:
-- User Story 1 (P1): 31 tasks
-- User Story 2 (P1): 24 tasks
-- User Story 3 (P2): 10 tasks
-- Setup + Foundational + Polish: 35 tasks
+**ユーザーストーリー別**:
+- User Story 1（P1）: 31タスク
+- User Story 2（P1）: 24タスク
+- User Story 3（P2）: 10タスク
+- セットアップ + 基盤 + 仕上げ: 35タスク
 
-**Parallel Opportunities**: 45 tasks marked with [P]
+**並列実行の機会**: 45タスクに[P]フラグ
 
-**TDD Cycle**:
-- 🔴 Red tasks: 33
-- ✅ Green tasks: 33
-- ♻️ Refactor tasks: 34
+**TDDサイクル**:
+- 🔴 Redタスク: 33
+- ✅ Greenタスク: 33
+- ♻️ Refactorタスク: 34
 
-**Independent Test Criteria**:
+**独立テスト基準**:
 - User Story 1: アプリを開いて10分放置→新着通知表示
 - User Story 2: 「読み込む」ボタン→記事一覧に反映
 - User Story 3: 時刻表示が正しく動作
 
 ---
 
-## 🎯 Next Steps
+## 🎯 次のステップ
 
-1. **Start with Phase 1**: T001-T004 (環境確認)
-2. **Build Foundational Layer**: T005-T016 (ユーティリティ関数、localStorage)
-3. **Implement MVP**: T017-T071 (User Story 1+2)
-4. **Optional Enhancement**: T072-T081 (User Story 3)
-5. **Polish & Ship**: T082-T100 (最終調整、ドキュメント)
+1. **Phase 1から開始**: T001-T004（環境確認）
+2. **基盤層を構築**: T005-T016（ユーティリティ関数、localStorage）
+3. **MVPを実装**: T017-T071（User Story 1+2）
+4. **オプション拡張**: T072-T081（User Story 3）
+5. **仕上げて出荷**: T082-T100（最終調整、ドキュメント）
 
 **最初のタスク**:
 ```bash
