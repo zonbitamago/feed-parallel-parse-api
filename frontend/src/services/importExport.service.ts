@@ -35,7 +35,10 @@ export function exportSubscriptions(): void {
     URL.revokeObjectURL(downloadUrl)
   } catch (error) {
     console.error('Export failed:', error)
-    throw new Error(IMPORT_EXPORT_ERROR_MESSAGES.EXPORT_FAILED)
+    const errorMessage = error instanceof Error
+      ? `${IMPORT_EXPORT_ERROR_MESSAGES.EXPORT_FAILED}: ${error.message}`
+      : IMPORT_EXPORT_ERROR_MESSAGES.EXPORT_FAILED
+    throw new Error(errorMessage)
   }
 }
 

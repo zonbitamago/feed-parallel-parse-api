@@ -36,7 +36,7 @@ export function useImportExport(options?: UseImportExportOptions) {
     input.accept = '.json'
 
     // ファイル選択時の処理
-    input.addEventListener('change', async (event) => {
+    const handleChange = async (event: Event) => {
       const target = event.target as HTMLInputElement
       const file = target.files?.[0]
 
@@ -61,8 +61,13 @@ export function useImportExport(options?: UseImportExportOptions) {
         if (onError) {
           onError(error instanceof Error ? error.message : 'インポートに失敗しました')
         }
+      } finally {
+        // メモリリーク防止: イベントリスナーを削除
+        input.removeEventListener('change', handleChange)
       }
-    })
+    }
+
+    input.addEventListener('change', handleChange)
 
     // ファイル選択ダイアログを開く
     input.click()

@@ -174,7 +174,7 @@ export async function readFileAsText(file: File): Promise<{
 
   // ファイルタイプチェック（拡張子またはMIMEタイプ）
   const isJsonFile =
-    file.name.endsWith('.json') || file.type === 'application/json'
+    file.name.toLowerCase().endsWith('.json') || file.type === 'application/json'
 
   if (!isJsonFile) {
     return {
