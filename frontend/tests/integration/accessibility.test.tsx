@@ -132,7 +132,15 @@ describe('アクセシビリティ統合テスト', () => {
       render(<App />);
       const user = userEvent.setup();
 
-      // 最初の要素にフォーカス
+      // 最初の要素（エクスポートボタン）にフォーカス
+      await user.tab();
+      expect(document.activeElement?.textContent).toContain('エクスポート');
+
+      // 次の要素（インポートボタン）にフォーカス
+      await user.tab();
+      expect(document.activeElement?.textContent).toContain('インポート');
+
+      // 次の要素（URL入力欄）にフォーカス
       await user.tab();
       expect(document.activeElement).toHaveAttribute('type', 'url');
 
