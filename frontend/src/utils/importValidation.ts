@@ -2,7 +2,25 @@
  * インポートデータのバリデーション関数群
  */
 
-import type { ExportData, ImportValidationError } from '../types/models'
+import type { ExportData, ImportValidationError, ImportErrorCode } from '../types/models'
+
+/**
+ * バリデーションエラーを生成するヘルパー関数
+ */
+function createValidationError(
+  code: ImportErrorCode,
+  message: string,
+  details: string
+): { valid: false; error: ImportValidationError } {
+  return {
+    valid: false,
+    error: {
+      code,
+      message,
+      details,
+    },
+  }
+}
 
 /**
  * ExportDataの形式をバリデーション
@@ -11,65 +29,50 @@ export function validateExportData(data: ExportData): {
   valid: boolean
   error?: ImportValidationError
 } {
-  // Step 1: 必須フィールドの存在チェック
+  // 必須フィールドの存在チェック
   if (!data.version) {
-    return {
-      valid: false,
-      error: {
-        code: 'MISSING_REQUIRED_FIELD',
-        message: '必須フィールドが不足しています',
-        details: 'version field is missing',
-      },
-    }
+    return createValidationError(
+      'MISSING_REQUIRED_FIELD',
+      '必須フィールドが不足しています',
+      'version field is missing'
+    )
   }
 
   if (!data.exportedAt) {
-    return {
-      valid: false,
-      error: {
-        code: 'MISSING_REQUIRED_FIELD',
-        message: '必須フィールドが不足しています',
-        details: 'exportedAt field is missing',
-      },
-    }
+    return createValidationError(
+      'MISSING_REQUIRED_FIELD',
+      '必須フィールドが不足しています',
+      'exportedAt field is missing'
+    )
   }
 
   if (data.subscriptions === undefined) {
-    return {
-      valid: false,
-      error: {
-        code: 'MISSING_REQUIRED_FIELD',
-        message: '必須フィールドが不足しています',
-        details: 'subscriptions field is missing',
-      },
-    }
+    return createValidationError(
+      'MISSING_REQUIRED_FIELD',
+      '必須フィールドが不足しています',
+      'subscriptions field is missing'
+    )
   }
 
-  // Step 2: subscriptionsが配列かチェック
+  // subscriptionsが配列かチェック
   if (!Array.isArray(data.subscriptions)) {
-    return {
-      valid: false,
-      error: {
-        code: 'INVALID_SCHEMA',
-        message: 'データ形式が正しくありません',
-        details: 'subscriptions must be an array',
-      },
-    }
+    return createValidationError(
+      'INVALID_SCHEMA',
+      'データ形式が正しくありません',
+      'subscriptions must be an array'
+    )
   }
 
-  // Step 3: バージョンチェック
+  // バージョンチェック
   if (data.version !== '1.0.0') {
-    return {
-      valid: false,
-      error: {
-        code: 'INVALID_VERSION',
-        message: 'サポートされていないバージョンです',
-        details: `Unsupported version: ${data.version}`,
-      },
-    }
+    return createValidationError(
+      'INVALID_VERSION',
+      'サポートされていないバージョンです',
+      `Unsupported version: ${data.version}`
+    )
   }
 
-  // Step 4: すべてのチェックをパス
+  // すべてのチェックをパス
   return {
     valid: true,
   }
