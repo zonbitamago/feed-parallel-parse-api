@@ -67,6 +67,7 @@ export type ImportErrorCode =
   | 'INVALID_SCHEMA'
   | 'FILE_TOO_LARGE'
   | 'FILE_READ_ERROR'
+  | 'INVALID_FILE_TYPE'
   | 'MISSING_REQUIRED_FIELD'
   | 'INVALID_VERSION';
 

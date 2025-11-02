@@ -59,7 +59,7 @@ export function FeedManager({
 
   // インポート/エクスポート機能
   const { handleExport, handleImport } = useImportExport({
-    onSuccess: (message) => {
+    onSuccess: (_message) => {
       // インポート成功時にページをリロードして反映
       window.location.reload()
     },
