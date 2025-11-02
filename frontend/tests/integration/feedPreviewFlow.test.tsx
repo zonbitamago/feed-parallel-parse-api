@@ -141,8 +141,14 @@ describe('フィードプレビューフロー統合テスト', () => {
       { timeout: 3000 }
     )
 
+    // ステップ8: 購読リストを展開してURLを表示
+    const toggleButton = screen.getByRole('button', { name: /購読フィードを表示/i })
+    await user.click(toggleButton)
+
     // エラー状態のフィード表示を確認（URLが購読リストに表示される）
-    expect(screen.getAllByText(/invalid-feed.example.com/i).length).toBeGreaterThan(0)
+    await waitFor(() => {
+      expect(screen.getAllByText(/invalid-feed.example.com/i).length).toBeGreaterThan(0)
+    })
   })
 
   it('URL入力中にプレビューがデバウンスされることを確認', async () => {
