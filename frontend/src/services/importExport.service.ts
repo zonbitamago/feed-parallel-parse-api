@@ -48,6 +48,20 @@ function generateFilename(): string {
 }
 
 /**
+ * インポートされたSubscriptionを正規化
+ * 新しいID、subscribedAt、lastFetchedAt、statusを設定
+ */
+function normalizeImportedSubscription(imported: Subscription): Subscription {
+  return {
+    ...imported,
+    id: crypto.randomUUID(),
+    subscribedAt: new Date().toISOString(),
+    lastFetchedAt: null,
+    status: 'active',
+  }
+}
+
+/**
  * 既存フィードとインポートフィードをマージ
  * URLベースで重複チェックを行い、新規フィードのみを追加
  */
@@ -58,9 +72,27 @@ export function mergeSubscriptions(
   added: Subscription[]
   skipped: number
 } {
-  // 仮実装: 常に空の結果を返す
+  // Step 1: 既存URLをSetに格納（O(1)検索）
+  const existingUrls = new Set(existingSubscriptions.map((sub) => sub.url))
+
+  const added: Subscription[] = []
+  let skipped = 0
+
+  // Step 2: インポートフィードをループして重複チェック
+  for (const importedSub of importedSubscriptions) {
+    if (existingUrls.has(importedSub.url)) {
+      // 重複: スキップ
+      skipped++
+    } else {
+      // 新規: 正規化して追加
+      const normalized = normalizeImportedSubscription(importedSub)
+      added.push(normalized)
+      existingUrls.add(importedSub.url) // 次の重複チェックのために追加
+    }
+  }
+
   return {
-    added: [],
-    skipped: 0,
+    added,
+    skipped,
   }
 }
