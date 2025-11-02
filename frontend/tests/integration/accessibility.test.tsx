@@ -128,25 +128,46 @@ describe('アクセシビリティ統合テスト', () => {
   });
 
   describe('キーボードナビゲーション', () => {
-    it('Tabキーでフォーカスを移動できる', async () => {
+    it('Tabキーでフォーカスを移動できる（購読フィードがある場合）', async () => {
       render(<App />);
       const user = userEvent.setup();
 
-      // 最初の要素（エクスポートボタン）にフォーカス
-      await user.tab();
-      expect(document.activeElement?.textContent).toContain('エクスポート');
+      // フィードを追加（エクスポート/インポートボタンを表示するため）
+      const input = screen.getByRole('textbox', { name: /フィードURL/i });
+      await user.type(input, 'https://example.com/feed');
+      await user.click(screen.getByRole('button', { name: /追加/i }));
 
-      // 次の要素（インポートボタン）にフォーカス
-      await user.tab();
-      expect(document.activeElement?.textContent).toContain('インポート');
+      // 購読リストにフィードが追加されるまで待つ
+      await waitFor(() => {
+        const subscriptions = screen.getAllByText('https://example.com/feed');
+        expect(subscriptions.length).toBeGreaterThan(0);
+      }, { timeout: 5000, interval: 100 });
 
-      // 次の要素（URL入力欄）にフォーカス
+      // 購読リストが展開されていることを確認
+      const exportButton = screen.getByRole('button', { name: /エクスポート/i });
+      expect(exportButton).toBeInTheDocument();
+
+      // フォーカスをリセット（bodyにフォーカスを移動）
+      document.body.focus();
+
+      // Tab順序（追加ボタンは入力が空でdisabledのためスキップ）:
+      // URL入力 → 折りたたみボタン → エクスポートボタン → インポートボタン → 更新ボタン → 編集ボタン → 削除ボタン
+
+      // 1. URL入力欄にフォーカス
       await user.tab();
       expect(document.activeElement).toHaveAttribute('type', 'url');
 
-      // 次の要素（追加ボタン）にフォーカス
+      // 2. 折りたたみボタン（「隠す」）にフォーカス（追加ボタンはdisabledでスキップ）
       await user.tab();
-      expect(document.activeElement?.textContent).toContain('追加');
+      expect(document.activeElement?.textContent).toContain('隠す');
+
+      // 3. エクスポートボタンにフォーカス
+      await user.tab();
+      expect(document.activeElement?.textContent).toContain('エクスポート');
+
+      // 4. インポートボタンにフォーカス
+      await user.tab();
+      expect(document.activeElement?.textContent).toContain('インポート');
     });
 
     it('Enterキーでボタンをクリックできる', async () => {

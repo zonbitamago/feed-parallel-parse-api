@@ -162,7 +162,6 @@ export function FeedManager({
 
   return (
     <div className="bg-white rounded-lg shadow p-4 mb-6">
-      <ImportExportButtons onExport={handleExport} onImport={handleImport} />
       <form onSubmit={handleSubmit} className="flex gap-2">
         <div className="flex-1">
           <input
@@ -266,9 +265,12 @@ export function FeedManager({
           {!isCollapsed && (
             <div
               id="subscription-list"
-              className="space-y-2 transition-all duration-300"
+              className="transition-all duration-300"
             >
-              {subscriptionListItems}
+              <ImportExportButtons onExport={handleExport} onImport={handleImport} />
+              <div className="space-y-2">
+                {subscriptionListItems}
+              </div>
             </div>
           )}
         </div>
