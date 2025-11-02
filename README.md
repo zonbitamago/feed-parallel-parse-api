@@ -54,7 +54,7 @@ feed-parallel-parse-api/
 - date-fns 4.1（日付処理）
 - vite-plugin-pwa 1.1（PWA対応）
 - workbox-window（Service Worker管理）
-- **テストカバレッジ**: 40ファイル・264テスト合格（100%、1スキップ）
+- **テストカバレッジ**: 40ファイル・265テスト合格（100%、1スキップ）
 
 ### セットアップ・開発
 
