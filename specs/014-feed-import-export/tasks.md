@@ -200,7 +200,7 @@ vim frontend/src/utils/importValidation.test.ts  # T014, T016, T018 (並列)
 
 **Red（失敗するテストを書く）**
 
-- [ ] T006 [P] [US1] exportSubscriptionsのテストを作成（Red） `frontend/src/services/importExport.service.test.ts`
+- [X] T006 [P] [US1] exportSubscriptionsのテストを作成（Red） `frontend/src/services/importExport.service.test.ts`
   - テストケース: 購読フィードが3件ある場合、3件を含むJSONファイルをダウンロードする
   - テストケース: 購読フィードが0件の場合、空の配列を含むJSONファイルをダウンロードする
   - テストケース: カスタムタイトルを設定したフィードが正しくエクスポートされる
@@ -210,7 +210,7 @@ vim frontend/src/utils/importValidation.test.ts  # T014, T016, T018 (並列)
 
 **Green（最小限の実装でテストを通す）**
 
-- [ ] T007 [US1] exportSubscriptions関数を仮実装（Green） `frontend/src/services/importExport.service.ts`
+- [X] T007 [US1] exportSubscriptions関数を仮実装（Green） `frontend/src/services/importExport.service.ts`
   - **仮実装アプローチ**: まず定数を返してテストを通す
   - ステップ1: モックデータを返す最小実装
   - ステップ2: `loadSubscriptions()` でlocalStorageから読み込み
@@ -218,14 +218,14 @@ vim frontend/src/utils/importValidation.test.ts  # T014, T016, T018 (並列)
   - ステップ4: `JSON.stringify(data, null, 2)` でJSON文字列化
   - ステップ5: `Blob` 作成 → `URL.createObjectURL()` → ダウンロード
 
-- [ ] T008 [US1] テストを実行してGreen状態を確認
+- [X] T008 [US1] テストを実行してGreen状態を確認
   - `npm test importExport.service.test.ts` を実行
   - 全テストケースがパスすることを確認（Green達成）
   - **コミット**: `git commit -m "feat(US1): exportSubscriptionsを仮実装（Green）"`
 
 **Refactor（コードの品質を向上）**
 
-- [ ] T009 [US1] exportSubscriptionsをリファクタリング（Refactor）
+- [X] T009 [US1] exportSubscriptionsをリファクタリング（Refactor）
   - 重複コードの排除: 共通処理を関数に抽出
   - 変数名の明確化: `data` → `exportData`, `url` → `downloadUrl`
   - エラーハンドリングの追加: `try-catch` でエラーをキャッチ
@@ -237,7 +237,7 @@ vim frontend/src/utils/importValidation.test.ts  # T014, T016, T018 (並列)
 
 **Red（失敗するテストを書く）**
 
-- [ ] T010 [P] [US1] date-fns統合のテストを作成（Red） `frontend/src/services/importExport.service.test.ts`
+- [X] T010 [P] [US1] date-fns統合のテストを作成（Red） `frontend/src/services/importExport.service.test.ts`
   - テストケース: ファイル名が「subscriptions_YYYY-MM-DD.json」形式である
   - `date-fns` の `format()` を使用してファイル名を生成することを確認
   - テスト実行: `npm test` で失敗することを確認（Red）
@@ -245,7 +245,7 @@ vim frontend/src/utils/importValidation.test.ts  # T014, T016, T018 (並列)
 
 **Green（テストを通す）**
 
-- [ ] T011 [US1] date-fns統合を実装（Green） `frontend/src/services/importExport.service.ts`
+- [X] T011 [US1] date-fns統合を実装（Green） `frontend/src/services/importExport.service.ts`
   - `import { format } from 'date-fns'` を追加
   - ファイル名を `subscriptions_${format(new Date(), 'yyyy-MM-dd')}.json` に変更
   - テスト実行: `npm test` でパスすることを確認（Green達成）
@@ -253,7 +253,7 @@ vim frontend/src/utils/importValidation.test.ts  # T014, T016, T018 (並列)
 
 **Refactor（必要に応じて）**
 
-- [ ] T012 [US1] date-fns統合後のリファクタリング（Refactor）
+- [X] T012 [US1] date-fns統合後のリファクタリング（Refactor）
   - 日付フォーマット処理を関数に抽出（必要な場合）
   - テスト実行: `npm test` で引き続きパスすることを確認
   - **コミット**: `git commit -m "refactor(US1): date-fns統合のリファクタリング（Refactor）"`（変更がある場合のみ）
@@ -281,7 +281,7 @@ vim frontend/src/utils/importValidation.test.ts  # T014, T016, T018 (並列)
 
 **Red（失敗するテストを書く）**
 
-- [ ] T014 [P] [US2] validateExportDataのテストを作成（Red） `frontend/src/utils/importValidation.test.ts`
+- [X] T014 [P] [US2] validateExportDataのテストを作成（Red） `frontend/src/utils/importValidation.test.ts`
   - テストケース: 有効なExportDataを検証してtrueを返す
   - テストケース: versionフィールドが欠落している場合、falseを返す
   - テストケース: subscriptionsが配列でない場合、falseを返す
@@ -290,7 +290,7 @@ vim frontend/src/utils/importValidation.test.ts  # T014, T016, T018 (並列)
 
 **Green（最小限の実装でテストを通す）**
 
-- [ ] T015 [US2] validateExportData関数を仮実装（Green） `frontend/src/utils/importValidation.ts`
+- [X] T015 [US2] validateExportData関数を仮実装（Green） `frontend/src/utils/importValidation.ts`
   - **仮実装アプローチ**: まず常にtrueを返してテストを通す
   - ステップ1: 常にtrueを返す最小実装
   - ステップ2: versionフィールドの存在チェックを追加
@@ -301,7 +301,7 @@ vim frontend/src/utils/importValidation.test.ts  # T014, T016, T018 (並列)
 
 **Refactor（コードの品質を向上）**
 
-- [ ] T015-R [US2] validateExportDataをリファクタリング（Refactor）
+- [X] T015-R [US2] validateExportDataをリファクタリング（Refactor）
   - 重複コードの排除: フィールドチェックを関数に抽出
   - エラーメッセージの改善: より具体的な検証
   - テスト実行: `npm test` で引き続きパスすることを確認
@@ -311,7 +311,7 @@ vim frontend/src/utils/importValidation.test.ts  # T014, T016, T018 (並列)
 
 **Red（失敗するテストを書く）**
 
-- [ ] T016 [P] [US2] validateSubscriptionのテストを作成（Red） `frontend/src/utils/importValidation.test.ts`
+- [X] T016 [P] [US2] validateSubscriptionのテストを作成（Red） `frontend/src/utils/importValidation.test.ts`
   - テストケース: urlフィールドが存在する場合、trueを返す
   - テストケース: urlフィールドが欠落している場合、falseを返す
   - テストケース: statusが'active'または'error'の場合、trueを返す
@@ -320,7 +320,7 @@ vim frontend/src/utils/importValidation.test.ts  # T014, T016, T018 (並列)
 
 **Green（最小限の実装でテストを通す）**
 
-- [ ] T017 [US2] validateSubscription関数を仮実装（Green） `frontend/src/utils/importValidation.ts`
+- [X] T017 [US2] validateSubscription関数を仮実装（Green） `frontend/src/utils/importValidation.ts`
   - **仮実装アプローチ**: まず常にtrueを返してテストを通す
   - ステップ1: 常にtrueを返す最小実装
   - ステップ2: urlフィールドの存在チェックを追加
@@ -331,7 +331,7 @@ vim frontend/src/utils/importValidation.test.ts  # T014, T016, T018 (並列)
 
 **Refactor（コードの品質を向上）**
 
-- [ ] T017-R [US2] validateSubscriptionをリファクタリング（Refactor）
+- [X] T017-R [US2] validateSubscriptionをリファクタリング（Refactor）
   - 重複コードの排除: フィールドチェックを関数に抽出
   - 型ガードの精度向上: より厳密な型チェック
   - テスト実行: `npm test` で引き続きパスすることを確認
@@ -341,7 +341,7 @@ vim frontend/src/utils/importValidation.test.ts  # T014, T016, T018 (並列)
 
 **Red（失敗するテストを書く）**
 
-- [ ] T018 [P] [US2] readFileAsTextのテストを作成（Red） `frontend/src/utils/importValidation.test.ts`
+- [X] T018 [P] [US2] readFileAsTextのテストを作成（Red） `frontend/src/utils/importValidation.test.ts`
   - テストケース: ファイルを正常に読み込み、テキストを返す
   - テストケース: ファイル読み込みに失敗した場合、ImportValidationErrorをthrowする
   - テスト実行: `npm test` で失敗することを確認（Red）
@@ -349,7 +349,7 @@ vim frontend/src/utils/importValidation.test.ts  # T014, T016, T018 (並列)
 
 **Green（最小限の実装でテストを通す）**
 
-- [ ] T019 [US2] readFileAsText関数を仮実装（Green） `frontend/src/utils/importValidation.ts`
+- [X] T019 [US2] readFileAsText関数を仮実装（Green） `frontend/src/utils/importValidation.ts`
   - **仮実装アプローチ**: まず固定文字列を返してテストを通す
   - ステップ1: 固定文字列を返す最小実装
   - ステップ2: `FileReader` APIを使用してファイルを読み込み
@@ -360,7 +360,7 @@ vim frontend/src/utils/importValidation.test.ts  # T014, T016, T018 (並列)
 
 **Refactor（コードの品質を向上）**
 
-- [ ] T019-R [US2] readFileAsTextをリファクタリング（Refactor）
+- [X] T019-R [US2] readFileAsTextをリファクタリング（Refactor）
   - エラーハンドリングの改善: より具体的なエラーメッセージ
   - Promiseの処理を簡潔に
   - テスト実行: `npm test` で引き続きパスすることを確認
@@ -370,7 +370,7 @@ vim frontend/src/utils/importValidation.test.ts  # T014, T016, T018 (並列)
 
 **Red（失敗するテストを書く）**
 
-- [ ] T020 [P] [US2] mergeSubscriptionsのテストを作成（Red） `frontend/src/services/importExport.service.test.ts`
+- [X] T020 [P] [US2] mergeSubscriptionsのテストを作成（Red） `frontend/src/services/importExport.service.test.ts`
   - テストケース: URLが重複するフィードをスキップし、新規フィードのみを追加する
   - テストケース: 全フィードが重複している場合、added.length = 0, skipped = 5
   - テスト実行: `npm test` で失敗することを確認（Red）
@@ -378,7 +378,7 @@ vim frontend/src/utils/importValidation.test.ts  # T014, T016, T018 (並列)
 
 **Green（最小限の実装でテストを通す）**
 
-- [ ] T021 [US2] mergeSubscriptions関数を仮実装（Green） `frontend/src/services/importExport.service.ts`
+- [X] T021 [US2] mergeSubscriptions関数を仮実装（Green） `frontend/src/services/importExport.service.ts`
   - **仮実装アプローチ**: まず全てを追加する最小実装
   - ステップ1: 全てのフィードを追加する最小実装
   - ステップ2: 既存URLをSetに格納（高速検索）
@@ -390,7 +390,7 @@ vim frontend/src/utils/importValidation.test.ts  # T014, T016, T018 (並列)
 
 **Refactor（コードの品質を向上）**
 
-- [ ] T021-R [US2] mergeSubscriptionsをリファクタリング（Refactor）
+- [X] T021-R [US2] mergeSubscriptionsをリファクタリング（Refactor）
   - 重複コードの排除: URL重複チェックを関数に抽出
   - パフォーマンス最適化: Setの使用を最適化
   - テスト実行: `npm test` で引き続きパスすることを確認
@@ -400,7 +400,7 @@ vim frontend/src/utils/importValidation.test.ts  # T014, T016, T018 (並列)
 
 **Red（失敗するテストを書く）**
 
-- [ ] T022 [P] [US2] normalizeImportedSubscriptionのテストを作成（Red） `frontend/src/services/importExport.service.test.ts`
+- [X] T022 [P] [US2] normalizeImportedSubscriptionのテストを作成（Red） `frontend/src/services/importExport.service.test.ts`
   - テストケース: idが新規生成される（UUIDv4形式）
   - テストケース: subscribedAtが現在日時に設定される
   - テストケース: lastFetchedAtがnullに設定される
@@ -410,7 +410,7 @@ vim frontend/src/utils/importValidation.test.ts  # T014, T016, T018 (並列)
 
 **Green（最小限の実装でテストを通す）**
 
-- [ ] T023 [US2] normalizeImportedSubscription関数を仮実装（Green） `frontend/src/services/importExport.service.ts`
+- [X] T023 [US2] normalizeImportedSubscription関数を仮実装（Green） `frontend/src/services/importExport.service.ts`
   - **仮実装アプローチ**: まず固定値を返してテストを通す
   - ステップ1: 固定値のオブジェクトを返す最小実装
   - ステップ2: `crypto.randomUUID()` でidを新規生成
@@ -422,7 +422,7 @@ vim frontend/src/utils/importValidation.test.ts  # T014, T016, T018 (並列)
 
 **Refactor（コードの品質を向上）**
 
-- [ ] T023-R [US2] normalizeImportedSubscriptionをリファクタリング（Refactor）
+- [X] T023-R [US2] normalizeImportedSubscriptionをリファクタリング（Refactor）
   - 重複コードの排除: デフォルト値の設定を整理
   - 型安全性の向上: より明示的な型アサーション
   - テスト実行: `npm test` で引き続きパスすることを確認
@@ -472,7 +472,7 @@ vim frontend/src/utils/importValidation.test.ts  # T014, T016, T018 (並列)
 
 **Red（失敗するテストを書く）**
 
-- [ ] T026 [P] [US3] importSubscriptionsのテストを作成（Red） `frontend/src/services/importExport.service.test.ts`
+- [X] T026 [P] [US3] importSubscriptionsのテストを作成（Red） `frontend/src/services/importExport.service.test.ts`
   - テストケース: 有効なJSONファイルをインポートし、重複しないフィードを追加する
   - テストケース: ファイルサイズが1MBを超える場合、ImportValidationErrorをthrowする
   - テストケース: 不正なJSON形式の場合、ImportValidationErrorをthrowする
@@ -483,7 +483,7 @@ vim frontend/src/utils/importValidation.test.ts  # T014, T016, T018 (並列)
 
 **Green（最小限の実装でテストを通す）**
 
-- [ ] T027 [US3] importSubscriptions関数を仮実装（Green） `frontend/src/services/importExport.service.ts`
+- [X] T027 [US3] importSubscriptions関数を仮実装（Green） `frontend/src/services/importExport.service.ts`
   - **仮実装アプローチ**: まず成功ケースだけ実装
   - ステップ1: 固定の成功結果を返す最小実装
   - ステップ2: ファイルサイズチェック（1MB = 1048576 bytes）を追加
@@ -498,7 +498,7 @@ vim frontend/src/utils/importValidation.test.ts  # T014, T016, T018 (並列)
 
 **Refactor（コードの品質を向上）**
 
-- [ ] T027-R [US3] importSubscriptionsをリファクタリング（Refactor）
+- [X] T027-R [US3] importSubscriptionsをリファクタリング（Refactor）
   - 重複コードの排除: バリデーション処理を関数に抽出
   - エラーハンドリングの改善: より具体的なエラーメッセージ
   - ロールバック処理の強化: try-catch内でlocalStorageの変更を保護
@@ -507,7 +507,7 @@ vim frontend/src/utils/importValidation.test.ts  # T014, T016, T018 (並列)
 
 #### 統合テスト
 
-- [ ] T028 [US3] インポート機能の統合テストを実行
+- [X] T028 [US3] インポート機能の統合テストを実行
   - `npm test importExport.service.test.ts` を実行
   - 全テストケースがパスすることを確認
   - カバレッジ確認: `npm test -- --coverage` で100%を確認
@@ -526,7 +526,7 @@ vim frontend/src/utils/importValidation.test.ts  # T014, T016, T018 (並列)
 
 **Red（失敗するテストを書く）**
 
-- [ ] T029 [P] [US4] ImportExportButtonsのテストを作成（Red） `frontend/src/components/FeedManager/ImportExportButtons.test.tsx`
+- [X] T029 [P] [US4] ImportExportButtonsのテストを作成（Red） `frontend/src/components/FeedManager/ImportExportButtons.test.tsx`
   - テストケース: エクスポートボタンが表示される
   - テストケース: インポートボタンが表示される
   - テストケース: エクスポートボタンをクリックするとonExport関数が呼ばれる
@@ -536,7 +536,7 @@ vim frontend/src/utils/importValidation.test.ts  # T014, T016, T018 (並列)
 
 **Green（最小限の実装でテストを通す）**
 
-- [ ] T030 [US4] ImportExportButtonsコンポーネントを仮実装（Green） `frontend/src/components/FeedManager/ImportExportButtons.tsx`
+- [X] T030 [US4] ImportExportButtonsコンポーネントを仮実装（Green） `frontend/src/components/FeedManager/ImportExportButtons.tsx`
   - **仮実装アプローチ**: まず最小限のボタンだけ表示
   - ステップ1: 固定テキストのボタンを2つ表示する最小実装
   - ステップ2: Props型定義を追加（`onExport: () => void`, `onImport: (file: File) => void`）
@@ -548,7 +548,7 @@ vim frontend/src/utils/importValidation.test.ts  # T014, T016, T018 (並列)
 
 **Refactor（コードの品質を向上）**
 
-- [ ] T030-R [US4] ImportExportButtonsをリファクタリング（Refactor）
+- [X] T030-R [US4] ImportExportButtonsをリファクタリング（Refactor）
   - TailwindCSSでスタイリング（既存パターンを踏襲）
   - ボタンのアクセシビリティ改善（aria-label追加）
   - 重複コードの排除: ボタンスタイルを共通化
@@ -559,7 +559,7 @@ vim frontend/src/utils/importValidation.test.ts  # T014, T016, T018 (並列)
 
 **Red（失敗するテストを書く）**
 
-- [ ] T031 [P] [US4] useImportExportのテストを作成（Red） `frontend/src/hooks/useImportExport.test.ts`
+- [X] T031 [P] [US4] useImportExportのテストを作成（Red） `frontend/src/hooks/useImportExport.test.ts`
   - テストケース: handleExport関数がexportSubscriptionsを呼ぶ
   - テストケース: handleImport関数がimportSubscriptionsを呼び、結果をstateに保存する
   - テストケース: エラー時にerrorStateが設定される
@@ -568,7 +568,7 @@ vim frontend/src/utils/importValidation.test.ts  # T014, T016, T018 (並列)
 
 **Green（最小限の実装でテストを通す）**
 
-- [ ] T032 [US4] useImportExportカスタムフックを仮実装（Green） `frontend/src/hooks/useImportExport.ts`
+- [X] T032 [US4] useImportExportカスタムフックを仮実装（Green） `frontend/src/hooks/useImportExport.ts`
   - **仮実装アプローチ**: まず空の関数を返す最小実装
   - ステップ1: 空のhandleExport, handleImport関数を返す最小実装
   - ステップ2: `handleExport()`: `exportSubscriptions()` を呼ぶ
@@ -580,7 +580,7 @@ vim frontend/src/utils/importValidation.test.ts  # T014, T016, T018 (並列)
 
 **Refactor（コードの品質を向上）**
 
-- [ ] T032-R [US4] useImportExportをリファクタリング（Refactor）
+- [X] T032-R [US4] useImportExportをリファクタリング（Refactor）
   - 重複コードの排除: エラーハンドリングを関数に抽出
   - state管理の改善: useReducerの検討（必要に応じて）
   - テスト実行: `npm test` で引き続きパスすることを確認
@@ -590,7 +590,7 @@ vim frontend/src/utils/importValidation.test.ts  # T014, T016, T018 (並列)
 
 **Red（失敗するテストを書く）**
 
-- [ ] T033 [P] [US4] FeedManagerにImportExportButtonsを統合するテストを追加（Red） `frontend/src/components/FeedManager/FeedManager.test.tsx`
+- [X] T033 [P] [US4] FeedManagerにImportExportButtonsを統合するテストを追加（Red） `frontend/src/components/FeedManager/FeedManager.test.tsx`
   - テストケース: ImportExportButtonsコンポーネントが表示される
   - テストケース: エクスポートボタンをクリックするとエクスポート処理が実行される
   - テストケース: インポートが成功すると結果メッセージが表示される
@@ -599,7 +599,7 @@ vim frontend/src/utils/importValidation.test.ts  # T014, T016, T018 (並列)
 
 **Green（最小限の実装でテストを通す）**
 
-- [ ] T034 [US4] FeedManagerにImportExportButtonsを統合（Green） `frontend/src/components/FeedManager/FeedManager.tsx`
+- [X] T034 [US4] FeedManagerにImportExportButtonsを統合（Green） `frontend/src/components/FeedManager/FeedManager.tsx`
   - **仮実装アプローチ**: まずコンポーネントを配置するだけ
   - ステップ1: `<ImportExportButtons />` を配置する最小実装（propsなし）
   - ステップ2: `useImportExport()` フックを使用
@@ -611,7 +611,7 @@ vim frontend/src/utils/importValidation.test.ts  # T014, T016, T018 (並列)
 
 **Refactor（コードの品質を向上）**
 
-- [ ] T034-R [US4] FeedManager統合をリファクタリング（Refactor）
+- [X] T034-R [US4] FeedManager統合をリファクタリング（Refactor）
   - レイアウトの改善: フレックスボックスでボタン配置を整理
   - メッセージ表示の改善: 成功/エラーで色分け
   - テスト実行: `npm test` で引き続きパスすることを確認
@@ -634,17 +634,17 @@ vim frontend/src/utils/importValidation.test.ts  # T014, T016, T018 (並列)
 
 ### Tasks
 
-- [ ] T036 [P] 全テストを実行してカバレッジを確認
+- [X] T036 [P] 全テストを実行してカバレッジを確認
   - `npm test -- --coverage` を実行
   - カバレッジが80%以上であることを確認
   - カバレッジレポートを確認: `open coverage/index.html`
 
-- [ ] T037 [P] TypeScript型チェックとLintを実行
+- [X] T037 [P] TypeScript型チェックとLintを実行
   - `npx tsc --noEmit` を実行（型エラーがないことを確認）
   - `npm run lint` を実行（警告ゼロを確認）
   - `npm run format` でコードフォーマット
 
-- [ ] T038 [P] ドキュメントの更新
+- [X] T038 [P] ドキュメントの更新
   - SPECIFICATION.mdを更新（新機能セクションを追加）
   - README.mdを更新（使い方セクションを追加、テストカバレッジ数値を更新）
   - 最終更新日を更新
@@ -732,23 +732,23 @@ git commit -m "refactor(US1): exportSubscriptionsの重複を排除（Refactor�
 
 ### Constitution Compliance
 
-- [ ] すべてのテストがパス
-- [ ] カバレッジが80%以上
-- [ ] TypeScript の型チェックがパス
-- [ ] ESLint の警告ゼロ
-- [ ] TDDサイクル（Red-Green-Refactor）を遵守
+- [X] すべてのテストがパス
+- [X] カバレッジが80%以上
+- [X] TypeScript の型チェックがパス
+- [X] ESLint の警告ゼロ
+- [X] TDDサイクル（Red-Green-Refactor）を遵守
 
 ### Functional Requirements
 
-- [ ] FR-001~FR-018: 全機能要件を満たしている
-- [ ] SC-001~SC-009: 全成功基準を満たしている
+- [X] FR-001~FR-018: 全機能要件を満たしている
+- [X] SC-001~SC-009: 全成功基準を満たしている
 
 ### User Story Acceptance
 
-- [ ] US1: エクスポート機能が独立して動作する
-- [ ] US2: インポート機能がマージ方式で動作する
-- [ ] US3: バリデーションとエラーハンドリングが適切に動作する
-- [ ] US4: UI配置が適切で、アクセシビリティが確保されている
+- [X] US1: エクスポート機能が独立して動作する
+- [X] US2: インポート機能がマージ方式で動作する
+- [X] US3: バリデーションとエラーハンドリングが適切に動作する
+- [X] US4: UI配置が適切で、アクセシビリティが確保されている
 
 ---
 
