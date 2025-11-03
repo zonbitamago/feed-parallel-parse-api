@@ -7,6 +7,7 @@
  * @param isLoading - ポーリング中かどうか
  */
 
+import { useState, useEffect } from 'react'
 import { formatDistanceToNow } from 'date-fns'
 import { ja } from 'date-fns/locale'
 
@@ -16,6 +17,17 @@ interface PollingStatusProps {
 }
 
 export function PollingStatus({ lastPolledAt, isLoading = false }: PollingStatusProps) {
+  const [, setTick] = useState(0) // 強制再レンダリング用
+
+  // 1分ごとに再レンダリング
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTick(tick => tick + 1)
+    }, 60000) // 60秒ごと
+
+    return () => clearInterval(timer)
+  }, [])
+
   if (lastPolledAt === null) {
     return (
       <div className="flex items-center gap-2 text-sm text-gray-500">
