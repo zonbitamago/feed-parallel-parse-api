@@ -242,9 +242,9 @@ export function FeedManager({
       )}
       
       {/* 購読リスト（折りたたみ可能） */}
-      {subscriptions.length > 0 && (
-        <div className="mt-4">
-          {/* 購読件数と折りたたみボタン */}
+      <div className="mt-4">
+        {/* 購読件数と折りたたみボタン（購読がある場合のみ表示） */}
+        {subscriptions.length > 0 && (
           <div className="flex items-center justify-between mb-3">
             <p className="text-sm text-gray-600">
               購読中: {subscriptions.length}/{maxSubscriptions}件
@@ -260,21 +260,27 @@ export function FeedManager({
               {isCollapsed ? '表示' : '隠す'}
             </button>
           </div>
+        )}
 
-          {/* 購読リスト本体（折りたたまれている場合は非表示） */}
-          {!isCollapsed && (
-            <div
-              id="subscription-list"
-              className="transition-all duration-300"
-            >
-              <ImportExportButtons onExport={handleExport} onImport={handleImport} />
+        {/* 購読リスト本体（折りたたまれている場合は非表示） */}
+        {!isCollapsed && (
+          <div
+            id="subscription-list"
+            className="transition-all duration-300"
+          >
+            <ImportExportButtons
+              onExport={handleExport}
+              onImport={handleImport}
+              subscriptionCount={subscriptions.length}
+            />
+            {subscriptions.length > 0 && (
               <div className="space-y-2">
                 {subscriptionListItems}
               </div>
-            </div>
-          )}
-        </div>
-      )}
+            )}
+          </div>
+        )}
+      </div>
     </div>
   )
 }
