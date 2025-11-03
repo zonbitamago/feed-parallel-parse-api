@@ -229,11 +229,11 @@ description: "フィード自動ポーリング機能の実装タスクリスト
 
 ### T062-T066: App.tsx統合
 
-- [ ] T062 [US2] 🔴 Red: App.test.tsx にNewArticlesNotificationのレンダリングテストを追加
-- [ ] T063 [US2] ✅ Green: App.tsx でNewArticlesNotificationをインポートしてレンダリング
-- [ ] T064 [US2] ✅ Green: articleState.hasNewArticlesをvisibleプロップとして渡す
-- [ ] T065 [US2] ✅ Green: APPLY_PENDING_ARTICLESをディスパッチするhandleLoadNewArticles()を実装
-- [ ] T066 [US2] ♻️ Refactor: パフォーマンス向上のため通知プロップをuseMemoに抽出
+- [x] T062 [US2] 🔴 Red: App.test.tsx にNewArticlesNotificationのレンダリングテストを追加
+- [x] T063 [US2] ✅ Green: App.tsx でNewArticlesNotificationをインポートしてレンダリング
+- [x] T064 [US2] ✅ Green: articleState.hasNewArticlesをvisibleプロップとして渡す
+- [x] T065 [US2] ✅ Green: APPLY_PENDING_ARTICLESをディスパッチするhandleLoadNewArticles()を実装
+- [x] T066 [US2] ♻️ Refactor: パフォーマンス向上のため通知プロップをuseMemoに抽出
 
 **独立テスト**: `npm test App.test.tsx` がパス、NewArticlesNotificationが表示される
 

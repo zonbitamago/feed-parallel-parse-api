@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { SubscriptionProvider } from './contexts/SubscriptionContext'
-import { ArticleProvider } from './contexts/ArticleContext'
+import { ArticleProvider, useArticle } from './contexts/ArticleContext'
 import { UIProvider, useUI } from './contexts/UIContext'
 import { UpdateProvider, useUpdate } from './contexts/UpdateContext'
 import { FeedContainer } from './containers/FeedContainer'
@@ -9,10 +9,12 @@ import { useNetworkStatus } from './hooks/useNetworkStatus'
 import { OfflineNotification } from './components/OfflineNotification'
 import { OnlineNotification } from './components/OnlineNotification'
 import { UpdateNotification } from './components/UpdateNotification'
+import { NewArticlesNotification } from './components/NewArticlesNotification'
 import { activateUpdate } from './registerSW'
 
 function AppContent() {
   const { state: uiState } = useUI()
+  const { state: articleState, dispatch: articleDispatch } = useArticle()
   const [refreshFn, setRefreshFn] = useState<(() => void) | null>(null)
   const { isOnline } = useNetworkStatus()
   const { hasUpdate } = useUpdate()
@@ -37,6 +39,11 @@ function AppContent() {
     activateUpdate()
   }
 
+  // 新着記事読み込みハンドラー（US2: 新着記事を手動で反映）
+  const handleLoadNewArticles = () => {
+    articleDispatch({ type: 'APPLY_PENDING_ARTICLES' })
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* オフライン通知 */}
@@ -47,6 +54,13 @@ function AppContent() {
 
       {/* Service Worker更新通知 */}
       <UpdateNotification visible={hasUpdate} onUpdate={handleUpdate} />
+
+      {/* 新着記事通知（US2: 新着記事を手動で反映） */}
+      <NewArticlesNotification
+        visible={articleState.hasNewArticles}
+        count={articleState.newArticlesCount}
+        onLoad={handleLoadNewArticles}
+      />
 
       <header className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-5xl mx-auto px-4 py-4">
