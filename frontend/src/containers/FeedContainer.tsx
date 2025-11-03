@@ -83,6 +83,8 @@ export function FeedContainer({ onRefreshReady }: FeedContainerProps) {
     } else {
       // 通常のフェッチ（初回読み込み、手動更新）の場合はそのまま記事を設定
       articleDispatch({ type: 'SET_ARTICLES', payload: articles })
+      // 最終取得時刻を更新
+      articleDispatch({ type: 'SET_LAST_POLLED_AT', payload: Date.now() })
     }
   }, [articles, articleState.articles, articleDispatch])
 
