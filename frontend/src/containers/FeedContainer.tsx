@@ -75,8 +75,10 @@ export function FeedContainer({ onRefreshReady }: FeedContainerProps) {
       if (newArticles.length > 0) {
         // 新着記事があればSET_PENDING_ARTICLESをディスパッチ
         articleDispatch({ type: 'SET_PENDING_ARTICLES', payload: newArticles })
-        articleDispatch({ type: 'SET_LAST_POLLED_AT', payload: Date.now() })
       }
+
+      // ポーリング時は常に最終取得時刻を更新（新着の有無に関わらず）
+      articleDispatch({ type: 'SET_LAST_POLLED_AT', payload: Date.now() })
 
       // ポーリングフラグをリセット
       isPollingRef.current = false
