@@ -5,6 +5,8 @@ Auto-generated from all feature plans. Last updated: 2025-10-27
 ## Active Technologies
 - TypeScript 5.9.3, React 19.1.1 + React 19.1.1, date-fns 4.1.0, react-window 2.2.2, TailwindCSS 4.1.16 (016-feed-auto-polling)
 - localStorage（ポーリング設定、最終ポーリング時刻） (016-feed-auto-polling)
+- TypeScript 5.9.3 + React 19.1.1, TailwindCSS 4.1.16 (001-enable-import-zero-feeds)
+- localStorage（フィード購読データ） (001-enable-import-zero-feeds)
 
 技術スタックの詳細は [SPECIFICATION.md](SPECIFICATION.md) のセクション2を参照してください。
 
@@ -32,9 +34,9 @@ tests/
 Go 1.2x: Follow standard conventions
 
 ## Recent Changes
+- 001-enable-import-zero-feeds: Added TypeScript 5.9.3 + React 19.1.1, TailwindCSS 4.1.16
 - 016-feed-auto-polling: Added TypeScript 5.9.3, React 19.1.1 + React 19.1.1, date-fns 4.1.0, react-window 2.2.2, TailwindCSS 4.1.16
 - 2025-11-03: ドキュメントを最新の実装状態に同期（SPECIFICATION.md v1.5）
-- 2025-11-02: 015-codebase-refactoring実装完了（PR #21）
 
 
 <!-- MANUAL ADDITIONS START -->
