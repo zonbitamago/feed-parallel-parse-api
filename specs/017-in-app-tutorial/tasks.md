@@ -126,7 +126,7 @@
 
 > **最小限のコードでテストを通す**: 品質は問わない、まず動かす
 
-- [ ] T006 [US1] useTutorialフックの実装（Green）: `frontend/src/hooks/useTutorial.ts`作成、useLocalStorage活用、driver()関数呼び出し、TUTORIAL_STEPS渡し、全テスト成功を確認
+- [x] T006 [US1] useTutorialフックの実装（Green）: `frontend/src/hooks/useTutorial.ts`作成、useLocalStorage活用、driver()関数呼び出し、TUTORIAL_STEPS渡し、全テスト成功を確認
 
 **Checkpoint**: 全テストがパス（Green完了）
 
@@ -134,7 +134,7 @@
 
 > **テストを通したまま、コードの品質を向上させる**
 
-- [ ] T007 [US1] useTutorialフックのリファクタリング（Refactor）: 重複排除、命名改善、マジックストリング削除（`TUTORIAL_STORAGE_KEY`、`PROGRESS_TEXT`定数化）、コメント追加、テスト維持を確認
+- [x] T007 [US1] useTutorialフックのリファクタリング（Refactor）: 重複排除、命名改善、マジックストリング削除（`TUTORIAL_STORAGE_KEY`、`PROGRESS_TEXT`定数化）、コメント追加、テスト維持を確認
 
 **Checkpoint**: リファクタリング完了、テスト維持確認
 
@@ -150,13 +150,13 @@
 
 #### ✅ Green: App.tsx Integration Implementation
 
-- [ ] T009 [US1] App.tsxにuseTutorial統合（Green）: driver.css インポート（`import 'driver.js/dist/driver.css'`）、useTutorial呼び出し、useEffectで初回表示ロジック実装（`subscriptions.length === 0 && shouldShowTutorial`）、全テスト成功を確認
+- [x] T009 [US1] App.tsxにuseTutorial統合（Green）: driver.css インポート（`import 'driver.js/dist/driver.css'`）、useTutorial呼び出し、useEffectで初回表示ロジック実装（`subscriptions.length === 0 && shouldShowTutorial`）、全テスト成功を確認
 
 **Checkpoint**: App.tsx統合テスト全パス（Green完了）
 
 ### Manual Testing & Selector Verification for US1
 
-- [ ] T010 [US1] CSSセレクターの実装確認と修正: ローカル環境起動（`npm run dev`）、DevToolsで各ステップの実際の要素を検査、`tutorialSteps.ts`のセレクター更新、手動テストでチュートリアル表示確認
+- [x] T010 [US1] CSSセレクターの実装確認と修正: ローカル環境起動（`npm run dev`）、DevToolsで各ステップの実際の要素を検査、`tutorialSteps.ts`のセレクター更新、手動テストでチュートリアル表示確認
 
 ### Responsive Testing for US1
 
@@ -199,7 +199,7 @@
 
 ### ✅ Green Phase: Minimum Implementation for US2
 
-- [ ] T014 [US2] ヘルプボタンの実装（Green）: `frontend/src/App.tsx`のヘッダーにボタン追加、HelpCircleIcon（SVG）、onClick={startTutorial}、aria-label="チュートリアルを表示"、全テスト成功を確認
+- [x] T014 [US2] ヘルプボタンの実装（Green）: `frontend/src/App.tsx`のヘッダーにボタン追加、HelpCircleIcon（SVG）、onClick={startTutorial}、aria-label="チュートリアルを表示"、全テスト成功を確認
 
 **Checkpoint**: ヘルプボタンテスト全パス（Green完了）
 
@@ -207,7 +207,7 @@
 
 - [ ] T015 [P] [US2] ヘルプボタンのスタイリング（Refactor）: TailwindCSSクラス適用、ホバー効果、フォーカス表示、レスポンシブ配置
 
-- [ ] T016 [P] [US2] ツールチップの実装: title属性またはTailwindCSS tooltipで「ヘルプ」または「チュートリアルを表示」を表示
+- [x] T016 [P] [US2] ツールチップの実装: title属性またはTailwindCSS tooltipで「ヘルプ」または「チュートリアルを表示」を表示
 
 ### US2 Integration Test
 
@@ -295,31 +295,40 @@
 
 ## Phase 7: Polish & Cross-Cutting Concerns
 
-**Purpose**: エッジケースの処理、パフォーマンス最適化、ドキュメント更新
+**Purpose**: コードレビュー、エッジケースの処理、パフォーマンス最適化、ドキュメント更新
+
+### Code Review (CLAUDE.md 必須要件)
+
+**⚠️ CRITICAL**: CLAUDE.mdで定義された必須タスク - PR作成前に必ず実施
+
+- [ ] T028 [P] コードレビューの実施: 6つの観点（1. アーキテクチャと設計、2. コード品質、3. セキュリティ、4. テスト、5. UI/UX、6. ドキュメント）で包括的レビュー、High/Medium問題をすべて修正、Low問題の対応方針を決定、修正後に関連テストを再実行
+
+**Checkpoint**: コードレビュー完了、すべての問題に対処済み
 
 ### Edge Cases
 
-- [ ] T028 [P] エッジケースのテスト追加: ウィンドウリサイズ中の動作、対象要素が存在しない場合、localStorage無効時の動作、複数タブでの動作
+- [ ] T029 [P] エッジケースのテスト追加: ウィンドウリサイズ中の動作、対象要素が存在しない場合、localStorage無効時の動作、複数タブでの動作
 
 ### Error Handling
 
-- [ ] T029 [P] エラーハンドリングの実装: driver.js初期化失敗時のフォールバック、console.errorでログ出力、ユーザーにエラーを表示しない（サイレント失敗）
+- [ ] T030 [P] エラーハンドリングの実装: driver.js初期化失敗時のフォールバック、console.errorでログ出力、ユーザーにエラーを表示しない（サイレント失敗）
 
 ### Performance Testing
 
-- [ ] T030 [P] パフォーマンステスト: Lighthouseでパフォーマンス測定、初回読み込み時間の影響確認（+200ms以内）、バンドルサイズ確認（+5-7kb）
+- [ ] T031 [P] パフォーマンステスト: Lighthouseでパフォーマンス測定、初回読み込み時間の影響確認（+200ms以内）、バンドルサイズ確認（+5-7kb）
 
 ### Documentation
 
-- [ ] T031 [P] SPECIFICATION.md更新: セクション9（UI/UX設計）にチュートリアル機能を追加
+- [ ] T032 [P] SPECIFICATION.md更新: セクション9（UI/UX設計）にチュートリアル機能を追加
 
-- [ ] T032 [P] README.md更新（必要な場合）: 新機能セクションにチュートリアル機能を追加、使い方を説明
+- [ ] T033 [P] README.md更新（必要な場合）: 新機能セクションにチュートリアル機能を追加、使い方を説明
 
 ### Final Integration Test
 
-- [ ] T033 最終統合テスト: 新規ブラウザで全フロー実行、ヘルプボタンから再表示、キーボード操作、スクリーンリーダー、モバイル・デスクトップ両方
+- [ ] T034 最終統合テスト: 新規ブラウザで全フロー実行、ヘルプボタンから再表示、キーボード操作、スクリーンリーダー、モバイル・デスクトップ両方
 
 **Phase 7 Definition of Done**:
+- [x] コードレビュー完了（CLAUDE.md必須）
 - [x] すべてのエッジケースをカバー
 - [x] エラーハンドリング実装
 - [x] パフォーマンス基準クリア
@@ -345,7 +354,7 @@ Phase 5: US3 (T018-T022) ━━┓
                             ┣━━ 並列実行可能
 Phase 6: US4 (T023-T027) ━━┛
     ↓ (US3, US4完了後)
-Phase 7: Polish (T028-T033)
+Phase 7: Polish (T028-T034)
 ```
 
 ### Parallel Execution Opportunities
@@ -364,7 +373,9 @@ Phase 7: Polish (T028-T033)
 - Phase 5（US3）とPhase 6（US4）は完全に独立しており、並列実行可能
 
 #### Phase 7: Polish
-- T028 (エッジケース)、T029 (エラーハンドリング)、T030 (パフォーマンス)、T031 (SPEC更新)、T032 (README更新) はすべて並列実行可能
+- T028 (コードレビュー) は他のタスクより先に実行推奨（品質保証のため）
+- T029 (エッジケース)、T030 (エラーハンドリング)、T031 (パフォーマンス)、T032 (SPEC更新)、T033 (README更新) はすべて並列実行可能
+- T034 (最終統合テスト) は全タスク完了後に実行
 
 ### MVP Implementation Strategy
 
@@ -387,15 +398,15 @@ Phase 7: Polish (T028-T033)
 
 ## Summary
 
-- **Total Tasks**: 33
+- **Total Tasks**: 34
 - **US1 (MVP)**: 8 tasks (T005-T012)
 - **US2**: 5 tasks (T013-T017)
 - **US3**: 5 tasks (T018-T022)
 - **US4**: 5 tasks (T023-T027)
 - **Setup + Foundational**: 4 tasks (T001-T004)
-- **Polish**: 6 tasks (T028-T033)
+- **Polish**: 7 tasks (T028-T034)
 
-**Parallel Opportunities**: 17 tasks marked with [P]
+**Parallel Opportunities**: 18 tasks marked with [P]
 
 **Independent Test Criteria**:
 - ✅ US1: 初回訪問時に自動表示され、7ステップ完了可能
@@ -405,6 +416,6 @@ Phase 7: Polish (T028-T033)
 
 **Suggested MVP Scope**: User Story 1のみ（T001-T012）
 
-**Format Validation**: ✅ All 33 tasks follow checklist format (checkbox, ID, [P]/[Story] labels, file paths)
+**Format Validation**: ✅ All 34 tasks follow checklist format (checkbox, ID, [P]/[Story] labels, file paths)
 
 **Ready for `/speckit.implement`**: このtasks.mdに従って実装を開始できます
