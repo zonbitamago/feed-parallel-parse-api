@@ -71,9 +71,9 @@
 
 **Purpose**: driver.jsのインストールと型定義確認
 
-- [ ] T001 driver.jsをインストール: `cd frontend && npm install driver.js`
-- [ ] T002 [P] TypeScript型定義の確認: `npx tsc --noEmit`でdriver.jsの型が利用可能か確認
-- [ ] T003 [P] tutorialSteps.tsの作成（TDD不要、定数定義のみ）: `frontend/src/constants/tutorialSteps.ts`に7ステップのTutorialStep[]定義
+- [x] T001 driver.jsをインストール: `cd frontend && npm install driver.js`
+- [x] T002 [P] TypeScript型定義の確認: `npx tsc --noEmit`でdriver.jsの型が利用可能か確認
+- [x] T003 [P] tutorialSteps.tsの作成（TDD不要、定数定義のみ）: `frontend/src/constants/tutorialSteps.ts`に7ステップのTutorialStep[]定義
 
 **Checkpoint**: driver.jsインストール完了、型定義利用可能
 
@@ -85,7 +85,7 @@
 
 **⚠️ CRITICAL**: すべてのユーザーストーリーが`useLocalStorage`フックに依存するため、Phase 2で確認必須
 
-- [ ] T004 既存のuseLocalStorage.tsを確認: `frontend/src/hooks/useLocalStorage.ts`が存在し、正しく動作することを確認
+- [x] T004 既存のuseLocalStorage.tsを確認: `frontend/src/hooks/useLocalStorage.ts`が存在し、正しく動作することを確認
 
 **Checkpoint**: useLocalStorageフック確認完了 - ユーザーストーリー実装開始可能
 
@@ -118,7 +118,7 @@
 - テストを先に書くことで、「あるべき姿」を明確にする
 - 失敗を確認することで、テスト自体が正しいことを検証
 
-- [ ] T005 [P] [US1] useTutorialフックのテスト作成（Red）: `frontend/src/hooks/useTutorial.test.ts`作成、4つのテストケース実装（初回訪問時true、startTutorial後localStorage保存、2回目訪問時false、resetTutorialでクリア）、全テスト失敗を確認（`useTutorial.ts`未実装のためimportエラー期待）
+- [x] T005 [P] [US1] useTutorialフックのテスト作成（Red）: `frontend/src/hooks/useTutorial.test.ts`作成、4つのテストケース実装（初回訪問時true、startTutorial後localStorage保存、2回目訪問時false、resetTutorialでクリア）、全テスト失敗を確認（`useTutorial.ts`未実装のためimportエラー期待）
 
 **Checkpoint**: 全テストが期待通り失敗することを確認（Red完了）
 

@@ -151,21 +151,25 @@ describe('アクセシビリティ統合テスト', () => {
       document.body.focus();
 
       // Tab順序（追加ボタンは入力が空でdisabledのためスキップ）:
-      // URL入力 → 折りたたみボタン → エクスポートボタン → インポートボタン → 更新ボタン → 編集ボタン → 削除ボタン
+      // ヘルプボタン → URL入力 → 折りたたみボタン → エクスポートボタン → インポートボタン → 更新ボタン → 編集ボタン → 削除ボタン
 
-      // 1. URL入力欄にフォーカス
+      // 1. ヘルプボタンにフォーカス
+      await user.tab();
+      expect(document.activeElement?.textContent).toContain('ヘルプ');
+
+      // 2. URL入力欄にフォーカス
       await user.tab();
       expect(document.activeElement).toHaveAttribute('type', 'url');
 
-      // 2. 折りたたみボタン（「隠す」）にフォーカス（追加ボタンはdisabledでスキップ）
+      // 3. 折りたたみボタン（「隠す」）にフォーカス（追加ボタンはdisabledでスキップ）
       await user.tab();
       expect(document.activeElement?.textContent).toContain('隠す');
 
-      // 3. エクスポートボタンにフォーカス
+      // 4. エクスポートボタンにフォーカス
       await user.tab();
       expect(document.activeElement?.textContent).toContain('エクスポート');
 
-      // 4. インポートボタンにフォーカス
+      // 5. インポートボタンにフォーカス
       await user.tab();
       expect(document.activeElement?.textContent).toContain('インポート');
     });
