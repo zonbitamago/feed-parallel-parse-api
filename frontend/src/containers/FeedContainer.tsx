@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useState } from 'react'
+import { useEffect, useCallback, useState, useRef } from 'react'
 import { useSubscription } from '../contexts/SubscriptionContext'
 import { useArticle } from '../contexts/ArticleContext'
 import { useUI } from '../contexts/UIContext'
@@ -8,6 +8,7 @@ import { useNetworkStatus } from '../hooks/useNetworkStatus'
 import { loadSubscriptions, saveSubscriptions } from '../services/storage'
 import { fetchFeedTitle } from '../services/feedAPI'
 import { FeedManager } from '../components/FeedManager/FeedManager'
+import { findNewArticles } from '../utils/articleMerge'
 import type { Subscription, AddFeedResult } from '../types/models'
 import { FEED_ERROR_MESSAGES } from '../constants/errorMessages'
 
@@ -17,43 +18,26 @@ interface FeedContainerProps {
 
 export function FeedContainer({ onRefreshReady }: FeedContainerProps) {
   const { state: subState, dispatch: subDispatch } = useSubscription()
-  const { dispatch: articleDispatch } = useArticle()
+  const { state: articleState, dispatch: articleDispatch } = useArticle()
   const { dispatch: uiDispatch } = useUI()
   const { articles, errors, isLoading, fetchFeeds, updatedSubscriptions } = useFeedAPI()
   const [feedError, setFeedError] = useState<string | null>(null)
   const { isOnline } = useNetworkStatus()
+  const isPollingRef = useRef<boolean>(false)
 
   // ポーリング機能（US1: 新着記事の自動検出）
   const handlePoll = useCallback(() => {
     if (subState.subscriptions.length > 0) {
+      isPollingRef.current = true
       fetchFeeds(subState.subscriptions)
     }
   }, [subState.subscriptions, fetchFeeds])
 
-  const pollingState = useFeedPolling({
+  useFeedPolling({
     subscriptions: subState.subscriptions,
     onPoll: handlePoll,
     isOnline,
   })
-
-  // ポーリング状態をArticleContextに同期（T038-T039）
-  useEffect(() => {
-    if (pollingState.hasNewArticles && pollingState.pendingArticles.length > 0) {
-      articleDispatch({
-        type: 'SET_PENDING_ARTICLES',
-        payload: pollingState.pendingArticles,
-      })
-    }
-  }, [pollingState.hasNewArticles, pollingState.pendingArticles, articleDispatch])
-
-  useEffect(() => {
-    if (pollingState.lastPolledAt !== null) {
-      articleDispatch({
-        type: 'SET_LAST_POLLED_AT',
-        payload: pollingState.lastPolledAt,
-      })
-    }
-  }, [pollingState.lastPolledAt, articleDispatch])
 
   // マウント時にlocalStorageから購読情報を読み込む
   useEffect(() => {
@@ -79,11 +63,28 @@ export function FeedContainer({ onRefreshReady }: FeedContainerProps) {
     articleDispatch({ type: 'SET_LOADING', payload: isLoading })
   }, [isLoading, articleDispatch])
 
+  // API結果（articles）が変更されたとき、ポーリング中なら新着記事を検出（T034-T035）
   useEffect(() => {
-    if (articles.length > 0) {
+    if (articles.length === 0) return
+
+    // ポーリング中の場合のみ新着記事検出を実行
+    if (isPollingRef.current) {
+      // 新着記事を検出
+      const newArticles = findNewArticles(articles, articleState.articles)
+
+      if (newArticles.length > 0) {
+        // 新着記事があればSET_PENDING_ARTICLESをディスパッチ
+        articleDispatch({ type: 'SET_PENDING_ARTICLES', payload: newArticles })
+        articleDispatch({ type: 'SET_LAST_POLLED_AT', payload: Date.now() })
+      }
+
+      // ポーリングフラグをリセット
+      isPollingRef.current = false
+    } else {
+      // 通常のフェッチ（初回読み込み、手動更新）の場合はそのまま記事を設定
       articleDispatch({ type: 'SET_ARTICLES', payload: articles })
     }
-  }, [articles, articleDispatch])
+  }, [articles, articleState.articles, articleDispatch])
 
   useEffect(() => {
     errors.forEach(error => {

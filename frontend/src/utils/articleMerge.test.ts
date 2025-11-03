@@ -120,6 +120,35 @@ describe('findNewArticles', () => {
     expect(result).toHaveLength(1)
     expect(result[0].id).toBe('article3')
   })
+
+  it('1000記事のパフォーマンステスト（O(n+m)）', () => {
+    // Arrange: 準備
+    // 既存記事1000件
+    const currentArticles: Article[] = Array.from({ length: 1000 }, (_, i) =>
+      createArticle(`article${i}`, `Article ${i}`)
+    )
+
+    // 最新記事1000件（うち10件が新着）
+    const latestArticles: Article[] = [
+      ...currentArticles.slice(0, 990),
+      ...Array.from({ length: 10 }, (_, i) =>
+        createArticle(`new-article${i}`, `New Article ${i}`)
+      ),
+    ]
+
+    // Act: 実行
+    const startTime = performance.now()
+    const result = findNewArticles(latestArticles, currentArticles)
+    const endTime = performance.now()
+
+    // Assert: 検証
+    expect(result).toHaveLength(10)
+    expect(result.every(a => a.id.startsWith('new-article'))).toBe(true)
+
+    // パフォーマンス検証: 1000記事で10ms以内に完了すること
+    const executionTime = endTime - startTime
+    expect(executionTime).toBeLessThan(10)
+  })
 })
 
 describe('mergeArticles', () => {

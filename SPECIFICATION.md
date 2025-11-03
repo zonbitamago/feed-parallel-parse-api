@@ -1,7 +1,7 @@
 # feed-parallel-parse-api システム仕様書
 
 **最終更新日**: 2025-11-03
-**バージョン**: v1.5
+**バージョン**: v1.6
 
 > **重要**: この仕様書は、PR 作成時に必ず更新してください。機能追加・変更があった場合は、該当セクションを修正し、最新の実装状態を反映させることがプロジェクトルールとして定められています。
 
@@ -17,6 +17,7 @@ feed-parallel-parse-api は、複数の RSS フィードを並列に取得・解
 - フィードタイトルの自動取得とカスタマイズ
 - 購読一覧の折りたたみ機能（記事へのアクセス最適化）
 - **購読フィードのインポート/エクスポート機能**（JSON形式、URL重複チェック）
+- **自動更新機能（ポーリング）**（10分間隔、新着記事通知）
 - 並列フィード取得による高速な記事取得
 - 統合タイムラインでの記事表示
 - 仮想スクロールによる高速レンダリング
@@ -940,9 +941,192 @@ VitePWA({
 
 ---
 
-## 11. テスト・品質保証
+## 11. 自動更新機能（ポーリング）
 
-### 11.1 テストカバレッジ
+### 11.1 概要
+
+購読しているRSSフィードを定期的にバックグラウンドで取得し、新着記事を自動検出してユーザーに通知する機能です。オンライン時のみ動作し、オフライン時は自動的に停止します。
+
+### 11.2 ポーリング動作
+
+#### ポーリング間隔
+
+- **デフォルト間隔**: 10分（600,000ms）
+- **初回ポーリング**: アプリ起動後10分経過時
+- **設定保存**: localStorageに最終ポーリング時刻を保存
+
+#### ポーリング条件
+
+- **オンライン時のみ実行**: `navigator.onLine === true`
+- **購読フィードが存在する場合のみ実行**
+- **オフライン復帰時**: 自動的にポーリング再開
+
+#### データ構造
+
+```typescript
+interface PollingConfig {
+  enabled: boolean;
+  lastPolledAt: number | null; // timestamp
+}
+```
+
+### 11.3 新着記事検出
+
+#### 検出アルゴリズム
+
+```typescript
+function findNewArticles(
+  latestArticles: Article[],
+  currentArticles: Article[]
+): Article[] {
+  const currentIds = new Set(currentArticles.map((a) => a.id));
+  return latestArticles.filter((article) => !currentIds.has(article.id));
+}
+```
+
+- **時間計算量**: O(n + m)（n: 現在の記事数、m: 最新記事数）
+- **重複判定**: 記事IDをSetに格納して高速検索
+
+#### パフォーマンス
+
+- **1000記事での実行時間**: 10ms以内
+- **メモリリーク防止**: clearIntervalによるタイマー解放
+
+### 11.4 新着通知UI
+
+#### NewArticlesNotification コンポーネント
+
+- **表示位置**: 画面上部中央（固定）
+- **表示内容**: 「新着記事があります (N件)」
+- **アクション**: 「読み込む」ボタン
+- **アニメーション**:
+  - 表示時: slideDownアニメーション（300ms）
+  - 非表示時: fadeOutアニメーション（200ms）
+- **アクセシビリティ**:
+  - `role="status"`
+  - `aria-live="polite"`
+  - キーボード操作対応（Tabキー、Enterキー）
+
+#### レスポンシブデザイン
+
+- **モバイル**: 縦並びレイアウト、テキストサイズ小（text-sm）
+- **デスクトップ**: 横並びレイアウト、通常テキストサイズ（text-base）
+- **最大幅**: モバイル90vw、デスクトップは自動
+
+### 11.5 ポーリング状態表示
+
+#### PollingStatus コンポーネント
+
+- **表示位置**: ヘッダー右側
+- **表示内容**:
+  - 最終取得時刻（相対表示：「3分前」）
+  - 次回取得までの残り時間（「7分」）
+  - ポーリング中のローディングインジケーター
+- **未取得時**: 「最終取得: 未取得」
+- **date-fns**: `formatDistanceToNow()`で日本語表示
+
+### 11.6 ArticleContext拡張
+
+#### ポーリング状態管理
+
+```typescript
+interface ArticleState {
+  // 既存フィールド
+  articles: Article[];
+  displayedArticles: Article[];
+  // ポーリング関連フィールド
+  pendingArticles: Article[];
+  hasNewArticles: boolean;
+  newArticlesCount: number;
+  lastPolledAt: number | null;
+}
+```
+
+#### アクション
+
+- `SET_PENDING_ARTICLES`: 新着記事を一時保存
+- `APPLY_PENDING_ARTICLES`: 新着記事を表示記事にマージ
+- `SET_LAST_POLLED_AT`: 最終ポーリング時刻を更新
+
+### 11.7 useFeedPolling フック
+
+#### 責務
+
+- ポーリングタイマー管理（setInterval/clearInterval）
+- オンライン/オフライン状態監視
+- 購読フィード変更時の再起動
+
+#### パラメータ
+
+```typescript
+interface UseFeedPollingParams {
+  subscriptions: Subscription[];
+  onPoll: () => void;
+  isOnline: boolean;
+  intervalMs?: number;
+}
+```
+
+#### 戻り値
+
+```typescript
+interface PollingState {
+  pendingArticles: Article[];
+  hasNewArticles: boolean;
+  newArticlesCount: number;
+  lastPolledAt: number | null;
+}
+```
+
+### 11.8 統合フロー
+
+```text
+[10分経過]
+  ↓
+[useFeedPolling]
+  ↓ onPoll()
+[FeedContainer]
+  ↓ fetchFeeds()
+[バックエンドAPI]
+  ↓ 記事取得
+[findNewArticles]
+  ↓ 新着検出
+[ArticleContext]
+  ↓ SET_PENDING_ARTICLES
+[NewArticlesNotification]
+  ↓ 表示
+[ユーザー「読み込む」クリック]
+  ↓ APPLY_PENDING_ARTICLES
+[ArticleContext]
+  ↓ 記事マージ
+[UI更新]
+```
+
+### 11.9 テスト
+
+#### ユニットテスト
+
+- `findNewArticles.test.ts`: 新着記事検出ロジック（7テスト + 1パフォーマンステスト）
+- `useFeedPolling.test.ts`: ポーリングフック（5テスト）
+- `pollingStorage.test.ts`: localStorage管理（9テスト）
+- `NewArticlesNotification.test.tsx`: 通知UI（11テスト）
+- `PollingStatus.test.tsx`: 状態表示（4テスト）
+
+#### 統合テスト
+
+- `polling-flow.test.tsx`: エンドツーエンドフロー（5テスト、2スキップ）
+- `FeedContainer.test.tsx`: useFeedPolling統合（5テスト）
+
+#### テストカバレッジ
+
+- 新規コード: 100%
+- 全体: 既存テストと合わせて高カバレッジ維持
+
+---
+
+## 12. テスト・品質保証
+
+### 12.1 テストカバレッジ
 
 - **全体**: 93.2%（目標 80%を達成）
   - Statement: 93.2%
@@ -1012,28 +1196,54 @@ VitePWA({
 
 ---
 
-## 13. セキュリティ
+## 13. 制約・制限事項
 
-### 13.1 入力検証
+### 13.1 購読数上限
+
+- **最大購読数**: 100 件
+- **理由**: localStorage の容量制限とパフォーマンス維持のため
+- **エラーメッセージ**: 「購読数が上限（100 件）に達しています」
+
+### 13.2 localStorage 依存
+
+- **問題**: ブラウザの localStorage を削除するとデータが消失
+- **対策**: 定期的なバックアップ推奨（将来的にエクスポート機能追加予定）
+
+### 13.3 ブラウザサポート
+
+- **必須 API**:
+  - localStorage
+  - Fetch API
+  - ES2015+
+- **推奨ブラウザ**:
+  - Chrome 80+
+  - Firefox 75+
+  - Safari 13+
+  - Edge 80+
+
+---
+
+## 14. セキュリティ
+
+### 14.1 入力検証
 
 - URL スキーム検証（http/https のみ許可）
 - XSS 対策（React のデフォルトエスケープ）
 - 入力長制限（タイトル 200 文字）
 
-### 13.2 CORS 対策
+### 14.2 CORS 対策
 
 - バックエンドで CORS 設定
 - オリジン検証（本番環境では要設定）
 
-### 13.3 レート制限
+### 14.3 レート制限
 
 - （現状未実装、将来的に検討）
 
 ---
 
-## 14. 今後の拡張案
+## 15. 今後の拡張案
 
-- 自動更新機能（ポーリング）
 - 記事の既読管理
 - カテゴリ・タグ機能
 - マルチユーザー対応

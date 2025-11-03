@@ -10,6 +10,7 @@ import { OfflineNotification } from './components/OfflineNotification'
 import { OnlineNotification } from './components/OnlineNotification'
 import { UpdateNotification } from './components/UpdateNotification'
 import { NewArticlesNotification } from './components/NewArticlesNotification'
+import { PollingStatus } from './components/PollingStatus'
 import { activateUpdate } from './registerSW'
 
 function AppContent() {
@@ -64,7 +65,14 @@ function AppContent() {
 
       <header className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-5xl mx-auto px-4 py-4">
-          <h1 className="text-2xl font-bold text-gray-900">RSSリーダー</h1>
+          <div className="flex items-center justify-between">
+            <h1 className="text-2xl font-bold text-gray-900">RSSリーダー</h1>
+            {/* ポーリング状態表示（US3: ポーリング状態の可視化） */}
+            <PollingStatus
+              lastPolledAt={articleState.lastPolledAt}
+              isLoading={articleState.isLoading}
+            />
+          </div>
         </div>
       </header>
 

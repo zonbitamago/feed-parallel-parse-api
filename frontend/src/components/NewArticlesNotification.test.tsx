@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { NewArticlesNotification } from './NewArticlesNotification'
 
@@ -93,7 +93,7 @@ describe('NewArticlesNotification', () => {
 
   it('「読み込む」ボタンクリック時にonLoadコールバックが呼ばれる', async () => {
     // Arrange: 準備
-    const user = userEvent.setup()
+    const user = userEvent.setup({ delay: null })
     const onLoad = vi.fn()
 
     render(
@@ -109,7 +109,10 @@ describe('NewArticlesNotification', () => {
     await user.click(button)
 
     // Assert: 検証
-    expect(onLoad).toHaveBeenCalledTimes(1)
+    // フェードアウトアニメーション（200ms）後にonLoadが呼ばれる
+    await waitFor(() => {
+      expect(onLoad).toHaveBeenCalledTimes(1)
+    }, { timeout: 300 })
   })
 
   it('通知にrole="status"が設定されている', () => {
@@ -168,7 +171,7 @@ describe('NewArticlesNotification', () => {
 
   it('Tabキーでボタンにフォーカスできる', async () => {
     // Arrange: 準備
-    const user = userEvent.setup()
+    const user = userEvent.setup({ delay: null })
     const onLoad = vi.fn()
 
     render(
@@ -189,7 +192,7 @@ describe('NewArticlesNotification', () => {
 
   it('Enterキーでボタンをクリックできる', async () => {
     // Arrange: 準備
-    const user = userEvent.setup()
+    const user = userEvent.setup({ delay: null })
     const onLoad = vi.fn()
 
     render(
@@ -205,6 +208,9 @@ describe('NewArticlesNotification', () => {
     await user.keyboard('{Enter}')
 
     // Assert: 検証
-    expect(onLoad).toHaveBeenCalledTimes(1)
+    // フェードアウトアニメーション（200ms）後にonLoadが呼ばれる
+    await waitFor(() => {
+      expect(onLoad).toHaveBeenCalledTimes(1)
+    }, { timeout: 300 })
   })
 })

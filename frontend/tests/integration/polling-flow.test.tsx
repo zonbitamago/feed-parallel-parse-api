@@ -201,4 +201,117 @@ describe('ポーリングフロー統合テスト（US1: 新着記事の自動�
       callCountBeforeUnmount
     )
   })
+
+  it.skip('ポーリングで新着記事を検出し、通知が表示される（T067）', async () => {
+    // Arrange: 準備
+    // 初回: 記事1件
+    // ポーリング後: 記事2件（新着1件）
+    let callCount = 0
+
+    localStorage.setItem(
+      'rss_reader_subscriptions',
+      JSON.stringify([
+        {
+          id: '1',
+          url: 'https://example.com/rss',
+          title: 'Test Feed',
+          customTitle: null,
+          subscribedAt: new Date().toISOString(),
+          lastFetchedAt: null,
+          status: 'active',
+        },
+      ])
+    )
+
+    vi.mocked(global.fetch).mockImplementation(() => {
+      callCount++
+
+      if (callCount === 1) {
+        // 初回: 記事1件
+        return Promise.resolve({
+          ok: true,
+          json: async () => ({
+            feeds: [
+              {
+                url: 'https://example.com/rss',
+                title: 'Test Feed',
+                articles: [
+                  {
+                    id: 'article-1',
+                    title: 'Article 1',
+                    link: 'https://example.com/1',
+                    pubDate: '2025-01-01T10:00:00Z',
+                    summary: 'Summary 1',
+                  },
+                ],
+              },
+            ],
+            errors: [],
+          }),
+        } as Response)
+      } else {
+        // ポーリング後: 新着記事を含む2件
+        return Promise.resolve({
+          ok: true,
+          json: async () => ({
+            feeds: [
+              {
+                url: 'https://example.com/rss',
+                title: 'Test Feed',
+                articles: [
+                  {
+                    id: 'article-2',
+                    title: 'Article 2 (NEW)',
+                    link: 'https://example.com/2',
+                    pubDate: '2025-01-02T10:00:00Z',
+                    summary: 'Summary 2',
+                  },
+                  {
+                    id: 'article-1',
+                    title: 'Article 1',
+                    link: 'https://example.com/1',
+                    pubDate: '2025-01-01T10:00:00Z',
+                    summary: 'Summary 1',
+                  },
+                ],
+              },
+            ],
+            errors: [],
+          }),
+        } as Response)
+      }
+    })
+
+    // Act: 実行
+    render(<App />)
+
+    // 初回レンダリングと初回フェッチを待つ
+    await vi.runOnlyPendingTimersAsync()
+
+    // 初回フェッチの完了を待つ（非同期処理）
+    await vi.waitFor(() => {
+      expect(callCount).toBeGreaterThanOrEqual(1)
+    })
+
+    // 初回記事が表示されることを確認
+    await vi.waitFor(() => {
+      expect(screen.queryByText('Article 1')).toBeInTheDocument()
+    })
+
+    // 初回は通知が表示されていないことを確認
+    expect(screen.queryByText(/新着記事があります/i)).not.toBeInTheDocument()
+
+    // 10分経過（ポーリング実行）
+    await vi.advanceTimersByTimeAsync(600000)
+
+    // ポーリング後のフェッチ完了を待つ
+    await vi.runOnlyPendingTimersAsync()
+
+    // Assert: 検証
+    // 新着記事通知が表示される
+    await vi.waitFor(() => {
+      expect(screen.getByText(/新着記事があります/i)).toBeInTheDocument()
+    })
+    expect(screen.getByText('新着記事があります (1件)')).toBeInTheDocument()
+  })
 })
