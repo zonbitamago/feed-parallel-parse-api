@@ -140,6 +140,39 @@ it('should merge articles and sort by date descending', () => {
   - 例: `npm test FeedManager.test.tsx`
   - 全テストはコミット前またはCI/CDで実行
 
+### テストプロセスのクリーンアップ（必須）
+
+**各フェーズの完了時に、必ずテストプロセスが残っていないか確認してください。**
+
+#### 確認タイミング
+- ✅ **必須**: 各フェーズ（T001-T010、T011-T020など）の完了時
+- ✅ **必須**: コミット前
+- ✅ **推奨**: 大規模なテスト実行後
+
+#### 確認コマンド
+```bash
+ps aux | grep -E "vitest" | grep -v grep
+```
+
+**期待される結果**: VSCode拡張のworkerのみ（1プロセス）
+
+#### プロセスが残っている場合
+```bash
+# workerプロセスのPIDを確認
+ps aux | grep -E "vitest/dist/workers" | grep -v grep
+
+# プロセスをkill
+pkill -f "vitest/dist/workers"
+
+# または個別にkill
+kill <PID1> <PID2> ...
+```
+
+#### 理由
+- vitestのworkerプロセスが残るとCPU負荷が継続
+- 開発マシンのパフォーマンス低下を防止
+- メモリリークの防止
+
 ## ドキュメント維持ルール（重要）
 
 **PR作成時は必ず以下のドキュメント更新を検討してください。**
