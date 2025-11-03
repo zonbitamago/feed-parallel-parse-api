@@ -3,6 +3,8 @@
 Auto-generated from all feature plans. Last updated: 2025-10-27
 
 ## Active Technologies
+- TypeScript 5.9.3, React 19.1.1 + React 19.1.1, date-fns 4.1.0, react-window 2.2.2, TailwindCSS 4.1.16 (016-feed-auto-polling)
+- localStorage（ポーリング設定、最終ポーリング時刻） (016-feed-auto-polling)
 
 技術スタックの詳細は [SPECIFICATION.md](SPECIFICATION.md) のセクション2を参照してください。
 
@@ -30,10 +32,9 @@ tests/
 Go 1.2x: Follow standard conventions
 
 ## Recent Changes
+- 016-feed-auto-polling: Added TypeScript 5.9.3, React 19.1.1 + React 19.1.1, date-fns 4.1.0, react-window 2.2.2, TailwindCSS 4.1.16
 - 2025-11-03: ドキュメントを最新の実装状態に同期（SPECIFICATION.md v1.5）
 - 2025-11-02: 015-codebase-refactoring実装完了（PR #21）
-- 2025-11-02: 014-feed-import-export実装完了（インポート/エクスポート機能）
-- 2025-11-02: 014-vercel-cors-support実装完了（Vercel CORS対応）
 
 
 <!-- MANUAL ADDITIONS START -->
@@ -46,6 +47,71 @@ Go 1.2x: Follow standard conventions
 - コード内のコメントも日本語で記述
 - 技術用語は英語のままでも可（例：React, TypeScript, API）
 - エラーメッセージの説明は日本語で
+
+## テストコード品質ルール
+
+**すべてのテストコードは3A（Arrange-Act-Assert）パターンに従ってください。**
+
+### 3Aパターン（必須）
+
+テストコードは以下の3つのセクションに明確に分けて記述します：
+
+```typescript
+it('テストケースの説明', () => {
+  // Arrange: 準備
+  // テストに必要なデータやモックをセットアップ
+  const input = createTestData()
+  const expected = expectedResult()
+
+  // Act: 実行
+  // テスト対象の関数やメソッドを実行
+  const result = functionUnderTest(input)
+
+  // Assert: 検証
+  // 期待する結果と実際の結果を検証
+  expect(result).toBe(expected)
+})
+```
+
+### 3Aパターンの利点
+
+- **可読性**: テストの意図が一目で分かる
+- **保守性**: 変更箇所が明確になる
+- **デバッグ性**: 失敗時にどのセクションで問題が起きたか分かりやすい
+
+### 必須事項
+
+- ✅ すべてのテストケースに `// Arrange: 準備`、`// Act: 実行`、`// Assert: 検証` のコメントを追加
+- ✅ 各セクションの間に空行を1行入れる
+- ✅ 複雑なテストでは各セクション内にさらに詳細なコメントを追加
+
+### 悪い例 ❌
+
+```typescript
+it('should merge articles', () => {
+  const current = [article1, article2]
+  const newArticles = [article3]
+  const result = mergeArticles(current, newArticles)
+  expect(result).toHaveLength(3)
+})
+```
+
+### 良い例 ✅
+
+```typescript
+it('should merge articles and sort by date descending', () => {
+  // Arrange: 準備
+  const current = [article1, article2]
+  const newArticles = [article3]
+
+  // Act: 実行
+  const result = mergeArticles(current, newArticles)
+
+  // Assert: 検証
+  expect(result).toHaveLength(3)
+  expect(result[0].id).toBe('article3')
+})
+```
 
 ## テスト実行ルール（CPU負荷対策）
 
@@ -73,6 +139,39 @@ Go 1.2x: Follow standard conventions
 - **選択的テスト実行**: 開発中は変更したファイルのテストのみを実行
   - 例: `npm test FeedManager.test.tsx`
   - 全テストはコミット前またはCI/CDで実行
+
+### テストプロセスのクリーンアップ（必須）
+
+**各フェーズの完了時に、必ずテストプロセスが残っていないか確認してください。**
+
+#### 確認タイミング
+- ✅ **必須**: 各フェーズ（T001-T010、T011-T020など）の完了時
+- ✅ **必須**: コミット前
+- ✅ **推奨**: 大規模なテスト実行後
+
+#### 確認コマンド
+```bash
+ps aux | grep -E "vitest" | grep -v grep
+```
+
+**期待される結果**: VSCode拡張のworkerのみ（1プロセス）
+
+#### プロセスが残っている場合
+```bash
+# workerプロセスのPIDを確認
+ps aux | grep -E "vitest/dist/workers" | grep -v grep
+
+# プロセスをkill
+pkill -f "vitest/dist/workers"
+
+# または個別にkill
+kill <PID1> <PID2> ...
+```
+
+#### 理由
+- vitestのworkerプロセスが残るとCPU負荷が継続
+- 開発マシンのパフォーマンス低下を防止
+- メモリリークの防止
 
 ## ドキュメント維持ルール（重要）
 
