@@ -205,15 +205,15 @@ description: "フィード自動ポーリング機能の実装タスクリスト
 
 ### T048-T056: NewArticlesNotification Component（通知UI）
 
-- [ ] T048 [P] [US2] 🔴 Red: frontend/src/components/NewArticlesNotification.test.tsx に基本的なレンダリングテストを作成
-- [ ] T049 [P] [US2] ✅ Green: frontend/src/components/NewArticlesNotification.tsx にNewArticlesNotificationコンポーネントのスケルトンを作成
-- [ ] T050 [P] [US2] 🔴 Red: テストを追加: 「visible=trueで通知表示、visible=falseで非表示」
-- [ ] T051 [P] [US2] ✅ Green: visibleプロップに基づく条件付きレンダリングを実装
-- [ ] T052 [P] [US2] 🔴 Red: テストを追加: count表示（「新着記事があります (5件)」）
-- [ ] T053 [P] [US2] ✅ Green: 通知メッセージにcountを表示
-- [ ] T054 [P] [US2] 🔴 Red: テストを追加: ボタンクリック時のonLoadコールバック
-- [ ] T055 [P] [US2] ✅ Green: onClick={onLoad}で「読み込む」ボタンを追加
-- [ ] T056 [P] [US2] ♻️ Refactor: TailwindCSSスタイリングを追加（緑テーマ、PWA通知と統一）
+- [x] T048 [P] [US2] 🔴 Red: frontend/src/components/NewArticlesNotification.test.tsx に基本的なレンダリングテストを作成
+- [x] T049 [P] [US2] ✅ Green: frontend/src/components/NewArticlesNotification.tsx にNewArticlesNotificationコンポーネントのスケルトンを作成
+- [x] T050 [P] [US2] 🔴 Red: テストを追加: 「visible=trueで通知表示、visible=falseで非表示」
+- [x] T051 [P] [US2] ✅ Green: visibleプロップに基づく条件付きレンダリングを実装
+- [x] T052 [P] [US2] 🔴 Red: テストを追加: count表示（「新着記事があります (5件)」）
+- [x] T053 [P] [US2] ✅ Green: 通知メッセージにcountを表示
+- [x] T054 [P] [US2] 🔴 Red: テストを追加: ボタンクリック時のonLoadコールバック
+- [x] T055 [P] [US2] ✅ Green: onClick={onLoad}で「読み込む」ボタンを追加
+- [x] T056 [P] [US2] ♻️ Refactor: TailwindCSSスタイリングを追加（緑テーマ、PWA通知と統一）
 
 **独立テスト**: `npm test NewArticlesNotification.test.tsx` がパス、Props変更で表示/非表示が切り替わる
 
