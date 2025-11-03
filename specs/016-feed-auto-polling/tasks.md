@@ -219,11 +219,11 @@ description: "フィード自動ポーリング機能の実装タスクリスト
 
 ### T057-T061: アクセシビリティ対応
 
-- [ ] T057 [P] [US2] 🔴 Red: テストを追加: ARIA属性（role="status", aria-live="polite"）
-- [ ] T058 [P] [US2] ✅ Green: 通知divにrole="status"とaria-live="polite"を追加
-- [ ] T059 [P] [US2] 🔴 Red: テストを追加: ボタンのaria-label（「新着記事を読み込む」）
-- [ ] T060 [P] [US2] ✅ Green: 「読み込む」ボタンにaria-labelを追加
-- [ ] T061 [P] [US2] ♻️ Refactor: キーボードナビゲーションテストを追加（Tab→Enterでボタンクリック）
+- [x] T057 [P] [US2] 🔴 Red: テストを追加: ARIA属性（role="status", aria-live="polite"）
+- [x] T058 [P] [US2] ✅ Green: 通知divにrole="status"とaria-live="polite"を追加
+- [x] T059 [P] [US2] 🔴 Red: テストを追加: ボタンのaria-label（「新着記事を読み込む」）
+- [x] T060 [P] [US2] ✅ Green: 「読み込む」ボタンにaria-labelを追加
+- [x] T061 [P] [US2] ♻️ Refactor: キーボードナビゲーションテストを追加（Tab→Enterでボタンクリック）
 
 **独立テスト**: axe-core または React Testing Library アクセシビリティテスト
 

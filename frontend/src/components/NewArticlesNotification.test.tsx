@@ -111,4 +111,100 @@ describe('NewArticlesNotification', () => {
     // Assert: 検証
     expect(onLoad).toHaveBeenCalledTimes(1)
   })
+
+  it('通知にrole="status"が設定されている', () => {
+    // Arrange: 準備
+    const onLoad = vi.fn()
+
+    // Act: 実行
+    render(
+      <NewArticlesNotification
+        visible={true}
+        count={3}
+        onLoad={onLoad}
+      />
+    )
+
+    // Assert: 検証
+    const notification = screen.getByRole('status')
+    expect(notification).toBeInTheDocument()
+  })
+
+  it('通知にaria-live="polite"が設定されている', () => {
+    // Arrange: 準備
+    const onLoad = vi.fn()
+
+    // Act: 実行
+    const { container } = render(
+      <NewArticlesNotification
+        visible={true}
+        count={3}
+        onLoad={onLoad}
+      />
+    )
+
+    // Assert: 検証
+    const notification = container.querySelector('[aria-live="polite"]')
+    expect(notification).toBeInTheDocument()
+  })
+
+  it('「読み込む」ボタンにaria-labelが設定されている', () => {
+    // Arrange: 準備
+    const onLoad = vi.fn()
+
+    // Act: 実行
+    render(
+      <NewArticlesNotification
+        visible={true}
+        count={3}
+        onLoad={onLoad}
+      />
+    )
+
+    // Assert: 検証
+    const button = screen.getByRole('button', { name: '新着記事を読み込む' })
+    expect(button).toBeInTheDocument()
+  })
+
+  it('Tabキーでボタンにフォーカスできる', async () => {
+    // Arrange: 準備
+    const user = userEvent.setup()
+    const onLoad = vi.fn()
+
+    render(
+      <NewArticlesNotification
+        visible={true}
+        count={3}
+        onLoad={onLoad}
+      />
+    )
+
+    // Act: 実行
+    await user.tab()
+
+    // Assert: 検証
+    const button = screen.getByRole('button', { name: '新着記事を読み込む' })
+    expect(button).toHaveFocus()
+  })
+
+  it('Enterキーでボタンをクリックできる', async () => {
+    // Arrange: 準備
+    const user = userEvent.setup()
+    const onLoad = vi.fn()
+
+    render(
+      <NewArticlesNotification
+        visible={true}
+        count={3}
+        onLoad={onLoad}
+      />
+    )
+
+    // Act: 実行
+    await user.tab()
+    await user.keyboard('{Enter}')
+
+    // Assert: 検証
+    expect(onLoad).toHaveBeenCalledTimes(1)
+  })
 })
