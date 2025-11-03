@@ -39,16 +39,25 @@ export function PollingStatus({ lastPolledAt, isLoading = false }: PollingStatus
     )
   }
 
-  // 相対時刻を計算（「3分前」）
-  const relativeTime = formatDistanceToNow(lastPolledAt, {
-    addSuffix: true,
-    locale: ja,
-  })
+  // 経過時間を計算
+  const elapsedTimeMs = Date.now() - lastPolledAt
+
+  // 相対時刻を計算（1分未満は「たった今」、1分以上は「3分前」など）
+  let relativeTime: string
+  if (elapsedTimeMs < 60000) {
+    // 1分未満の場合は「たった今」
+    relativeTime = 'たった今'
+  } else {
+    // 1分以上の場合はdate-fnsで相対時刻を表示
+    relativeTime = formatDistanceToNow(lastPolledAt, {
+      addSuffix: true,
+      locale: ja,
+    })
+  }
 
   // 次回ポーリングまでの残り時間を計算
   const POLLING_INTERVAL = 10 * 60 * 1000 // 10分
-  const elapsedTime = Date.now() - lastPolledAt
-  const remainingTime = POLLING_INTERVAL - elapsedTime
+  const remainingTime = POLLING_INTERVAL - elapsedTimeMs
 
   let nextPollingText = 'まもなく'
   if (remainingTime > 0) {

@@ -37,6 +37,22 @@ describe('PollingStatus', () => {
     expect(screen.getByText(/3分前/i)).toBeInTheDocument()
   })
 
+  it('1分未満の場合は「たった今」と表示される', () => {
+    // Arrange: 準備
+    vi.setSystemTime(new Date('2025-01-01T12:00:00Z'))
+    // 30秒前
+    const thirtySecondsAgo = Date.now() - 30 * 1000
+
+    // Act: 実行
+    render(<PollingStatus lastPolledAt={thirtySecondsAgo} />)
+
+    // Assert: 検証
+    expect(screen.getByText(/最終取得/i)).toBeInTheDocument()
+    expect(screen.getByText(/たった今/i)).toBeInTheDocument()
+    expect(screen.getByText(/次回取得まで/i)).toBeInTheDocument()
+    expect(screen.getByText(/10分/i)).toBeInTheDocument()
+  })
+
   it('次回取得まで の時間が表示される', () => {
     // Arrange: 準備
     vi.setSystemTime(new Date('2025-01-01T12:00:00Z'))
