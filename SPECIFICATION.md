@@ -1,7 +1,7 @@
 # feed-parallel-parse-api システム仕様書
 
-**最終更新日**: 2025-11-03
-**バージョン**: v1.6
+**最終更新日**: 2025-11-04
+**バージョン**: v1.7
 
 > **重要**: この仕様書は、PR 作成時に必ず更新してください。機能追加・変更があった場合は、該当セクションを修正し、最新の実装状態を反映させることがプロジェクトルールとして定められています。
 
@@ -18,6 +18,7 @@ feed-parallel-parse-api は、複数の RSS フィードを並列に取得・解
 - 購読一覧の折りたたみ機能（記事へのアクセス最適化）
 - **購読フィードのインポート/エクスポート機能**（JSON形式、URL重複チェック）
 - **自動更新機能（ポーリング）**（10分間隔、新着記事通知）
+- **In-Appチュートリアル**（初回訪問時の自動表示、ヘルプボタンからの再表示、レスポンシブ対応、WCAG 2.1 AA準拠）
 - 並列フィード取得による高速な記事取得
 - 統合タイムラインでの記事表示
 - 仮想スクロールによる高速レンダリング
@@ -37,6 +38,7 @@ feed-parallel-parse-api は、複数の RSS フィードを並列に取得・解
 - **状態管理**: React Context API（UIContext, SubscriptionContext）
 - **仮想スクロール**: react-window 1.8.x
 - **日付処理**: date-fns 4.x
+- **チュートリアル**: driver.js 2.1.1（5 kB gzip、依存関係ゼロ）
 - **PWA 対応**: vite-plugin-pwa 1.1, workbox-window
 - **テスト**: Vitest 4.0.3, @testing-library/react 16.3.0
 - **CI/CD**: GitHub Actions
@@ -1310,6 +1312,160 @@ interface PollingState {
 - `ADD_SUBSCRIPTION`
 - `REMOVE_SUBSCRIPTION`
 - `UPDATE_CUSTOM_TITLE`
+
+---
+
+## 10. In-Appチュートリアル
+
+### 10.1 概要
+
+初回訪問ユーザーに対して、アプリケーションの使い方をガイドするインタラクティブなチュートリアル機能です。driver.js 2.1.1 を使用して実装されています。
+
+### 10.2 機能要件
+
+#### US1: チュートリアルの自動起動
+- **トリガー**: 初回訪問時（localStorage に `rss_reader_tutorial_seen` がない場合）
+- **タイミング**: アプリケーションマウント後（`useEffect`）
+- **状態管理**: `useTutorial` カスタムフックで管理
+- **永続化**: localStorage に完了フラグを保存
+
+#### US2: チュートリアルの再表示
+- **トリガー**: ヘッダーの「ヘルプ」ボタンをクリック
+- **配置**: ヘッダー右側、検索バーの隣
+- **アイコン**: 疑問符アイコン（SVG）
+- **アクセシビリティ**: `aria-label="チュートリアルを表示"`
+
+#### US3: レスポンシブ対応
+- **モバイル**（< 768px）:
+  - ポップオーバー最大幅: 90vw
+  - フォントサイズ: タイトル 1rem、説明 0.875rem
+  - タッチターゲット: 最小 44x44px（WCAG 2.1 AA基準）
+- **タブレット**（768-1023px）:
+  - ポップオーバー最大幅: 400px
+- **デスクトップ**（1024px+）:
+  - ポップオーバー最大幅: 500px
+
+#### US4: アクセシビリティ対応
+- **ARIA 属性**:
+  - ポップオーバー: `role="dialog"`, `aria-labelledby`, `aria-describedby`
+  - ハイライト要素: `aria-haspopup="dialog"`, `aria-expanded="true"`, `aria-controls`
+- **キーボード操作**:
+  - Tab: フォーカス移動
+  - Shift+Tab: 逆順フォーカス移動
+  - Enter/Space: ヘルプボタン押下
+  - →: 次のステップへ
+  - ←: 前のステップへ
+  - Escape: チュートリアル終了
+- **スクリーンリーダー対応**: すべての要素にアクセシブルな名前を設定
+
+### 10.3 チュートリアルステップ
+
+| ステップ | 対象要素 | タイトル | 説明 |
+|---------|---------|---------|------|
+| 1 | `input[aria-label="フィードURL"]` | RSSフィードを追加 | RSSフィードのURLを入力 |
+| 2 | `button[aria-label="フィードを追加"]` | フィードを購読 | ボタンをクリックして追加 |
+| 3 | `#subscription-list` | 購読リスト | 購読中のフィードを表示 |
+| 4 | `[data-tutorial="import-export-buttons"]` | インポート/エクスポート | JSONファイルでバックアップ |
+| 5 | `input[role="searchbox"]` | 記事を検索 | キーワードで記事を絞り込み |
+| 6 | `[data-tutorial="polling-status"]` | 自動更新 | 10分ごとに自動取得 |
+| 7 | `article:first-child` | 記事を読む | タイトルをクリックして記事全文を表示 |
+
+### 10.4 技術実装
+
+#### アーキテクチャ
+
+```
+┌─────────────────────────────────────────┐
+│         App.tsx (UI層)                  │
+│  - チュートリアル自動起動               │
+│  - ヘルプボタン配置                     │
+└──────────────┬──────────────────────────┘
+               │
+               ↓
+┌─────────────────────────────────────────┐
+│    useTutorial.ts (Presentation Logic)  │
+│  - driver.js 初期化                     │
+│  - カスタマイズ設定                     │
+│  - startTutorial(), resetTutorial()     │
+└──────────────┬──────────────────────────┘
+               │
+               ↓
+┌─────────────────────────────────────────┐
+│  useLocalStorage.ts (Storage層)         │
+│  - localStorage 読み書き                │
+│  - エラーハンドリング                   │
+└─────────────────────────────────────────┘
+```
+
+#### driver.js カスタマイズ
+
+```typescript
+driver({
+  steps: TUTORIAL_STEPS,
+  showProgress: true,
+  allowClose: true,
+  onDestroyed: () => setHasSeenTutorial(true),
+  progressText: 'ステップ {{current}} / {{total}}',
+  popoverClass: 'tutorial-popover',
+  nextBtnText: '次へ',
+  prevBtnText: '戻る',
+  doneBtnText: '完了',
+  animate: true,
+})
+```
+
+#### レスポンシブCSS
+
+```css
+/* モバイル */
+@media (max-width: 767px) {
+  .tutorial-popover {
+    max-width: 90vw !important;
+  }
+  .tutorial-popover .driver-popover-navigation-btns button {
+    min-height: 44px !important;
+    min-width: 44px !important;
+  }
+}
+
+/* タブレット */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .tutorial-popover {
+    max-width: 400px !important;
+  }
+}
+
+/* デスクトップ */
+@media (min-width: 1024px) {
+  .tutorial-popover {
+    max-width: 500px !important;
+  }
+}
+```
+
+### 10.5 パフォーマンス
+
+- **バンドルサイズ**: driver.js 5 kB gzip + カスタムコード 1-2 kB
+- **依存関係**: ゼロ（driver.js はピュア TypeScript）
+- **GPU アクセラレーション**: CSS アニメーションを使用
+- **メモリリーク防止**: `onDestroyed` でクリーンアップ
+
+### 10.6 テスト
+
+- **自動テスト**: 13件
+  - ヘルプボタン表示・クリック・連打
+  - キーボード操作（Enter/Space）
+  - スクリーンリーダー対応（aria-label）
+  - 初回訪問・2回目訪問・リセット
+- **手動テスト推奨項目**:
+  - モバイル/タブレット/デスクトップでの表示確認
+  - 実機でのタッチターゲットサイズ確認
+
+### 10.7 エラーハンドリング
+
+- **localStorage エラー**: `useLocalStorage` で try-catch 処理
+- **要素が見つからない**: driver.js が自動的にダミー要素を表示
+- **初期化エラー**: TypeScript の型チェックで防止
 
 ---
 

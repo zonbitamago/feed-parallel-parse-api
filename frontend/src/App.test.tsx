@@ -130,6 +130,26 @@ describe('App - ヘルプボタン（US2: チュートリアル再表示）', ()
     const helpButton = screen.getByRole('button', { name: /チュートリアルを表示/i })
     expect(helpButton).toHaveAttribute('aria-label', 'チュートリアルを表示')
   })
+
+  it('ヘルプボタンを連続クリックしても正常に動作する', async () => {
+    // Arrange: 準備
+    render(<App />)
+    const user = userEvent.setup()
+
+    // Act: 実行
+    const helpButton = screen.getByRole('button', { name: /チュートリアルを表示/i })
+    await user.click(helpButton)
+    await user.click(helpButton)
+    await user.click(helpButton)
+
+    // Assert: 検証
+    // driver()が3回呼ばれたことを確認
+    expect(vi.mocked(driver)).toHaveBeenCalledTimes(3)
+    // drive()も3回呼ばれたことを確認
+    await waitFor(() => {
+      expect(mockDrive).toHaveBeenCalledTimes(3)
+    })
+  })
 })
 
 describe('App - キーボード操作（US4: アクセシビリティ）', () => {
