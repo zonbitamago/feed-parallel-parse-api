@@ -12,6 +12,8 @@ describe('アクセシビリティ統合テスト', () => {
     localStorage.clear();
     // 購読リストをデフォルトで展開状態にする
     localStorage.setItem('rss_reader_subscriptions_collapsed', 'false');
+    // チュートリアルの自動表示を無効化（Tab順序テストのため）
+    localStorage.setItem('rss_reader_tutorial_seen', 'true');
     vi.clearAllMocks();
 
     // APIモックを設定
@@ -146,6 +148,31 @@ describe('アクセシビリティ統合テスト', () => {
       // 購読リストが展開されていることを確認
       const exportButton = screen.getByRole('button', { name: /エクスポート/i });
       expect(exportButton).toBeInTheDocument();
+
+      // エラーメッセージが表示されている場合は閉じる（閉じるボタンがTab順序に影響するため）
+      // role="alert"を持つ要素内の閉じるボタンを探してすべて閉じる
+      let maxRetries = 5;
+      while (maxRetries > 0) {
+        const alerts = document.querySelectorAll('[role="alert"]');
+        let foundCloseButton = false;
+
+        for (const alert of Array.from(alerts)) {
+          const closeBtn = alert.querySelector('button[aria-label="閉じる"]');
+          if (closeBtn) {
+            await user.click(closeBtn as HTMLButtonElement);
+            foundCloseButton = true;
+            // クリック後、少し待つ
+            await new Promise(resolve => setTimeout(resolve, 100));
+          }
+        }
+
+        // 閉じるボタンが見つからなければループを抜ける
+        if (!foundCloseButton) {
+          break;
+        }
+
+        maxRetries--;
+      }
 
       // フォーカスをリセット（bodyにフォーカスを移動）
       document.body.focus();
