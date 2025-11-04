@@ -18,3 +18,46 @@ body {
     scroll-behavior: auto !important;
   }
 }
+
+/* Tutorial Popover Customization */
+.tutorial-popover {
+  /* モバイル対応: 小画面では最大幅を調整 */
+  max-width: 90vw !important;
+}
+
+/* モバイル: ポップアップのテキストサイズ調整 */
+@media (max-width: 767px) {
+  .tutorial-popover .driver-popover-title {
+    font-size: 1rem !important;
+  }
+
+  .tutorial-popover .driver-popover-description {
+    font-size: 0.875rem !important;
+  }
+
+  /* ボタンのタッチターゲットサイズを確保（最小44x44px） */
+  .tutorial-popover .driver-popover-navigation-btns button {
+    min-height: 44px !important;
+    min-width: 44px !important;
+    padding: 0.5rem 1rem !important;
+  }
+
+  .tutorial-popover .driver-popover-close-btn {
+    min-height: 44px !important;
+    min-width: 44px !important;
+  }
+}
+
+/* タブレット: 中間サイズの調整 */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .tutorial-popover {
+    max-width: 400px !important;
+  }
+}
+
+/* デスクトップ: 大画面用の調整 */
+@media (min-width: 1024px) {
+  .tutorial-popover {
+    max-width: 500px !important;
+  }
+}

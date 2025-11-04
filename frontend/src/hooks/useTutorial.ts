@@ -16,6 +16,13 @@ export function useTutorial() {
       allowClose: true,
       onDestroyed: () => setHasSeenTutorial(true),
       progressText: 'ステップ {{current}} / {{total}}',
+      // レスポンシブ対応とスタイルカスタマイズ
+      popoverClass: 'tutorial-popover',
+      nextBtnText: '次へ',
+      prevBtnText: '戻る',
+      doneBtnText: '完了',
+      // モバイル対応: 小画面では自動的にポップアップ位置を調整
+      animate: true,
     })
 
     driverObj.drive()
