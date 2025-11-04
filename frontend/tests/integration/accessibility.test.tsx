@@ -12,6 +12,8 @@ describe('アクセシビリティ統合テスト', () => {
     localStorage.clear();
     // 購読リストをデフォルトで展開状態にする
     localStorage.setItem('rss_reader_subscriptions_collapsed', 'false');
+    // チュートリアルの自動表示を無効化（Tab順序テストのため）
+    localStorage.setItem('rss_reader_tutorial_seen', 'true');
     vi.clearAllMocks();
 
     // APIモックを設定
@@ -147,25 +149,54 @@ describe('アクセシビリティ統合テスト', () => {
       const exportButton = screen.getByRole('button', { name: /エクスポート/i });
       expect(exportButton).toBeInTheDocument();
 
+      // エラーメッセージが表示されている場合は閉じる（閉じるボタンがTab順序に影響するため）
+      // role="alert"を持つ要素内の閉じるボタンを探してすべて閉じる
+      let maxRetries = 5;
+      while (maxRetries > 0) {
+        const alerts = document.querySelectorAll('[role="alert"]');
+        let foundCloseButton = false;
+
+        for (const alert of Array.from(alerts)) {
+          const closeBtn = alert.querySelector('button[aria-label="閉じる"]');
+          if (closeBtn) {
+            await user.click(closeBtn as HTMLButtonElement);
+            foundCloseButton = true;
+            // クリック後、少し待つ
+            await new Promise(resolve => setTimeout(resolve, 100));
+          }
+        }
+
+        // 閉じるボタンが見つからなければループを抜ける
+        if (!foundCloseButton) {
+          break;
+        }
+
+        maxRetries--;
+      }
+
       // フォーカスをリセット（bodyにフォーカスを移動）
       document.body.focus();
 
       // Tab順序（追加ボタンは入力が空でdisabledのためスキップ）:
-      // URL入力 → 折りたたみボタン → エクスポートボタン → インポートボタン → 更新ボタン → 編集ボタン → 削除ボタン
+      // ヘルプボタン → URL入力 → 折りたたみボタン → エクスポートボタン → インポートボタン → 更新ボタン → 編集ボタン → 削除ボタン
 
-      // 1. URL入力欄にフォーカス
+      // 1. ヘルプボタンにフォーカス
+      await user.tab();
+      expect(document.activeElement?.textContent).toContain('ヘルプ');
+
+      // 2. URL入力欄にフォーカス
       await user.tab();
       expect(document.activeElement).toHaveAttribute('type', 'url');
 
-      // 2. 折りたたみボタン（「隠す」）にフォーカス（追加ボタンはdisabledでスキップ）
+      // 3. 折りたたみボタン（「隠す」）にフォーカス（追加ボタンはdisabledでスキップ）
       await user.tab();
       expect(document.activeElement?.textContent).toContain('隠す');
 
-      // 3. エクスポートボタンにフォーカス
+      // 4. エクスポートボタンにフォーカス
       await user.tab();
       expect(document.activeElement?.textContent).toContain('エクスポート');
 
-      // 4. インポートボタンにフォーカス
+      // 5. インポートボタンにフォーカス
       await user.tab();
       expect(document.activeElement?.textContent).toContain('インポート');
     });

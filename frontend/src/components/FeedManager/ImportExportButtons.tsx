@@ -10,7 +10,7 @@ interface ImportExportButtonsProps {
 
 export function ImportExportButtons({ onExport, onImport, subscriptionCount }: ImportExportButtonsProps) {
   return (
-    <div className="flex gap-2 mb-4">
+    <div className="flex gap-2 mb-4" data-tutorial="import-export-buttons">
       <button
         type="button"
         onClick={onExport}
