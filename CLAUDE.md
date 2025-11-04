@@ -7,6 +7,7 @@ Auto-generated from all feature plans. Last updated: 2025-10-27
 - localStorage（ポーリング設定、最終ポーリング時刻） (016-feed-auto-polling)
 - TypeScript 5.9.3 + React 19.1.1, TailwindCSS 4.1.16 (001-enable-import-zero-feeds)
 - localStorage（フィード購読データ） (001-enable-import-zero-feeds)
+- driver.js 2.1.1（In-Appチュートリアル、5 kB gzip） (017-in-app-tutorial)
 - localStorage（チュートリアル表示状態管理） (017-in-app-tutorial)
 
 技術スタックの詳細は [SPECIFICATION.md](SPECIFICATION.md) のセクション2を参照してください。
