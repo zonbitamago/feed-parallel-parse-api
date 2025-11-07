@@ -735,5 +735,21 @@ describe('FeedManager', () => {
       expect(screen.queryByRole('button', { name: /エクスポート/i })).not.toBeInTheDocument()
       expect(screen.queryByRole('button', { name: /インポート/i })).not.toBeInTheDocument()
     })
+
+    it('購読数0件の場合、折りたたみ状態に関わらずインポート/エクスポートボタンが表示される', () => {
+      // Arrange: 準備
+      // 折りたたまれた状態（isCollapsed=true）に設定
+      localStorage.setItem('rss_reader_subscriptions_collapsed', 'true')
+      const onAdd = vi.fn().mockResolvedValue({ success: true, shouldClearInput: true })
+
+      // Act: 実行
+      // 購読数0件でレンダリング
+      render(<FeedManager onAddFeed={onAdd} subscriptions={[]} />)
+
+      // Assert: 検証
+      // 0件の時は折りたたまれていても、インポートボタンにアクセス可能であるべき
+      expect(screen.getByRole('button', { name: /エクスポート/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /インポート/i })).toBeInTheDocument()
+    })
   })
 })
