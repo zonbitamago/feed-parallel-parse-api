@@ -31,7 +31,8 @@ export function ArticleContainer({ onRefresh }: ArticleContainerProps) {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [hasMore, loadMore])
 
-  if (state.isLoading) {
+  // 記事がない場合のみローディング表示（既存の記事があれば表示し続ける）
+  if (state.isLoading && state.articles.length === 0) {
     return <LoadingIndicator />
   }
 
