@@ -35,19 +35,19 @@
 
 ---
 
-## Phase 1: Setup
+## Phase 1: Setup ✅
 
 **Purpose**: 作業ブランチの確認と既存コードの理解
 
-- [ ] T001 ブランチ `018-fix-loading-display` にいることを確認
-- [ ] T002 既存のテストが全てパスすることを確認 `cd frontend && npm test`
-- [ ] T003 `frontend/src/containers/ArticleContainer.tsx` の現在の実装を確認（34-36行目）
+- [x] T001 ブランチ `018-fix-loading-display` にいることを確認
+- [x] T002 既存のテストが全てパスすることを確認 `cd frontend && npm test`
+- [x] T003 `frontend/src/containers/ArticleContainer.tsx` の現在の実装を確認（34-36行目）
 
-**Checkpoint**: 開発環境準備完了
+**Checkpoint**: 開発環境準備完了 ✅
 
 ---
 
-## Phase 2: User Story 1 & 2 - ローディング表示の条件分岐修正 (Priority: P1) 🎯 MVP
+## Phase 2: User Story 1 & 2 - ローディング表示の条件分岐修正 (Priority: P1) 🎯 MVP ✅
 
 **Goal**: 記事が0件の場合のみローディング表示、1件以上ある場合は記事一覧を継続表示
 
@@ -62,65 +62,65 @@
 
 ---
 
-### 🔴 Red Phase: Tests（失敗するテストを先に書く）
+### 🔴 Red Phase: Tests（失敗するテストを先に書く） ✅
 
 > **テストが仕様**: これらのテストコードが要求仕様の実行可能なドキュメントとなる
 
 **CRITICAL**: これらのテストは実装前に書き、失敗することを確認する
 
-- [ ] T004 [P] [US1] 記事がある場合ローディング中でも記事一覧を表示するテストを追加 in `frontend/src/containers/ArticleContainer.test.tsx`（Red - アサーション失敗を期待）
-- [ ] T005 [P] [US2] 記事が0件でローディング中の場合ローディングアイコンを表示するテストを追加 in `frontend/src/containers/ArticleContainer.test.tsx`（Red - 既存動作確認）
-- [ ] T006 [P] [US1] 手動更新時も記事があれば記事一覧を表示し続けるテストを追加 in `frontend/src/containers/ArticleContainer.test.tsx`（Red - アサーション失敗を期待）
-- [ ] T007 テストを実行し、T004とT006が失敗することを確認 `cd frontend && npm test ArticleContainer.test.tsx`
+- [x] T004 [P] [US1] 記事がある場合ローディング中でも記事一覧を表示するテストを追加 in `frontend/src/containers/ArticleContainer.test.tsx`（Red - アサーション失敗を期待）
+- [x] T005 [P] [US2] 記事が0件でローディング中の場合ローディングアイコンを表示するテストを追加 in `frontend/src/containers/ArticleContainer.test.tsx`（Red - 既存動作確認）
+- [x] T006 [P] [US1] 手動更新時も記事があれば記事一覧を表示し続けるテストを追加 in `frontend/src/containers/ArticleContainer.test.tsx`（Red - アサーション失敗を期待）
+- [x] T007 テストを実行し、T004とT006が失敗することを確認 `cd frontend && npm test ArticleContainer.test.tsx`
 
-**Checkpoint**: 新規テストが期待通り失敗することを確認（Red完了）
+**Checkpoint**: 新規テストが期待通り失敗することを確認（Red完了） ✅
 
 - ✅ T004, T006がアサーション失敗（現在の実装では記事があってもローディング表示される）
 - ✅ T005は既存動作確認のため合格してもOK
 
 ---
 
-### ✅ Green Phase: Implementation（最小限の実装でテストを通す）
+### ✅ Green Phase: Implementation（最小限の実装でテストを通す） ✅
 
 > **品質は問わない、まず動かす**: 最小限のコードでテストを通す
 
 **今回の推奨手法**: **明白な実装（Obvious Implementation）** - 条件分岐の変更はシンプルで自信がある
 
-- [ ] T008 [US1] [US2] `ArticleContainer.tsx` の34-36行目のローディング表示条件を変更 in `frontend/src/containers/ArticleContainer.tsx`
+- [x] T008 [US1] [US2] `ArticleContainer.tsx` の34-36行目のローディング表示条件を変更 in `frontend/src/containers/ArticleContainer.tsx`
   - 修正前: `if (state.isLoading)`
   - 修正後: `if (state.isLoading && state.articles.length === 0)`
-- [ ] T009 テストを実行し、全テストが合格することを確認 `cd frontend && npm test ArticleContainer.test.tsx`
-- [ ] T010 全テストを実行し、既存テスト含め全て合格することを確認 `cd frontend && npm test`
+- [x] T009 テストを実行し、全テストが合格することを確認 `cd frontend && npm test ArticleContainer.test.tsx`
+- [x] T010 全テストを実行し、既存テスト含め全て合格することを確認 `cd frontend && npm test`
 
-**Checkpoint**: 全テストが合格（Green完了）
+**Checkpoint**: 全テストが合格（Green完了） ✅
 
 - ✅ 新規テスト（T004, T005, T006）が全て合格
 - ✅ 既存テストも全て合格
 
 ---
 
-### ♻️ Refactor Phase: Code Quality Improvement（コード品質向上）
+### ♻️ Refactor Phase: Code Quality Improvement（コード品質向上） ✅
 
 > **テストを通したまま、コードの品質を向上させる**
 
-- [ ] T011 [P] コードレビュー - コメント追加の必要性を確認
-- [ ] T012 必要に応じてコメント追加（例: `// 記事がない場合のみローディング表示`）
-- [ ] T013 全テストを実行し、リファクタリング後も全て合格することを確認 `cd frontend && npm test`
+- [x] T011 [P] コードレビュー - コメント追加の必要性を確認
+- [x] T012 必要に応じてコメント追加（例: `// 記事がない場合のみローディング表示`）
+- [x] T013 全テストを実行し、リファクタリング後も全て合格することを確認 `cd frontend && npm test`
 
-**Checkpoint**: Refactor完了 - コア機能実装完了
+**Checkpoint**: Refactor完了 - コア機能実装完了 ✅
 
 ---
 
-## Phase 3: Polish & Documentation
+## Phase 3: Polish & Documentation ✅
 
 **Purpose**: 品質確認とドキュメント更新
 
-- [ ] T014 型チェックを実行 `cd frontend && npx tsc --noEmit`
-- [ ] T015 リントを実行 `cd frontend && npm run lint`
+- [x] T014 型チェックを実行 `cd frontend && npx tsc --noEmit`
+- [x] T015 リントを実行 `cd frontend && npm run lint`（変更ファイルにエラーなし）
 - [ ] T016 手動テスト: フィードを購読して記事表示後、ポーリング/手動更新で記事が継続表示されることを確認
-- [ ] T017 SPECIFICATION.md の更新が必要か確認（内部実装の最適化のため不要の可能性）
+- [x] T017 SPECIFICATION.md の更新が必要か確認（内部実装の最適化のため不要と判断）
 
-**Checkpoint**: 機能実装完了、PRの準備完了
+**Checkpoint**: 機能実装完了、PRの準備完了 ✅
 
 ---
 
