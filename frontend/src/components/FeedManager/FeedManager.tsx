@@ -263,7 +263,8 @@ export function FeedManager({
         )}
 
         {/* 購読リスト本体（折りたたまれている場合は非表示） */}
-        {!isCollapsed && (
+        {/* 0件の時は常に表示（インポートボタンにアクセス可能にするため） */}
+        {(subscriptions.length === 0 || !isCollapsed) && (
           <div
             id="subscription-list"
             className="transition-all duration-300"
