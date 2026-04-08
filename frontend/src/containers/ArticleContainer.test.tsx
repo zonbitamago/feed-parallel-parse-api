@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import { ArticleContainer } from './ArticleContainer'
 import * as ArticleContextModule from '../contexts/ArticleContext'
 import * as UIContextModule from '../contexts/UIContext'
@@ -142,6 +142,45 @@ describe('ArticleContainer - ローディング表示', () => {
       // ローディングアイコンは表示されないことを確認
       expect(screen.queryByText(/loading/i)).not.toBeInTheDocument()
     })
+  })
+
+  describe('エラーバナーの削除', () => {
+    it('閉じるボタンでエラーを手動削除できる', () => {
+      // Arrange: 準備
+      const mockDispatch = vi.fn()
+      vi.mocked(ArticleContextModule.useArticle).mockReturnValue({
+        state: {
+          articles: [mockArticle],
+          displayedArticles: [mockArticle],
+          searchQuery: '',
+          selectedFeedId: null,
+          isLoading: false,
+          errors: [
+            { url: 'https://example.com/rss', message: 'Failed to fetch', timestamp: '2025-01-01T00:00:00Z' },
+          ],
+          pendingArticles: [],
+          hasNewArticles: false,
+          newArticlesCount: 0,
+          lastPolledAt: null,
+        },
+        dispatch: mockDispatch,
+      })
+
+      vi.mocked(useVirtualScrollModule.useVirtualScroll).mockReturnValue({
+        visibleArticles: [mockArticle],
+        hasMore: false,
+        loadMore: vi.fn(),
+      })
+
+      // Act: 実行
+      render(<ArticleContainer />)
+      const dismissButton = screen.getByLabelText('閉じる')
+      fireEvent.click(dismissButton)
+
+      // Assert: 検証
+      expect(mockDispatch).toHaveBeenCalledWith({ type: 'REMOVE_ERROR', payload: 0 })
+    })
+
   })
 
   describe('基本的なレンダリング', () => {
