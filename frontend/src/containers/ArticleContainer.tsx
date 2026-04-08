@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { useArticle } from '../contexts/ArticleContext'
 import { useUI } from '../contexts/UIContext'
 import { useVirtualScroll } from '../hooks/useVirtualScroll'
@@ -19,6 +19,32 @@ export function ArticleContainer({ onRefresh }: ArticleContainerProps) {
   const handleSearch = (query: string) => {
     dispatch({ type: 'SET_SEARCH_QUERY', payload: query })
   }
+
+  const handleDismissError = useCallback((index: number) => {
+    dispatch({ type: 'REMOVE_ERROR', payload: index })
+  }, [dispatch])
+
+  // エラーバナー自動削除（10秒後）
+  const autoDismissTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  useEffect(() => {
+    if (autoDismissTimerRef.current) {
+      clearTimeout(autoDismissTimerRef.current)
+      autoDismissTimerRef.current = null
+    }
+
+    if (state.errors.length > 0) {
+      autoDismissTimerRef.current = setTimeout(() => {
+        dispatch({ type: 'CLEAR_ERRORS' })
+        autoDismissTimerRef.current = null
+      }, 10000)
+    }
+
+    return () => {
+      if (autoDismissTimerRef.current) {
+        clearTimeout(autoDismissTimerRef.current)
+      }
+    }
+  }, [state.errors, dispatch])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -58,7 +84,11 @@ export function ArticleContainer({ onRefresh }: ArticleContainerProps) {
       {state.errors.length > 0 && (
         <div className="mb-4" role="region" aria-label="エラー通知">
           {state.errors.map((error, index) => (
-            <ErrorMessage key={index} message={`${error.url}: ${error.message}`} />
+            <ErrorMessage
+              key={`${error.url}-${error.timestamp}`}
+              message={`${error.url}: ${error.message}`}
+              onDismiss={() => handleDismissError(index)}
+            />
           ))}
         </div>
       )}

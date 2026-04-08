@@ -73,6 +73,34 @@ describe('ArticleContext', () => {
     expect(result.current.state.errors[0]).toEqual(error)
   })
 
+  it('特定のエラーをインデックスで削除する', () => {
+    // Arrange: 準備
+    const { result } = renderHook(() => useArticle(), { wrapper })
+    const error1: FeedError = {
+      url: 'https://example.com/rss1',
+      message: 'Failed to fetch',
+      timestamp: '2025-01-01T00:00:00Z',
+    }
+    const error2: FeedError = {
+      url: 'https://example.com/rss2',
+      message: 'Timeout',
+      timestamp: '2025-01-01T00:00:01Z',
+    }
+    act(() => {
+      result.current.dispatch({ type: 'ADD_ERROR', payload: error1 })
+      result.current.dispatch({ type: 'ADD_ERROR', payload: error2 })
+    })
+
+    // Act: 実行
+    act(() => {
+      result.current.dispatch({ type: 'REMOVE_ERROR', payload: 0 })
+    })
+
+    // Assert: 検証
+    expect(result.current.state.errors).toHaveLength(1)
+    expect(result.current.state.errors[0]).toEqual(error2)
+  })
+
   it('検索クエリで記事をフィルタリングする', () => {
     // 準備
     const { result } = renderHook(() => useArticle(), { wrapper })

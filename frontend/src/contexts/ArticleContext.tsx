@@ -20,6 +20,7 @@ type ArticleAction =
   | { type: 'SET_ARTICLES'; payload: Article[] }
   | { type: 'SET_LOADING'; payload: boolean }
   | { type: 'ADD_ERROR'; payload: FeedError }
+  | { type: 'REMOVE_ERROR'; payload: number }
   | { type: 'CLEAR_ERRORS' }
   | { type: 'SET_SEARCH_QUERY'; payload: string }
   | { type: 'SET_SELECTED_FEED'; payload: string | null }
@@ -81,6 +82,11 @@ function articleReducer(state: ArticleState, action: ArticleAction): ArticleStat
       return {
         ...state,
         errors: [...state.errors, action.payload],
+      }
+    case 'REMOVE_ERROR':
+      return {
+        ...state,
+        errors: state.errors.filter((_, i) => i !== action.payload),
       }
     case 'CLEAR_ERRORS':
       return {
