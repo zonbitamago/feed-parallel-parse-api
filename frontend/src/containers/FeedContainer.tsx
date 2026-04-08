@@ -59,8 +59,12 @@ export function FeedContainer({ onRefreshReady }: FeedContainerProps) {
   }, [subState.subscriptions.length, fetchFeeds])
 
   // API結果が変更されたら記事Contextを更新
+  // フェッチ開始時に前回のエラーをクリア
   useEffect(() => {
     articleDispatch({ type: 'SET_LOADING', payload: isLoading })
+    if (isLoading) {
+      articleDispatch({ type: 'CLEAR_ERRORS' })
+    }
   }, [isLoading, articleDispatch])
 
   // API結果（articles）が変更されたとき、ポーリング中なら新着記事を検出（T034-T035）

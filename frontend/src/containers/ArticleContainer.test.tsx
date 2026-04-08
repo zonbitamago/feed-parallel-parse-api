@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { render, screen, fireEvent, act } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import { ArticleContainer } from './ArticleContainer'
 import * as ArticleContextModule from '../contexts/ArticleContext'
 import * as UIContextModule from '../contexts/UIContext'
@@ -181,44 +181,6 @@ describe('ArticleContainer - ローディング表示', () => {
       expect(mockDispatch).toHaveBeenCalledWith({ type: 'REMOVE_ERROR', payload: 0 })
     })
 
-    it('エラーが10秒後に自動削除される', () => {
-      // Arrange: 準備
-      vi.useFakeTimers()
-      const mockDispatch = vi.fn()
-      vi.mocked(ArticleContextModule.useArticle).mockReturnValue({
-        state: {
-          articles: [mockArticle],
-          displayedArticles: [mockArticle],
-          searchQuery: '',
-          selectedFeedId: null,
-          isLoading: false,
-          errors: [
-            { url: 'https://example.com/rss', message: 'Failed to fetch', timestamp: '2025-01-01T00:00:00Z' },
-          ],
-          pendingArticles: [],
-          hasNewArticles: false,
-          newArticlesCount: 0,
-          lastPolledAt: null,
-        },
-        dispatch: mockDispatch,
-      })
-
-      vi.mocked(useVirtualScrollModule.useVirtualScroll).mockReturnValue({
-        visibleArticles: [mockArticle],
-        hasMore: false,
-        loadMore: vi.fn(),
-      })
-
-      // Act: 実行
-      render(<ArticleContainer />)
-      act(() => {
-        vi.advanceTimersByTime(10000)
-      })
-
-      // Assert: 検証
-      expect(mockDispatch).toHaveBeenCalledWith({ type: 'CLEAR_ERRORS' })
-      vi.useRealTimers()
-    })
   })
 
   describe('基本的なレンダリング', () => {
