@@ -13,6 +13,7 @@ describe('ArticleList', () => {
       summary: 'Test summary',
       feedId: 'feed-1',
       feedTitle: 'Test Feed',
+      feedLink: 'https://example.com',
       feedOrder: 0,
     },
   ]

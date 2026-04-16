@@ -27,6 +27,7 @@ describe('ArticleContext', () => {
         summary: 'Summary 1',
         feedId: 'feed-1',
         feedTitle: 'Test Feed',
+        feedLink: 'https://example.com',
         feedOrder: 0,
       },
     ]
@@ -113,6 +114,7 @@ describe('ArticleContext', () => {
         summary: 'Learn React',
         feedId: 'feed-1',
         feedTitle: 'Tech Blog',
+        feedLink: 'https://example.com',
         feedOrder: 0,
       },
       {
@@ -123,6 +125,7 @@ describe('ArticleContext', () => {
         summary: 'Learn Vue',
         feedId: 'feed-1',
         feedTitle: 'Tech Blog',
+        feedLink: 'https://example.com',
         feedOrder: 1,
       },
     ]
@@ -152,6 +155,7 @@ describe('ArticleContext', () => {
         summary: 'Summary 1',
         feedId: 'feed-1',
         feedTitle: 'Feed 1',
+        feedLink: 'https://feed1.com',
         feedOrder: 0,
       },
       {
@@ -162,6 +166,7 @@ describe('ArticleContext', () => {
         summary: 'Summary 2',
         feedId: 'feed-2',
         feedTitle: 'Feed 2',
+        feedLink: 'https://feed2.com',
         feedOrder: 0,
       },
     ]
@@ -192,6 +197,7 @@ describe('ArticleContext', () => {
           summary: 'New Summary 1',
           feedId: 'feed-1',
           feedTitle: 'Test Feed',
+          feedLink: 'https://example.com',
           feedOrder: 0,
         },
         {
@@ -202,6 +208,7 @@ describe('ArticleContext', () => {
           summary: 'New Summary 2',
           feedId: 'feed-1',
           feedTitle: 'Test Feed',
+          feedLink: 'https://example.com',
           feedOrder: 1,
         },
       ]
@@ -250,6 +257,7 @@ describe('ArticleContext', () => {
           summary: 'Summary 1',
           feedId: 'feed-1',
           feedTitle: 'Test Feed',
+          feedLink: 'https://example.com',
           feedOrder: 0,
         },
       ]
@@ -262,6 +270,7 @@ describe('ArticleContext', () => {
           summary: 'New Summary 1',
           feedId: 'feed-1',
           feedTitle: 'Test Feed',
+          feedLink: 'https://example.com',
           feedOrder: 0,
         },
       ]

@@ -66,6 +66,7 @@ function transformArticles(
     summary: truncate(apiArticle.summary, ARTICLE_SUMMARY_MAX_LENGTH),
     feedId: subscription.id,
     feedTitle: feed.title,
+    feedLink: feed.link,
     feedOrder: articleIndex,
   }))
 }
