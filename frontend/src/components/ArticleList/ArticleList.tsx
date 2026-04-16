@@ -1,6 +1,7 @@
 import { format } from 'date-fns'
 import { ja } from 'date-fns/locale'
 import type { Article } from '../../types/models'
+import { SiteFavicon } from '../SiteFavicon'
 
 interface ArticleListProps {
   articles: Article[]
@@ -37,7 +38,10 @@ export function ArticleList({ articles }: ArticleListProps) {
           </a>
 
           <div className="text-sm text-gray-600 mb-2 flex items-center gap-3">
-            <span className="font-medium">{article.feedTitle}</span>
+            <span className="font-medium inline-flex items-center gap-1.5">
+              <SiteFavicon siteUrl={article.feedLink} size={16} />
+              {article.feedTitle}
+            </span>
             {article.pubDate && (
               <>
                 <span aria-hidden="true">•</span>

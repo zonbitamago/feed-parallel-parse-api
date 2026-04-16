@@ -19,6 +19,7 @@ const mockArticle = {
   summary: 'テスト記事の要約',
   feedId: 'feed-1',
   feedTitle: 'テストフィード',
+  feedLink: 'https://example.com',
   feedOrder: 0,
 }
 

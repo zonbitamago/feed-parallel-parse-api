@@ -12,6 +12,7 @@ const createArticles = (count: number): Article[] => {
     summary: `Summary ${i}`,
     feedId: 'feed-1',
     feedTitle: 'Test Feed',
+    feedLink: 'https://example.com',
     feedOrder: i,
   }))
 }

@@ -11,6 +11,7 @@ describe('sortArticlesByDate', () => {
     summary: 'Summary',
     feedId: 'feed-1',
     feedTitle: 'Test Feed',
+    feedLink: 'https://example.com',
     feedOrder,
   })
 

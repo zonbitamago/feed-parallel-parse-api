@@ -22,6 +22,7 @@ export interface Article {
   summary: string;
   feedId: string;
   feedTitle: string;
+  feedLink: string;
   feedOrder: number;
 }
 
